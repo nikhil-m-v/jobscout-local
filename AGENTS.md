@@ -39,3 +39,13 @@ Before considering a change complete, ask:
 - Include screenshots or short recordings for substantial UI changes when practical.
 - Document setup, configuration, and decisions as the project evolves.
 - Do not add dependencies or complexity without a clear user or contributor benefit.
+
+
+## Installation and first-run experience
+- Treat installation and onboarding as part of the product's visual identity and responsiveness requirements. Follow `docs/design/installation.md` as the initial design brief.
+- Provide a guided flow for install location, device checks, local AI runtime, model selection and download, API keys, verification, and first use. Keep advanced settings optional.
+- Explain application, personal-data, and model storage separately. Validate selected paths and available space before starting downloads.
+- Offer license-reviewed open-source models, reuse compatible existing models, and support setup later. Show download size and hardware guidance without promising speed that has not been measured.
+- Provide masked API-key fields with show/hide, clear instructions, official provider links, connection checks, and an option to skip. Store secrets in an OS-backed secret store.
+- Keep slow setup work in the background with honest progress, cancellation, recovery, and saved progress. A working local experience must remain available when online search is not configured.
+- Revisit setup whenever we add a provider, model, dependency, permission, or configuration requirement. Record the default, user guidance, error recovery, privacy effect, and upgrade behavior alongside the feature.
