@@ -57,9 +57,9 @@ Allow reuse of installed models and setup later. Show total disk requirements be
 
 Only show credential fields for enabled providers. Local models do not need a hosted-model API key. Start with Tavily for online job discovery; future providers use the same reusable setup panel.
 
-Example helper text: "Tavily helps JobScout find jobs online. Create or sign in to your account, find API keys in your dashboard, and paste a key here. You can add this later in Settings. Search requests may use your provider credits."
+Example helper text: "Tavily helps JobScout find jobs online using generic criteria you review. Your resume and personal details stay on this computer. Create or sign in to your account, find API keys in your dashboard, and paste a key here. You can add this later in Settings. Search requests may use your provider credits."
 
-Link to the official [Tavily dashboard](https://app.tavily.com) and [API-key guide](https://help.tavily.com/articles/9170796666-how-can-i-create-an-api-key). Explain which information leaves the PC: search terms such as role, skills, and location; the resume file should stay local by default. Show the provider's current usage guidance rather than promising a permanent free allowance.
+Link to the official [Tavily dashboard](https://app.tavily.com) and [API-key guide](https://help.tavily.com/articles/9170796666-how-can-i-create-an-api-key). Explain which information leaves the PC: only reviewed, generic role/skill categories and an optional broad search region; resume files and all personal career data must stay local. Explain that the provider still sees connection metadata and API-account association, so this is not a guarantee of network anonymity. Follow [the privacy contract](../privacy.md). Show the provider's current usage guidance rather than promising a permanent free allowance.
 
 Keep keys masked; support paste and explicit Show/Hide. Save them in Windows Credential Manager or an equivalent OS-backed secret store, with only a secret reference in ordinary settings. A user-triggered connection check uses a minimal request, never resume data, and explains whether it may consume credits. Distinguish invalid key, exhausted quota, offline connection, and provider failure. Do not display or log the key in errors or diagnostics.
 
@@ -101,3 +101,7 @@ On upgrades, preserve user data and secrets, migrate settings with a recovery pa
 6. Add the Ready screen and handoff to resume import.
 
 For each step, review keyboard use, visual consistency, honest status messages, and responsiveness during slow work. Set measured UI performance targets once the first runnable wizard exists; distinguish interface responsiveness from model inference speed.
+
+## Privacy during first run
+
+Lead with the local-data promise. Explain offline resume analysis and manual job-description import, then offer online discovery as an optional separate step. Show the exact outbound criteria before the first search and after changes. Do not generate provider queries from resume text. Provider connection checks use fixed non-personal requests. Runtime/model downloads and external provider links still create internet connections; explain that these services can observe connection metadata. Do not present a setup checkmark as proof of anonymity. Resume import and matching must remain usable with online discovery skipped once those local features are implemented.

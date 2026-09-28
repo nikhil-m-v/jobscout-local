@@ -32,6 +32,8 @@ The model adapter has a bounded timeout and ignores environment HTTP proxies for
 
 ## Module boundaries
 
+The governing data boundary is [the privacy contract](../privacy.md). Personal analysis and retrieval stay inside the local engine. When search is implemented, its adapter will accept only typed generic criteria from an outbound validation boundary, with no access to personal profile or resume storage. No such search boundary exists in the foundation yet; online search remains unavailable until it is implemented and verified.
+
 - `domain/` owns provider-independent contracts.
 - `adapters/` implements integrations.
 - `storage.py` owns persistence; route handlers do not build SQL.

@@ -1,6 +1,8 @@
 # JobScout Local
 
-A personal Windows workspace for a more thoughtful job search. Built with Tauri 2, React, TypeScript, and a Python/FastAPI local engine.
+Find your next role. Keep your personal story private.
+
+JobScout is an open-source Windows application designed to keep resumes, AI analysis, and career records on your computer. Its defining promise is local intelligence without uploading your personal career data. Built with Tauri 2, React, TypeScript, and a Python/FastAPI local engine.
 
 **Status: foundation release.** The interface, navigation, engine connection, SQLite initialization, and Ollama availability check are implemented. Resume import, model downloads, RAG matching, online job search, and application tracking are planned. The UI identifies those features clearly.
 
@@ -84,10 +86,16 @@ Review Overview and Settings with the engine connected, disconnected, and withou
 
 ## Privacy and local connections
 
+Our product contract is that resume files, extracted text, profiles, embeddings, match explanations, and application notes stay local. No hosted AI fallback, product analytics, advertising trackers, or automatic uploads of diagnostics are part of the design.
+
+Planned online discovery will send only user-reviewed, generic job criteria through a restricted search adapter. It will not send your resume or identity. Online search is **not implemented yet**. A search provider can still see queries, connection metadata such as an IP address, and the account associated with an API key; JobScout does not currently provide network anonymity. Opening a job website or applying there creates a separate interaction with that site.
+
+See [the privacy contract](docs/privacy.md) for the exact boundary, implementation requirements, and release checks. Privacy statements must describe verified behavior, not imply that planned safeguards already exist.
+
 The engine binds only to `127.0.0.1`, requires a fresh app-session token on every API request, and does not enable cross-origin access. The browser preview uses Vite's server-side proxy for its single health route; the token is not embedded in frontend assets. Tauri requests health through a narrowly scoped Rust command. No resume or search credentials are collected in this release.
 
 ## Next milestone
 
-PDF/DOCX import, local text extraction, and a reviewable profile. See [the architecture decision](docs/architecture/0001-foundation.md), [project instructions](AGENTS.md), and [contribution guidance](CONTRIBUTING.md).
+PDF/DOCX import, local text extraction, and a reviewable profile. Start with [the current memory checkpoint](MEMORY.md), [today's progress](docs/progress/2026-09-29.md), and [the roughly 30-session roadmap](docs/roadmap.md). Also see [the architecture decision](docs/architecture/0001-foundation.md), [project instructions](AGENTS.md), and [contribution guidance](CONTRIBUTING.md).
 
 Licensed under MIT. Model weights, provider services, and third-party dependencies retain their own licenses and terms.

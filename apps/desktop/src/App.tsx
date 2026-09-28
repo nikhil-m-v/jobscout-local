@@ -35,23 +35,38 @@ function JourneyIllustration() {
 
 function Overview({ engine, navigate }: { engine: Engine; navigate: (page: Page) => void }) {
   return <>
-    <div className="page-heading"><div><p className="eyebrow">YOUR WORKSPACE</p><h1>A clearer next step.</h1><p className="muted">Your career, with a little more clarity.</p></div></div>
+    <div className="page-heading"><div><p className="eyebrow">YOUR WORKSPACE</p><h1>Your career. Your information.</h1><p className="muted">A job search built around your privacy.</p></div></div>
     <section className="hero" aria-labelledby="hero-title">
       <div className="hero-copy"><span className="small-tag">Private. Personal. Local.</span>
-        <h2 id="hero-title">Find the work<br />that feels like <em>you.</em></h2>
-        <p>Your experience. New possibilities.<br />A private space to connect the two.</p>
-        <button className="button primary" onClick={() => navigate('settings')}>Set up your workspace <ArrowUpRight size={17} /></button>
-        <div className="hero-footnote"><LockKeyhole size={12} /> Your resume stays on your computer by default.</div>
+        <h2 id="hero-title">Your next role.<br /><em>Your privacy.</em></h2>
+        <p>Local AI for your next chapter.<br />Keep your personal story on your computer.</p>
+        <button className="button primary" onClick={() => navigate('settings')}>View privacy & setup <ArrowUpRight size={17} /></button>
+        <div className="hero-footnote"><LockKeyhole size={12} /> Built for local analysis. No resume uploads.</div>
       </div><JourneyIllustration />
     </section>
     <div className="section-heading"><h2>A place to begin.</h2></div>
     <div className="start-grid">
-      <article className="start-card"><div className="card-top"><span className="icon-tile lavender"><FileText size={19} /></span><span className="card-number">01</span></div><h3>Bring your story</h3><p>Your resume will become a profile you can review, refine, and make your own.</p><button className="text-action" onClick={() => navigate('profile')}>See your profile space <ArrowRight size={15} /></button><span className="feature-note">Resume import is our next milestone</span></article>
-      <article className="start-card"><div className="card-top"><span className="icon-tile green"><Zap size={19} /></span><span className="card-number">02</span></div><h3>A little local intelligence</h3><p>Connect AI that runs on your computer, with a model that suits your device.</p><button className="text-action" onClick={() => navigate('settings')}>Check local AI <ArrowRight size={15} /></button><span className="feature-note">{engine.health?.local_ai.status === 'available' ? 'Ollama is available on your computer' : 'Model setup comes next'}</span></article>
-      <article className="start-card"><div className="card-top"><span className="icon-tile peach"><Compass size={19} /></span><span className="card-number">03</span></div><h3>Discover your direction</h3><p>Explore opportunities with clear explanations of how they connect to your experience.</p><button className="text-action" onClick={() => navigate('discover')}>Explore what is coming <ArrowRight size={15} /></button><span className="feature-note">Job discovery is on the roadmap</span></article>
+      <article className="start-card"><div className="card-top"><span className="icon-tile lavender"><FileText size={19} /></span><span className="card-number">01</span></div><h3>Bring your story</h3><p>Your resume will become a local profile you can review and edit, without uploading it.</p><button className="text-action" onClick={() => navigate('profile')}>See your profile space <ArrowRight size={15} /></button><span className="feature-note">Resume import is our next milestone</span></article>
+      <article className="start-card"><div className="card-top"><span className="icon-tile green"><Zap size={19} /></span><span className="card-number">02</span></div><h3>A little local intelligence</h3><p>Run analysis on your computer. Your personal context stays with your local model.</p><button className="text-action" onClick={() => navigate('settings')}>Check local AI <ArrowRight size={15} /></button><span className="feature-note">{engine.health?.local_ai.status === 'available' ? 'Ollama is available on your computer' : 'Model setup comes next'}</span></article>
+      <article className="start-card"><div className="card-top"><span className="icon-tile peach"><Compass size={19} /></span><span className="card-number">03</span></div><h3>Discover privately</h3><p>Planned search will use generic job criteria, keeping your resume and personal details local.</p><button className="text-action" onClick={() => navigate('discover')}>Explore what is coming <ArrowRight size={15} /></button><span className="feature-note">Job discovery is on the roadmap</span></article>
     </div>
-    <div className="privacy-strip"><span className="privacy-icon"><ShieldCheck size={20} /></span><div><strong>Your career. Your information.</strong><p>Local processing first. Clear choices whenever a feature needs the internet.</p></div><span className="local-label">LOCAL BY DEFAULT</span></div>
+    <div className="privacy-strip"><span className="privacy-icon"><ShieldCheck size={20} /></span><div><strong>Your story stays with you.</strong><p>Local processing. No product tracking. Clear disclosure before online discovery.</p></div><span className="local-label">LOCAL BY DEFAULT</span></div>
   </>;
+}
+
+function PrivacyPanel() {
+  return <section className="settings-panel" aria-labelledby="privacy-title">
+    <div className="settings-title">
+      <span className="icon-tile green"><ShieldCheck size={20} /></span>
+      <div><h2 id="privacy-title">Your privacy comes first.</h2><p>Our commitment: personal career data stays on this computer.</p></div>
+    </div>
+    <dl className="privacy-details">
+      <div><dt>Local intelligence</dt><dd>Resume parsing, profiles, embeddings, and matching are planned to run locally. No hosted AI fallback.</dd></div>
+      <div><dt>Private discovery</dt><dd>Future searches will send only reviewed, generic job criteria. Your resume and personal details will stay local.</dd></div>
+      <div><dt>Clear boundaries</dt><dd>Online job search is not available in this release. Opening an external website connects your browser to that site.</dd></div>
+    </dl>
+    <p className="privacy-note">Online providers can see your search criteria, connection details such as your IP address, and provider-account information. Keeping personal content local does not make an internet connection anonymous.</p>
+  </section>;
 }
 
 function Settings({ engine }: { engine: Engine }) {
@@ -59,6 +74,7 @@ function Settings({ engine }: { engine: Engine }) {
   const ai = engine.health?.local_ai;
   return <>
     <div className="page-heading"><div><p className="eyebrow">MAKE IT YOURS</p><h1>Your workspace, at a glance.</h1><p className="muted">See what is ready and what needs a little attention.</p></div></div>
+    <PrivacyPanel />
     <section className="settings-panel" aria-labelledby="connection-title"><div className="settings-title"><span className="icon-tile green"><Monitor size={20} /></span><div><h2 id="connection-title">Local workspace</h2><p>The foundation for keeping your information on this computer.</p></div><EngineBadge engine={engine} /></div>
       <div className="status-row"><div><h3>Application engine</h3><p>{engine.health ? 'Connected and responding.' : engine.checking ? 'Checking the connection…' : 'Connection unavailable.'}</p></div><button className="button secondary" disabled={engine.checking} onClick={() => void engine.refresh()}><RefreshCw size={14} className={engine.checking ? 'spinning' : ''} />{engine.checking ? 'Checking…' : 'Check again'}</button></div>
       <div className="status-row"><div><h3>Local storage</h3><p>{engine.health?.database === 'ready' ? 'Your local database is ready.' : engine.health?.database === 'error' ? 'Storage needs attention before saving information.' : 'Storage status will appear when the workspace connects.'}</p></div><span className={`status-text ${engine.health?.database === 'ready' ? 'positive' : ''}`}>{engine.health?.database === 'ready' ? 'Ready' : 'Not verified'}</span></div>
@@ -73,7 +89,7 @@ function Settings({ engine }: { engine: Engine }) {
 
 const upcoming = {
   profile: { eyebrow: 'YOUR STORY, IN ONE PLACE', title: 'A profile that grows with you.', icon: FileText, heading: 'Start with the experience you already have.', description: 'Our next milestone brings PDF and Word resume import, local text extraction, and a profile you can review before anything is saved.', steps: ['Import a PDF or Word resume', 'Review extracted skills and experience', 'Keep a profile locally, under your control'] },
-  discover: { eyebrow: 'OPPORTUNITY, WITH CONTEXT', title: 'Find a direction worth exploring.', icon: Compass, heading: 'A thoughtful search begins with your story.', description: 'Job discovery will combine your preferences with online search, then explain matches using evidence from your resume and each job description.', steps: ['Choose roles, locations, and work preferences', 'Find and save opportunities through search providers', 'Understand matches and gaps with source evidence'] },
+  discover: { eyebrow: 'PRIVACY AT EVERY STEP', title: 'Discover jobs. Keep your story private.', icon: Compass, heading: 'Opportunities without uploading your resume.', description: 'Planned discovery will send only reviewed, generic job criteria. Your resume, profile, and matching will stay local. Providers can still see connection details and the account behind an API key; complete internet anonymity is not provided.', steps: ['Choose generic roles, skills, and an optional search region', 'Review exactly which criteria go to the search provider', 'Match results against your resume on your computer'] },
   applications: { eyebrow: 'ONE STEP AT A TIME', title: 'Keep your next chapter in view.', icon: BriefcaseBusiness, heading: 'A calmer way to follow your progress.', description: 'The application tracker will keep your saved roles, notes, and next steps together. Your history will stay intact when search results change.', steps: ['Save roles that catch your attention', 'Track applications and interview stages', 'Keep notes and next steps close at hand'] },
 };
 
@@ -88,7 +104,7 @@ export function App() {
   const engine = useEngine();
   const { appearance, changeAppearance } = useAppearance();
   return <div className="app-shell"><a className="skip-link" href="#main-content">Skip to main content</a>
-    <aside className="sidebar"><a href="#" className="brand" onClick={event => { event.preventDefault(); setPage('overview'); }} aria-label="JobScout overview"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><div className="sidebar-label">YOUR WORKSPACE</div><nav aria-label="Main navigation">{navigation.map(({ id, label, icon: Icon }) => <button key={id} aria-label={label} title={label} className={`nav-item ${page === id ? 'active' : ''}`} aria-current={page === id ? 'page' : undefined} onClick={() => setPage(id)}><Icon size={18} strokeWidth={1.7} /><span>{label}</span>{page === id && <ChevronRight size={14} />}</button>)}</nav><div className="sidebar-bottom"><div className="sidebar-footer"><span className="mini-brand">Local by default</span><span>v0.1</span></div></div></aside>
+    <aside className="sidebar"><a href="#" className="brand" onClick={event => { event.preventDefault(); setPage('overview'); }} aria-label="JobScout overview"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><div className="sidebar-label">YOUR WORKSPACE</div><nav aria-label="Main navigation">{navigation.map(({ id, label, icon: Icon }) => <button key={id} aria-label={label} title={label} className={`nav-item ${page === id ? 'active' : ''}`} aria-current={page === id ? 'page' : undefined} onClick={() => setPage(id)}><Icon size={18} strokeWidth={1.7} /><span>{label}</span>{page === id && <ChevronRight size={14} />}</button>)}</nav><div className="sidebar-bottom"><div className="sidebar-footer"><span className="mini-brand">Private by design</span><span>v0.1</span></div></div></aside>
     <div className="workspace"><header className="topbar"><div className="breadcrumb">My workspace <ChevronRight size={12} /><span>{navigation.find(item => item.id === page)?.label}</span></div><div className="topbar-actions"><EngineBadge engine={engine} /><label className="appearance-control"><span className="sr-only">Appearance</span><select value={appearance} onChange={event => changeAppearance(event.target.value as Appearance)}><option value="system">Follow system</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div></header><main id="main-content" className="main-content" key={page} tabIndex={-1}>{page === 'overview' ? <Overview engine={engine} navigate={setPage} /> : page === 'settings' ? <Settings engine={engine} /> : <Upcoming page={page} navigate={setPage} />}</main><footer className="workspace-footer"><span>Made for the next step.</span><span><LockKeyhole size={12} /> Personal by design</span></footer></div>
   </div>;
 }

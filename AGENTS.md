@@ -1,7 +1,12 @@
 # Project Instructions: Think Big, Act Small
 
 ## North star
-Build an open-source, local-first Windows AI job-finder that helps people understand their fit for real opportunities and take the next step. Keep the architecture modular so people can fork it, configure it with minimal effort, and replace components without rewriting the product.
+Build an open-source Windows AI job-finder whose defining benefit is personal privacy: resume analysis, embeddings, matching, and career records stay on the user's computer. Online discovery must use generic job criteria without sending the user's identity or personal career data. Keep the architecture modular so people can fork it, configure it with minimal effort, and replace components without rewriting the product.
+
+## Session continuity
+- At the start of work, read `MEMORY.md`, `docs/privacy.md`, and the current milestone in `docs/roadmap.md`.
+- Finish each meaningful session by updating the memory checkpoint and a dated progress note. Record completed work, evidence, blockers, and the next concrete action.
+- Keep committed memory project-specific. Never include real resumes, credentials, personal contact details, local machine paths, or private debugging logs.
 
 ## How we work
 - Think big about the product, but make small, meaningful, reviewable changes.
@@ -21,7 +26,9 @@ Build an open-source, local-first Windows AI job-finder that helps people unders
 - Use the glass material rules in `docs/design/glass.md` for new UI. Keep effects restrained, make every screen adapt to window size, and provide readable opaque fallbacks.
 
 ## Product and technical direction
-- Default to local processing and local storage for resumes and profile data. Clearly disclose any data sent to external search providers such as Tavily.
+- Treat `docs/privacy.md` as the privacy contract. Never send resume files, extracted text, profile details, embeddings, match explanations, or application notes to online providers. Do not add a hosted-model fallback.
+- Build outbound search requests from user-reviewed, generic criteria through a restrictive search boundary. Never derive provider queries directly from resume text or unconstrained model output.
+- Clearly disclose provider-visible queries, network metadata, and API-account association. Do not promise complete anonymity or zero outbound data for online search.
 - Keep model, search, parsing, vector storage, and persistence behind small replaceable interfaces.
 - Treat extracted resume details and generated match assessments as suggestions. Let users review profile data and show evidence for match explanations.
 - Keep provider credentials out of source control and logs. Provide setup guidance and safe example configuration for forks.
