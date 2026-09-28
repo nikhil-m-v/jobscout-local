@@ -4,11 +4,13 @@ A personal Windows workspace for a more thoughtful job search. Built with Tauri 
 
 **Status: foundation release.** The interface, navigation, engine connection, SQLite initialization, and Ollama availability check are implemented. Resume import, model downloads, RAG matching, online job search, and application tracking are planned. The UI identifies those features clearly.
 
-![JobScout foundation overview](docs/images/foundation.png)
+![JobScout glass interface in light appearance](docs/images/glass-light.png)
 
 Choose Light, Dark, or Follow system from the appearance control at the top of the window. The choice is remembered on this device. The Windows app uses the same interface in a Tauri desktop window; the browser preview is a development convenience.
 
-![JobScout in dark appearance](docs/images/foundation-dark.png)
+![JobScout glass interface in dark appearance](docs/images/glass-dark.png)
+
+The interface uses shared glass materials for navigation, panels, and controls, with responsive layouts and opaque accessibility fallbacks. See [the glass design rules](docs/design/glass.md). This is a Windows-compatible CSS treatment inspired by Liquid Glass; native Windows rendering and performance still need release checks.
 
 ## Run the foundation
 

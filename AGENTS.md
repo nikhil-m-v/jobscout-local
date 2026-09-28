@@ -18,6 +18,7 @@ Build an open-source, local-first Windows AI job-finder that helps people unders
 - Design for keyboard use, accessibility, readable contrast, and Windows desktop conventions alongside visual polish.
 - Favor the restraint of Apple's website: fewer decorative elements, clear typography, generous spacing, and focused actions. Keep JobScout's own identity.
 - Support Light, Dark, and Follow system appearance. Use shared semantic color tokens, preserve contrast in both themes, and remember the user's choice.
+- Use the glass material rules in `docs/design/glass.md` for new UI. Keep effects restrained, make every screen adapt to window size, and provide readable opaque fallbacks.
 
 ## Product and technical direction
 - Default to local processing and local storage for resumes and profile data. Clearly disclose any data sent to external search providers such as Tavily.
