@@ -16,6 +16,8 @@ Build an open-source, local-first Windows AI job-finder that helps people unders
 - Make interactions feel smooth and immediate. Avoid blocking the UI during parsing, indexing, search, or model generation. Use background work, progress feedback, responsive controls, and graceful cancellation where appropriate.
 - Protect perceived performance: show useful loading states, preserve scroll and selection, avoid unnecessary rerenders, and keep animations subtle and interruptible.
 - Design for keyboard use, accessibility, readable contrast, and Windows desktop conventions alongside visual polish.
+- Favor the restraint of Apple's website: fewer decorative elements, clear typography, generous spacing, and focused actions. Keep JobScout's own identity.
+- Support Light, Dark, and Follow system appearance. Use shared semantic color tokens, preserve contrast in both themes, and remember the user's choice.
 
 ## Product and technical direction
 - Default to local processing and local storage for resumes and profile data. Clearly disclose any data sent to external search providers such as Tavily.
@@ -39,7 +41,6 @@ Before considering a change complete, ask:
 - Include screenshots or short recordings for substantial UI changes when practical.
 - Document setup, configuration, and decisions as the project evolves.
 - Do not add dependencies or complexity without a clear user or contributor benefit.
-
 
 ## Installation and first-run experience
 - Treat installation and onboarding as part of the product's visual identity and responsiveness requirements. Follow `docs/design/installation.md` as the initial design brief.

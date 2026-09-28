@@ -1,0 +1,15 @@
+{
+  "name": "jobscout-local",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": ["apps/desktop"],
+  "engines": {"node": ">=22.12.0"},
+  "scripts": {
+    "dev": "node scripts/dev.mjs",
+    "desktop:dev": "node scripts/desktop.mjs dev",
+    "desktop:build": "node scripts/desktop.mjs build",
+    "build": "npm run build --workspace @jobscout/desktop",
+    "typecheck": "npm run typecheck --workspace @jobscout/desktop",
+    "engine:build": "node scripts/build-engine.mjs"
+  }
+}

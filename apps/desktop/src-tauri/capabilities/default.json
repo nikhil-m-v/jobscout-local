@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "main-window",
+  "description": "Local app window; external navigation restricted to the Ollama download page.",
+  "windows": ["main"],
+  "permissions": ["core:default", {"identifier": "opener:allow-open-url", "allow": [{"url": "https://ollama.com/download/windows"}]}]
+}
