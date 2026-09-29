@@ -1,5 +1,6 @@
 /* One material vocabulary for navigation, panels and controls in both themes. */
 :root {
+  --sidebar-glass-fill: #ffffff99;
   --glass-fill: #ffffffb8;
   --glass-edge: #ffffffd9;
   --glass-outline: #d5dce380;
@@ -11,6 +12,7 @@
     radial-gradient(ellipse at 20% 75%, #e9e4f1a6, transparent 50%);
 }
 :root[data-theme="dark"] {
+  --sidebar-glass-fill: #24282dbc;
   --glass-fill: #24282de6;
   --glass-edge: #ffffff23;
   --glass-outline: #ffffff12;
@@ -33,6 +35,7 @@
   background: var(--sidebar);
   box-shadow: var(--glass-shadow);
   z-index: 2;
+  transition: background-color .22s ease, border-color .22s ease;
 }
 .topbar {
   position: sticky;
@@ -88,7 +91,14 @@
 
 /* Blur is limited to three large surfaces; no animated filters or pointer loops. */
 @supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  .sidebar, .topbar, .hero {
+  .sidebar {
+    background-color: var(--sidebar-glass-fill);
+    background-image: var(--glass-tint);
+    -webkit-backdrop-filter: blur(22px) saturate(145%);
+    backdrop-filter: blur(22px) saturate(145%);
+    border-color: var(--glass-edge);
+  }
+  .topbar, .hero {
     background-color: var(--glass-fill);
     background-image: var(--glass-tint);
     -webkit-backdrop-filter: blur(18px) saturate(135%);
