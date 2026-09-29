@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowRight, ArrowUpRight, BriefcaseBusiness, ChevronRight, CircleHelp, Compass, FileText, LayoutDashboard, ListChecks, LockKeyhole, Monitor, RefreshCw, Settings2, ShieldCheck, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, BriefcaseBusiness, ChevronRight, CircleHelp, Compass, FileText, LayoutDashboard, ListChecks, LockKeyhole, Monitor, Moon, RefreshCw, Settings2, ShieldCheck, Sparkles, Sun, Zap } from 'lucide-react';
 import { useEngine } from './hooks/useEngine';
 import { useAppearance, type Appearance } from './hooks/useAppearance';
 import { openOllamaWebsite } from './lib/engine';
@@ -71,12 +71,20 @@ function PrivacyPanel() {
   </section>;
 }
 
-function Settings({ engine }: { engine: Engine }) {
+function Settings({ engine, appearance, changeAppearance }: { engine: Engine; appearance: Appearance; changeAppearance: (appearance: Appearance) => void }) {
   const [linkError, setLinkError] = useState(false);
   const ai = engine.health?.local_ai;
   return <>
     <div className="page-heading"><div><p className="eyebrow">MAKE IT YOURS</p><h1>Your workspace, at a glance.</h1><p className="muted">See what is ready and what needs a little attention.</p></div></div>
     <PrivacyPanel />
+    <section className="settings-panel appearance-panel" aria-labelledby="appearance-title">
+      <div className="settings-title"><span className="icon-tile lavender"><Sun size={20} /></span><div><h2 id="appearance-title">Appearance</h2><p>Choose how JobScout looks on this computer.</p></div></div>
+      <div className="appearance-options" role="group" aria-label="Appearance preference">
+        <button className={`appearance-option ${appearance === 'system' ? 'selected' : ''}`} aria-pressed={appearance === 'system'} onClick={() => changeAppearance('system')}><Monitor size={18} /><span>Follow system</span><small>Match Windows</small></button>
+        <button className={`appearance-option ${appearance === 'light' ? 'selected' : ''}`} aria-pressed={appearance === 'light'} onClick={() => changeAppearance('light')}><Sun size={18} /><span>Light</span><small>Bright and clear</small></button>
+        <button className={`appearance-option ${appearance === 'dark' ? 'selected' : ''}`} aria-pressed={appearance === 'dark'} onClick={() => changeAppearance('dark')}><Moon size={18} /><span>Dark</span><small>Easy on the eyes</small></button>
+      </div>
+    </section>
     <section className="settings-panel" aria-labelledby="connection-title"><div className="settings-title"><span className="icon-tile green"><Monitor size={20} /></span><div><h2 id="connection-title">Local workspace</h2><p>The foundation for keeping your information on this computer.</p></div><EngineBadge engine={engine} /></div>
       <div className="status-row"><div><h3>Application engine</h3><p>{engine.health ? 'Connected and responding.' : engine.checking ? 'Checking the connection…' : 'Connection unavailable.'}</p></div><button className="button secondary" disabled={engine.checking} onClick={() => void engine.refresh()}><RefreshCw size={14} className={engine.checking ? 'spinning' : ''} />{engine.checking ? 'Checking…' : 'Check again'}</button></div>
       <div className="status-row"><div><h3>Local storage</h3><p>{engine.health?.database === 'ready' ? 'Your local database is ready.' : engine.health?.database === 'error' ? 'Storage needs attention before saving information.' : 'Storage status will appear when the workspace connects.'}</p></div><span className={`status-text ${engine.health?.database === 'ready' ? 'positive' : ''}`}>{engine.health?.database === 'ready' ? 'Ready' : 'Not verified'}</span></div>
@@ -107,6 +115,6 @@ export function App() {
   const { appearance, changeAppearance } = useAppearance();
   return <div className="app-shell"><a className="skip-link" href="#main-content">Skip to main content</a>
     <aside className="sidebar"><a href="#" className="brand" onClick={event => { event.preventDefault(); setPage('overview'); }} aria-label="JobScout overview"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><div className="sidebar-label">YOUR WORKSPACE</div><nav aria-label="Main navigation">{navigation.map(({ id, label, icon: Icon }) => <button key={id} aria-label={label} title={label} className={`nav-item ${page === id ? 'active' : ''}`} aria-current={page === id ? 'page' : undefined} onClick={() => setPage(id)}><Icon size={18} strokeWidth={1.7} /><span>{label}</span>{page === id && <ChevronRight size={14} />}</button>)}</nav><div className="sidebar-bottom"><div className="sidebar-footer"><span className="mini-brand">Private by design</span><span>v0.1</span></div></div></aside>
-    <div className="workspace"><header className="topbar"><div className="breadcrumb">My workspace <ChevronRight size={12} /><span>{navigation.find(item => item.id === page)?.label}</span></div><div className="topbar-actions"><EngineBadge engine={engine} /><label className="appearance-control"><span className="sr-only">Appearance</span><select value={appearance} onChange={event => changeAppearance(event.target.value as Appearance)}><option value="system">Follow system</option><option value="light">Light</option><option value="dark">Dark</option></select></label></div></header><main id="main-content" className="main-content" key={page} tabIndex={-1}>{page === 'overview' ? <Overview engine={engine} navigate={setPage} /> : page === 'profile' ? <ResumePicker selection={resumeSelection} onSelect={setResumeSelection} /> : page === 'settings' ? <Settings engine={engine} /> : <Upcoming page={page} navigate={setPage} />}</main><footer className="workspace-footer"><span>Made for the next step.</span><span><LockKeyhole size={12} /> Personal by design</span></footer></div>
+    <div className="workspace"><header className="topbar"><div className="breadcrumb">My workspace <ChevronRight size={12} /><span>{navigation.find(item => item.id === page)?.label}</span></div><EngineBadge engine={engine} /></header><main id="main-content" className="main-content" key={page} tabIndex={-1}>{page === 'overview' ? <Overview engine={engine} navigate={setPage} /> : page === 'profile' ? <ResumePicker selection={resumeSelection} onSelect={setResumeSelection} /> : page === 'settings' ? <Settings engine={engine} appearance={appearance} changeAppearance={changeAppearance} /> : <Upcoming page={page} navigate={setPage} />}</main><footer className="workspace-footer"><span>Made for the next step.</span><span><LockKeyhole size={12} /> Personal by design</span></footer></div>
   </div>;
 }

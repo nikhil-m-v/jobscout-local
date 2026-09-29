@@ -69,14 +69,12 @@
 }
 .button { min-height: 44px; border: 1px solid var(--glass-outline); }
 .primary { box-shadow: inset 0 1px 0 #ffffff26, 0 4px 12px #00000010; }
-.secondary, .appearance-control select {
+.secondary, .appearance-option {
   background-color: var(--canvas);
   background-image: var(--glass-tint);
   border-color: var(--glass-outline);
   box-shadow: inset 0 1px 0 var(--glass-highlight);
 }
-.appearance-control select { min-height: 40px; border-radius: 14px; }
-.appearance-control option { background: var(--canvas); color: var(--ink); }
 .icon-tile, .badge, .art-tags span {
   border: 1px solid var(--glass-outline);
   background-image: var(--glass-tint);
@@ -97,7 +95,7 @@
     backdrop-filter: blur(18px) saturate(135%);
     border-color: var(--glass-edge);
   }
-  .secondary, .appearance-control select { background-color: var(--glass-fill); }
+  .secondary, .appearance-option { background-color: var(--glass-fill); }
 }
 @media (hover: hover) {
   .secondary:hover { background-color: var(--glass-hover); }
@@ -117,7 +115,6 @@
 }
 @media (max-width: 620px) {
   .topbar { margin-left: 12px; margin-right: 12px; padding: 0 12px; border-radius: 18px; gap: 8px; }
-  .topbar-actions { gap: 8px; }
   .hero, .settings-panel, .empty-panel, .start-card { border-radius: 20px; }
   .hero-copy { padding: 26px; }
   .button { max-width: 100%; }
@@ -131,7 +128,6 @@
   .main-content { padding: 24px 14px; }
   .topbar { margin-left: 10px; margin-right: 10px; }
   .breadcrumb { font-size: 10px; }
-  .appearance-control select { font-size: 11px; max-width: 124px; padding-left: 8px; padding-right: 6px; }
   .hero-copy { padding: 24px 20px; }
   .hero h2 { font-size: clamp(28px, 7.5vw, 36px); }
   .start-card, .settings-panel, .empty-panel { padding: 20px; }
@@ -141,7 +137,7 @@
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
   .app-shell { background-image: none; }
   .sidebar, .topbar, .hero, .settings-panel, .empty-panel, .start-card, .secondary,
-  .appearance-control select, .icon-tile, .badge, .nav-item.active, .resume-art, .art-tags span {
+  .appearance-option, .icon-tile, .badge, .nav-item.active, .resume-art, .art-tags span {
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
     background-image: none;
@@ -149,13 +145,13 @@
     box-shadow: none;
   }
   .sidebar { background-color: var(--sidebar); }
-  .topbar, .secondary, .appearance-control select { background-color: var(--canvas); }
+  .topbar, .secondary, .appearance-option { background-color: var(--canvas); }
   .hero, .settings-panel, .empty-panel, .start-card { background-color: var(--surface); }
 }
 @media (forced-colors: active) {
   .app-shell { background: Canvas; }
   .sidebar, .topbar, .hero, .settings-panel, .empty-panel, .start-card, .button,
-  .nav-item, .appearance-control select, .resume-art, .icon-tile, .badge, .art-tags span {
+  .nav-item, .appearance-option, .resume-art, .icon-tile, .badge, .art-tags span {
     background: Canvas;
     color: CanvasText;
     border: 1px solid CanvasText;

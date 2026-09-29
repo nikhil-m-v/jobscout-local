@@ -15,7 +15,7 @@ The governing promise is in [docs/privacy.md](docs/privacy.md). Resumes, profile
 - React/TypeScript/Vite UI; Tauri 2 Windows shell configured; Python/FastAPI engine; SQLite startup; replaceable Ollama health adapter.
 - Browser preview starts the real local engine, uses session authentication, and shows actual engine/storage/runtime status.
 - Windows development prerequisites are installed: Rust/Cargo stable MSVC, Visual Studio C++ Desktop workload, and the documented Python desktop extra. Native NSIS installer generation succeeds; installer execution and upgrade behavior remain unverified.
-- Overview, Settings, and labeled planned-feature pages exist. Appearance is saved locally. Glass has opaque and accessibility fallbacks.
+- Overview, Settings, and labeled planned-feature pages exist. Appearance is saved locally through a styled Settings control. Glass has opaque and accessibility fallbacks.
 - My profile now selects a local PDF/DOCX up to 10 MiB and shows metadata only. It does not read bytes, extract text, or save a profile. The picker contract is in `docs/architecture/0002-resume-selection.md`.
 - No resume parsing, model inference, embeddings, RAG, Tavily search, key storage, or application tracking is implemented yet. The privacy boundary for future search is a documented contract, not an implemented filter.
 - The prior privacy increment is commit `882079a`; day 2 adds the first resume-selection slice. Check Git status before publication.
