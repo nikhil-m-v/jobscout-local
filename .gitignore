@@ -13,4 +13,5 @@ dist/
 target/
 apps/desktop/src-tauri/binaries/*
 !apps/desktop/src-tauri/binaries/.gitkeep
+apps/desktop/src-tauri/gen/schemas/
 
