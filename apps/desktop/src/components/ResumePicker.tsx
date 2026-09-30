@@ -8,7 +8,7 @@ import type { useResumeImport } from '../hooks/useResumeImport';
 export function ResumePicker({ resume, saved }: { resume: ReturnType<typeof useResumeImport>; saved: ReturnType<typeof useSavedProfile> }) {
   const { selection, document, busy } = resume;
   const [confirmDelete, setConfirmDelete] = useState(false);
-  const locked = busy || saved.busy;
+  const locked = busy || saved.busy || !saved.connected;
   const input = useRef<HTMLInputElement>(null);
   const chooseButton = useRef<HTMLButtonElement>(null);
   const editor = useRef<HTMLTextAreaElement>(null);
@@ -23,7 +23,7 @@ export function ResumePicker({ resume, saved }: { resume: ReturnType<typeof useR
   return <>
     <div className="page-heading"><div><p className="eyebrow">YOUR STORY, IN ONE PLACE</p><h1>Read. Review. Make it yours.</h1><p className="muted">Bring your resume into a private, local workspace.</p></div></div>
     <section className="settings-panel resume-panel" aria-labelledby="saved-title" aria-busy={saved.busy}>
-      <div className="settings-title"><span className="icon-tile green"><LockKeyhole size={20} /></span><div><h2 id="saved-title">Your saved profile.</h2><p>{saved.profile ? 'Reviewed text, kept on this computer.' : saved.ready ? 'Save when your words are ready.' : 'Checking local storage.'}</p></div></div>
+      <div className="settings-title"><span className="icon-tile green"><LockKeyhole size={20} /></span><div><h2 id="saved-title">Your saved profile.</h2><p>{!saved.connected ? 'Waiting for your local workspace.' : saved.profile ? 'Reviewed text, kept on this computer.' : saved.ready ? 'Save when your words are ready.' : saved.error ? 'Local storage could not be checked.' : 'Checking local storage.'}</p></div></div>
       {saved.profile && <p className="resume-guidance">{saved.profile.text.length.toLocaleString()} characters · Saved {new Date(saved.profile.saved_at).toLocaleString()}</p>}
       <p className="resume-guidance">Only the text you explicitly save is kept after closing JobScout. Original files and filenames are not saved. Local storage is not encrypted; other software running as you may read it.</p>
       <div className="resume-actions">

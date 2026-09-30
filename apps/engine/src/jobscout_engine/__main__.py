@@ -11,6 +11,7 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="JobScout local engine")
     parser.add_argument("--port", type=int, default=0)
     parser.add_argument("--data-dir", type=Path, required=True)
+    parser.add_argument("--owner-pid", type=int)
     arguments = parser.parse_args()
     application = create_app(Settings.from_environment(arguments.data_dir))
     # Bind before the handshake; using an OS-assigned port prevents conflicts.
@@ -18,9 +19,19 @@ def main() -> None:
         listener.bind(("127.0.0.1", arguments.port))
         listener.listen(128)
         listener.setblocking(False)
-        print(json.dumps({"event": "bound", "port": listener.getsockname()[1]}), flush=True)
-        configuration = uvicorn.Config(application, log_level="warning", access_log=False)
-        uvicorn.Server(configuration).run(sockets=[listener])
+        configuration = uvicorn.Config(application, log_level="warning", access_log=False,
+                                       timeout_graceful_shutdown=3)
+        server = uvicorn.Server(configuration)
+        finished = None
+        if arguments.owner_pid is not None:
+            from jobscout_engine.owner import watch_owner
+            finished = watch_owner(arguments.owner_pid, server)
+        try:
+            print(json.dumps({"event": "bound", "port": listener.getsockname()[1]}), flush=True)
+            server.run(sockets=[listener])
+        finally:
+            if finished is not None:
+                finished.set()
 
 
 if __name__ == "__main__":

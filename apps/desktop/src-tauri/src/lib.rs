@@ -102,7 +102,10 @@ pub fn run() {
         .setup(|app| {
             let state = app.state::<Arc<EngineState>>().inner().clone();
             let directory = app.path().app_data_dir()?;
-            let (mut events, child) = app.shell().sidecar("jobscout-engine")?
+            let command = app.shell().sidecar("jobscout-engine")?;
+            #[cfg(windows)]
+            let command = command.args(["--owner-pid", &std::process::id().to_string()]);
+            let (mut events, child) = command
                 .env("JOBSCOUT_SESSION_TOKEN", &state.token)
                 .env("PYTHONUNBUFFERED", "1")
                 .args(["--data-dir", &directory.to_string_lossy(), "--port", "0"])
@@ -138,7 +141,14 @@ pub fn run() {
     application.run(move |_app, event| {
         if let tauri::RunEvent::Exit = event {
             if let Ok(mut child) = lifecycle.child.lock() {
-                if let Some(process) = child.take() { let _ = process.kill(); }
+                if let Some(process) = child.take() {
+                    // Windows server watches our process handle. Let its frozen
+                    // launcher wait for shutdown and remove temporary files.
+                    #[cfg(not(windows))]
+                    let _ = process.kill();
+                    #[cfg(windows)]
+                    drop(process);
+                }
             }
         }
     });

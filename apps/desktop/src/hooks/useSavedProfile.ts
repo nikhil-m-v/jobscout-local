@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { profileRequest, type SavedProfile } from '../lib/profile';
 
-export function useSavedProfile() {
+export function useSavedProfile(connected: boolean) {
   const [profile, setProfile] = useState<SavedProfile | null>(null);
   const [busy, setBusy] = useState(false);
   const [ready, setReady] = useState(false);
@@ -10,7 +10,7 @@ export function useSavedProfile() {
   const pending = useRef(false);
   const mounted = useRef(true);
   async function run(action: 'load' | 'save' | 'delete', text?: string): Promise<boolean> {
-    if (pending.current) return false;
+    if (pending.current || !connected) return false;
     pending.current = true; setBusy(true); setError(''); setNotice('');
     try {
       const result = await profileRequest(action, text);
@@ -28,9 +28,13 @@ export function useSavedProfile() {
   }
   useEffect(() => {
     mounted.current = true;
-    void run('load');
     return () => { mounted.current = false; };
   }, []);
-  return { profile, busy, ready, error, notice, reload: () => run('load'),
+  // The native sidecar may not have announced its endpoint at first render.
+  // Load only after health connects; retry reads on reconnection, never writes.
+  useEffect(() => {
+    if (connected) void run('load');
+  }, [connected]);
+  return { profile, busy, ready, error, notice, connected, reload: () => run('load'),
     save: (text: string) => run('save', text), delete: () => run('delete') };
 }

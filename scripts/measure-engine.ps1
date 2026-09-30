@@ -1,4 +1,4 @@
-param([int]$Runs = 3)
+param([int]$Runs = 3, [ValidateSet('docx', 'pdf')][string]$Format = 'docx')
 $ErrorActionPreference = 'Stop'
 if ($Runs -lt 1 -or $Runs -gt 10) { throw 'Runs must be between 1 and 10.' }
 $root = Split-Path $PSScriptRoot -Parent
@@ -58,7 +58,7 @@ for ($run = 1; $run -le $Runs; $run++) {
         }
         $idle = Get-TreeMemory
         $extracted = Get-Bytes $temp
-        # Generate a synthetic DOCX; no user file is accepted by this benchmark.
+        # Generate synthetic documents; no user file is accepted by this benchmark.
         Add-Type -AssemblyName System.IO.Compression
         $stream = [System.IO.MemoryStream]::new()
         $zip = [System.IO.Compression.ZipArchive]::new($stream, [System.IO.Compression.ZipArchiveMode]::Create, $true)
@@ -75,8 +75,36 @@ for ($run = 1; $run -le $Runs; $run++) {
         $reserved.Dispose()
         $content = [System.Net.Http.ByteArrayContent]::new($stream.ToArray())
         $stream.Dispose()
-        $content.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::new('application/vnd.openxmlformats-officedocument.wordprocessingml.document')
-        $import = $client.PutAsync("$url/imports/$taskId/docx", $content)
+        $mime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+        if ($Format -eq 'pdf') {
+            $content.Dispose()
+            # ASCII-only PDF with 20 pages, 40 synthetic lines per page and exact xref offsets.
+            $objects = [System.Collections.Generic.List[string]]::new()
+            $objects.Add('<< /Type /Catalog /Pages 2 0 R >>')
+            $kids = (0..19 | ForEach-Object { "$(4 + 2 * $_) 0 R" }) -join ' '
+            $objects.Add("<< /Type /Pages /Kids [$kids] /Count 20 >>")
+            $objects.Add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>')
+            foreach ($page in 0..19) {
+                $streamId = 5 + 2 * $page
+                $objects.Add("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents $streamId 0 R >>")
+                $drawing = "BT /F1 10 Tf 50 740 Td 14 TL`n" + ((1..40 | ForEach-Object { '(Synthetic engineer profile. Python SQL accessible software.) Tj T*' }) -join "`n") + "`nET`n"
+                $objects.Add("<< /Length $($drawing.Length) >>`nstream`n${drawing}endstream")
+            }
+            $pdf = [System.Text.StringBuilder]::new("%PDF-1.4`n")
+            $offsets = [System.Collections.Generic.List[int]]::new()
+            for ($i = 0; $i -lt $objects.Count; $i++) {
+                $offsets.Add($pdf.Length)
+                $pdf.Append("$($i + 1) 0 obj`n$($objects[$i])`nendobj`n") | Out-Null
+            }
+            $xref = $pdf.Length
+            $pdf.Append("xref`n0 $($objects.Count + 1)`n0000000000 65535 f `n") | Out-Null
+            foreach ($offset in $offsets) { $pdf.Append($offset.ToString('D10') + " 00000 n `n") | Out-Null }
+            $pdf.Append("trailer`n<< /Size $($objects.Count + 1) /Root 1 0 R >>`nstartxref`n$xref`n%%EOF`n") | Out-Null
+            $content = [System.Net.Http.ByteArrayContent]::new([System.Text.Encoding]::ASCII.GetBytes($pdf.ToString()))
+            $mime = 'application/pdf'
+        }
+        $content.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::new($mime)
+        $import = $client.PutAsync("$url/imports/$taskId/$Format", $content)
         $peak = $idle.working; $peakPrivate = $idle.private
         while (!$import.IsCompleted) {
             $sample = Get-TreeMemory
@@ -89,7 +117,7 @@ for ($run = 1; $run -le $Runs; $run++) {
         $body = $importResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult() | ConvertFrom-Json
         if (!$body.text) { throw 'Synthetic import did not return extracted text.' }
         $importResponse.Dispose(); $content.Dispose()
-        $results += [pscustomobject]@{ run = $run; ready_seconds = $ready; idle_working_bytes = $idle.working; idle_private_bytes = $idle.private; sampled_import_working_bytes = $peak; sampled_import_private_bytes = $peakPrivate; extracted_temp_bytes = $extracted; data_bytes = (Get-Bytes $directory) - (Get-Bytes $temp) }
+        $results += [pscustomobject]@{ run = $run; format = $Format; ready_seconds = $ready; idle_working_bytes = $idle.working; idle_private_bytes = $idle.private; sampled_import_working_bytes = $peak; sampled_import_private_bytes = $peakPrivate; extracted_temp_bytes = $extracted; data_bytes = (Get-Bytes $directory) - (Get-Bytes $temp) }
     } finally {
         $client.Dispose()
         if (!$process.HasExited) { $process.Kill($true); $process.WaitForExit() }

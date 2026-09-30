@@ -112,8 +112,8 @@ function Upcoming({ page, navigate }: { page: keyof typeof upcoming; navigate: (
 export function App() {
   const [page, setPage] = useState<Page>('overview');
   const resume = useResumeImport();
-  const saved = useSavedProfile();
   const engine = useEngine();
+  const saved = useSavedProfile(Boolean(engine.health));
   const { appearance, changeAppearance } = useAppearance();
   return <div className="app-shell"><a className="skip-link" href="#main-content">Skip to main content</a>
     <aside className="sidebar"><a href="#" className="brand" onClick={event => { event.preventDefault(); setPage('overview'); }} aria-label="JobScout overview"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><div className="sidebar-label">YOUR WORKSPACE</div><nav aria-label="Main navigation">{navigation.map(({ id, label, icon: Icon }) => <button key={id} aria-label={label} title={label} className={`nav-item ${page === id ? 'active' : ''}`} aria-current={page === id ? 'page' : undefined} onClick={() => setPage(id)}><Icon size={18} strokeWidth={1.7} /><span>{label}</span>{page === id && <ChevronRight size={14} />}</button>)}</nav><div className="sidebar-bottom"><div className="sidebar-footer"><span className="mini-brand">Private by design</span><span>v0.1</span></div></div></aside>
