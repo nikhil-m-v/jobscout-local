@@ -5,8 +5,8 @@ export type ResumeSelection = { name: string; size: number; format: 'pdf' | 'doc
 type FileMetadata = { name: string; size: number; type: string };
 type SelectionResult = { ok: true; selection: ResumeSelection } | { ok: false; error: string };
 
-// Advisory picker validation only. The future engine parser must independently
-// validate bytes and resource limits before accepting any document.
+// Advisory picker validation only. The engine independently validates PDF
+// bytes and resource limits; DOCX extraction is not implemented yet.
 export function validateResumeSelection(file: FileMetadata): SelectionResult {
   const extension = file.name.split('.').pop()?.toLowerCase();
   if (extension !== 'pdf' && extension !== 'docx') {

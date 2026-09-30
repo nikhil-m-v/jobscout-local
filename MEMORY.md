@@ -16,7 +16,7 @@ The governing promise is in [docs/privacy.md](docs/privacy.md). Resumes, profile
 - Browser preview starts the real local engine, uses session authentication, and shows actual engine/storage/runtime status.
 - Windows development prerequisites are installed: Rust/Cargo stable MSVC, Visual Studio C++ Desktop workload, and the documented Python desktop extra. Native NSIS installer generation succeeds; installer execution and upgrade behavior remain unverified.
 - Overview, Settings, and labeled planned-feature pages exist. Appearance is saved locally through a styled Settings control. The sidebar uses a more translucent glass fill, page changes use a brief reduced-motion-aware transition, and static UI text is not selectable. Glass has opaque and accessibility fallbacks.
-- My profile now selects a local PDF/DOCX up to 10 MiB and shows metadata only. It does not read bytes, extract text, or save a profile. The picker contract is in `docs/architecture/0002-resume-selection.md`.
+- My profile selects a local PDF/DOCX up to 10 MiB. Text-based PDFs (up to 50 pages and bounded extracted text) can be read by a disposable local worker and shown in an editable, session-only review. DOCX extraction, OCR, and profile persistence remain future work. The picker contract is in `docs/architecture/0002-resume-selection.md`.
 - No resume parsing, model inference, embeddings, RAG, Tavily search, key storage, or application tracking is implemented yet. The privacy boundary for future search is a documented contract, not an implemented filter.
 - The prior privacy increment is commit `882079a`; day 2 adds the first resume-selection slice. Check Git status before publication.
 
@@ -32,10 +32,12 @@ Day 2: frontend build, four selection-contract tests, and the existing engine te
 
 Git metadata writes require the environment's scoped approval path. Approved Git commands successfully fetched existing history, committed, and pushed without force. Do not change Windows ACLs to bypass the sandbox. The GitHub connector can independently verify published files. Fetch and inspect status before changing history; never overwrite unrelated work.
 
+Day 3: local PDF extraction and editable review are implemented. Twenty engine tests cover text extraction, image-only/encrypted/corrupt/oversized/complex PDFs, decoder isolation, cancellation, timeouts, authentication, and non-persistence. Browser and native Windows preview both extracted the synthetic PDF and displayed the editable review; native file selection and the bundled engine were exercised. Frontend and native packaging checks passed.
+
 ## Start the next session
 
 1. Read `AGENTS.md`, this file, the privacy contract, and [the roadmap](docs/roadmap.md). Check local status and remote history.
-2. Continue the import milestone with **local PDF text extraction and an editable review**. The file picker and metadata contract are in place; verify bytes and parser limits independently in the engine. Keep search and model generation out of this slice.
+2. Continue the import milestone with **local DOCX extraction**, then profile persistence and deletion. Keep search and model generation out of this slice.
 3. Review the generated NSIS installer and verify clean install/uninstall behavior before release packaging work.
 4. Use the repository `.venv` if present. `npm run dev` launches the local browser preview. Follow `README.md` to recreate dependencies; do not assume yesterday's preview process is still running.
 5. End with the relevant checks, a clean reviewable commit, confirmed publication when authorized, and an updated checkpoint/progress entry. Do not mark planned features complete based on placeholder screens.
