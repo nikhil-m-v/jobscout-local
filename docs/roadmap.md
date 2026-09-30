@@ -44,6 +44,21 @@ Keep the first provider slice small, but treat manual criteria as the initial fa
 
 PDF resumes are now limited to 10 pages. DOCX remains bounded by file size, extracted text and parser complexity; it has no reliable rendered-page count.
 
+## Feature priorities and mature-product backlog — 2026-10-01
+
+Implementation direction: [architecture decision 0007](architecture/0007-assisted-discovery-and-applications.md) defines module boundaries, data flow, local AI evidence, task recovery and the separate future submission boundary.
+
+The first priority is a useful shortlist, before improvement advice, resume tailoring or automatic applications. These are planned features, not implemented capabilities. The later features extend beyond the current 30-session estimate; schedule them after the core discovery quality gate rather than adding speculative delivery dates.
+
+| Priority | Feature | Intended behavior and completion evidence |
+|---|---|---|
+| 1 — core, first | 30–50 relevant job opportunities | Discover returns a ranked shortlist targeting 30–50 unique opportunities matching reviewed filters and the candidate's locally reviewed profile. Apply explicit location/work-mode and other supported filters, deduplicate, and rank locally with supporting job/profile evidence. Fetch a bounded candidate pool with progress, cancellation and provider quota limits. If fewer suitable jobs exist, show the actual count and coverage limitations rather than padding with poor matches. Evaluate relevance across the shortlist as well as the first ten; a query form or raw provider results do not satisfy this milestone. |
+| 2 — mature product | AI-assisted skills and certification gaps | Across the retrieved shortlist, use optional local AI to extract and normalize requested skills/certifications, distinguish required from preferred, and compare them with reviewed candidate evidence. Show recurring areas for improvement with counts such as “requested in 18 of 40 analyzed jobs,” source snippets and links, analysis coverage, and uncertainty. Count each deduplicated job once. Say “not evidenced in your profile” until the user confirms a gap; absence from a resume does not establish lack of a skill or certification. Users can correct suggestions. Personal comparisons and AI processing remain local. |
+| 3 — mature product | Job-specific resume fine-tuning | For a selected job, suggest minor wording, spelling, ordering and emphasis changes using local AI and existing candidate evidence. Show a before/after review, preserve the original, and let the user accept or reject each change and export a separate tailored version. Never invent experience, skills, certifications or achievements. Test factual fidelity and exported document readability. Resume tailoring does not submit an application. |
+| 4 — mature product | Automatic job applications | Introduce reviewed form preparation first, then opt-in automatic submission for explicitly selected jobs through supported integrations. Preview the recipient, resume version, answers and personal data to be sent; obtain explicit submission authorization with a bounded job scope. Track success, failure and uncertain submission states locally, prevent duplicate applications, and never retry an uncertain submission blindly. Support stopping a batch and returning unsupported flows to the user; do not bypass CAPTCHA or platform restrictions. Discovery adapters remain unable to access personal data. This requires a separate application-submission boundary and an explicit privacy-contract extension before implementation: applying intentionally shares approved data with the employer/application service. |
+
+Existing local ranking and writing-assistance plans are expanded by these requirements. The first search adapter, privacy gate, normalization and ranking increments below are prerequisites to priority 1, not competing product features. Complete and evaluate the shortlist before beginning priorities 2–4. Optional AI setup is a prerequisite for AI assistance, not for the core shortlist.
+
 ## Resource and search quality gates
 
 - Measure production installed size, temporary extraction space, cold-start time, idle RAM, and peak import/search RAM separately. Set initial budgets after measuring the baseline and track changes per release. Development build caches are not the shipped application.
@@ -73,11 +88,11 @@ The revised sequence below preserves increments 1–7 and moves resource measure
 | 14 | First search adapter (Tavily candidate) | Bounded explicit discovery, cancellation, quota/offline handling; keep public release disabled pending the privacy gate. |
 | 15 | Search privacy verification gate | Captured synthetic requests contain no personal markers; malformed inputs, redirects and malicious job text fail safely. |
 | 16 | Results normalization and filtering | Canonical links, source/time, deduplication, explicit preference filters, and no remote trackers. |
-| 17 | Local ranking without a model | Keyword/skill-alias/rule baseline with supporting snippets; useful results without Ollama or model downloads. |
+| 17 | Core 30–50-job shortlist and local ranking without a model | Reviewed filters plus local profile-based keyword/skill-alias/rule ranking, deduplication and supporting snippets; target 30–50 suitable opportunities, honest shortfalls, bounded fetching and cancellation. Useful without Ollama or model downloads; highest-priority product milestone. |
 | 18 | Local job saving | Save normalized jobs, preserve source/time, bound caches, and handle changing or unavailable listings honestly. |
 | 19 | Simple application tracker | Saved/applied/interview stages and private local notes; external applying remains explicit. |
 | 20 | Privacy and data controls | Verify deletion of profile, jobs, notes, derived indexes and caches; explain retention and original-file limits. |
-| 21 | Search quality review | Evaluate top-ten relevance, duplicates, freshness uncertainty, coverage, latency and provider cost; fix the largest issue. |
+| 21 | Search quality review | Evaluate relevance across the 30–50-job shortlist and first ten, filter adherence, duplicates, freshness uncertainty, coverage, latency and provider cost; fix the largest issue before mature-product features. |
 | 22 | Guided core setup | Storage/search configuration, skip paths, external-site disclosures and recovery; no model download required. |
 | 23 | Core personal alpha hardening and demo | Fresh-user install/run, native lifecycle/accessibility/themes/resource checks, documentation and a synthetic search/save/track demo. |
 | 24 | Optional embedding catalog and acquisition | License/source/size review, hardware guidance, compatible-model reuse, explicit download/cancel/recovery and setup later. |
@@ -91,7 +106,7 @@ The revised sequence below preserves increments 1–7 and moves resource measure
 ## Scope controls
 
 - The import/review/save workflow is implemented; remaining native checks continue alongside discovery. Search quality and a useful no-model core now take priority over generative AI setup.
-- OCR, multiple discovery adapters, broad job-board integrations, automatic applications, syncing, mobile apps, and network anonymity services are outside this estimate.
+- OCR, multiple discovery adapters, broad job-board integrations, syncing, mobile apps, and network anonymity services are outside this estimate. AI gap analysis, resume tailoring and automatic applications are explicit mature-product backlog items above, also outside this estimate.
 - A provider can be replaced if its terms, cost, quality, or privacy behavior do not suit the contract. Do not describe any plan as permanently free.
 - Every data-bearing milestone includes failure handling, privacy checks, and deletion semantics. UI work includes glass/opaque rendering, responsive layout, visible focus, and reduced motion.
 - Prefer deterministic filters and evidence over opaque fit scores. Do not imply hiring success or fabricate experience.
