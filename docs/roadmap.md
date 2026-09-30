@@ -56,9 +56,9 @@ The revised sequence below preserves increments 1–7 and moves resource measure
 | 7 | Profile persistence and deletion | Implemented: explicit saved text survives restart; separate draft discard and saved-profile delete. Restart/replacement/deletion tests pass; native profile UI remains unverified. |
 | 8 | Production resource baseline | Record installer/installed/temp sizes, startup time, idle/peak RAM; propose budgets and the largest measured optimization. |
 | 9 | Native import/profile verification | Synthetic DOCX save/restart/delete flow; clean installer lifecycle check or a concrete blocker. |
-| 10 | Public search-criteria contract | Controlled role/region/skill choices; no resume context reaches the search adapter. |
-| 11 | Outbound privacy boundary | Reject extra fields, identifiers, unsafe URLs, and unconstrained generated queries; provider endpoint allowlist. |
-| 12 | Search preview and disclosure | Show actual outbound criteria/provider and explain IP/account metadata before sending. |
+| 10 | Public search-criteria contract | Implemented local controlled choices and session review; synthetic validation tests pass. No adapter/network yet; browser/native UI verification pending. |
+| 11 | Outbound privacy boundary | Engine validation and deterministic local query construction implemented; 24 search tests pass. Provider endpoint allowlist/redirect controls pending transport. |
+| 12 | Search preview and disclosure | Engine-generated query shown with explicit review and stale-result invalidation; real-engine browser flow verified. Provider is none; native interaction and configured-provider preview pending. |
 | 13 | Provider configuration and secrets | Select one source; OS-backed keys if required, masked controls, skip/remove behavior, safe connection checks. |
 | 14 | First search adapter (Tavily candidate) | Bounded explicit discovery, cancellation, quota/offline handling; keep public release disabled pending the privacy gate. |
 | 15 | Search privacy verification gate | Captured synthetic requests contain no personal markers; malformed inputs, redirects and malicious job text fail safely. |

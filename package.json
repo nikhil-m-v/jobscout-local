@@ -10,6 +10,8 @@
     "desktop:build": "node scripts/desktop.mjs build",
     "build": "npm run build --workspace @jobscout/desktop",
     "typecheck": "npm run typecheck --workspace @jobscout/desktop",
+    "test:preview": "node --experimental-strip-types --test apps/desktop/tests/search-preview.test.mjs",
+    "test:criteria": "node --experimental-strip-types --test apps/desktop/tests/public-search-criteria.test.mjs",
     "test:selection": "node --experimental-strip-types --test apps/desktop/tests/resume-selection.test.mjs",
     "engine:build": "node scripts/build-engine.mjs"
   }

@@ -85,6 +85,22 @@ async fn profile_record(
         .json().await.map_err(|_| "Local storage response could not be read".into())
 }
 
+#[tauri::command]
+async fn search_preview(
+    state: tauri::State<'_, Arc<EngineState>>, criteria: serde_json::Value,
+) -> Result<serde_json::Value, String> {
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
+        .clone().ok_or("Workspace is starting")?;
+    let body = serde_json::to_vec(&criteria).map_err(|_| "Invalid search criteria")?;
+    if body.len() > 4096 { return Err("Invalid search criteria".into()); }
+    state.client.post(format!("{endpoint}/api/v1/search/preview"))
+        .header("Content-Type", "application/json").body(body)
+        .timeout(Duration::from_secs(10)).bearer_auth(&state.token)
+        .send().await.map_err(|_| "Workspace connection unavailable")?
+        .error_for_status().map_err(|_| "Preview could not be prepared")?
+        .json().await.map_err(|_| "Preview response could not be read".into())
+}
+
 pub fn run() {
     let state = Arc::new(EngineState {
         endpoint: Mutex::new(None), child: Mutex::new(None),
@@ -98,7 +114,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .manage(state)
-        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record])
+        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, search_preview])
         .setup(|app| {
             let state = app.state::<Arc<EngineState>>().inner().clone();
             let directory = app.path().app_data_dir()?;

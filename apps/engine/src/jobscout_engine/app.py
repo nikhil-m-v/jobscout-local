@@ -17,6 +17,10 @@ from jobscout_engine.domain.contracts import EngineHealth, ModelProvider
 from jobscout_engine.storage import Database
 from jobscout_engine.domain.documents import ImportFailure, MAX_DOCUMENT_BYTES, MAX_TEXT_CHARACTERS
 from jobscout_engine.imports import ImportService
+from jobscout_engine.domain.search import (
+    construct_public_query, reject_duplicate_keys, InvalidSearchCriteria,
+    MAX_CRITERIA_BYTES, QUERY_VERSION,
+)
 
 
 def create_app(settings: Settings, model_provider: ModelProvider | None = None,
@@ -64,6 +68,27 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
 
     def profile_response(value, status=200):
         return JSONResponse(value, status_code=status, headers={"Cache-Control": "no-store"})
+
+    @application.post("/api/v1/search/preview", dependencies=[Depends(require_session)])
+    async def preview_search(request: Request):
+        # Local construction only. Never echo invalid input or retain query history.
+        async def read_criteria():
+            body = bytearray()
+            async for chunk in request.stream():
+                if len(body) + len(chunk) > MAX_CRITERIA_BYTES:
+                    raise InvalidSearchCriteria()
+                body.extend(chunk)
+            return json.loads(body, object_pairs_hook=reject_duplicate_keys)
+
+        try:
+            if request.headers.get("content-type") != "application/json":
+                raise InvalidSearchCriteria()
+            value = await asyncio.wait_for(read_criteria(), timeout=5)
+            query = construct_public_query(value)
+        except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
+            return profile_response({"error": "invalid_search_criteria"}, 422)
+        return profile_response({"query": query, "query_version": QUERY_VERSION,
+                                 "provider": None, "dispatch_available": False})
 
     @application.get("/api/v1/profile", dependencies=[Depends(require_session)])
     async def load_profile():

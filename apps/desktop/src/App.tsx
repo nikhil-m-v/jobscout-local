@@ -1,4 +1,7 @@
 import { useState } from 'react';
+import { SearchCriteria } from './components/SearchCriteria';
+import { initialCriteria, type PublicSearchCriteria } from './lib/public-search-criteria';
+import { useSearchPreview } from './hooks/useSearchPreview';
 import { ArrowRight, ArrowUpRight, BriefcaseBusiness, ChevronRight, CircleHelp, Compass, FileText, LayoutDashboard, ListChecks, LockKeyhole, Monitor, Moon, RefreshCw, Settings2, ShieldCheck, Sparkles, Sun, Zap } from 'lucide-react';
 import { useEngine } from './hooks/useEngine';
 import { useAppearance, type Appearance } from './hooks/useAppearance';
@@ -51,7 +54,7 @@ function Overview({ engine, navigate }: { engine: Engine; navigate: (page: Page)
     <div className="start-grid">
       <article className="start-card"><div className="card-top"><span className="icon-tile lavender"><FileText size={19} /></span><span className="card-number">01</span></div><h3>Bring your story</h3><p>Read a PDF or Word document locally, review its text, and save when ready. Your document and edits stay local.</p><button className="text-action" onClick={() => navigate('profile')}>Choose your resume <ArrowRight size={15} /></button><span className="feature-note">Local import and profile saving are ready</span></article>
       <article className="start-card"><div className="card-top"><span className="icon-tile green"><Zap size={19} /></span><span className="card-number">02</span></div><h3>A little local intelligence</h3><p>Run analysis on your computer. Your personal context stays with your local model.</p><button className="text-action" onClick={() => navigate('settings')}>Check local AI <ArrowRight size={15} /></button><span className="feature-note">{engine.health?.local_ai.status === 'available' ? 'Ollama is available on your computer' : 'Model setup comes next'}</span></article>
-      <article className="start-card"><div className="card-top"><span className="icon-tile peach"><Compass size={19} /></span><span className="card-number">03</span></div><h3>Discover privately</h3><p>Planned search will use generic job criteria, keeping your resume and personal details local.</p><button className="text-action" onClick={() => navigate('discover')}>Explore what is coming <ArrowRight size={15} /></button><span className="feature-note">Job discovery is on the roadmap</span></article>
+      <article className="start-card"><div className="card-top"><span className="icon-tile peach"><Compass size={19} /></span><span className="card-number">03</span></div><h3>Discover privately</h3><p>Planned search will use generic job criteria, keeping your resume and personal details local.</p><button className="text-action" onClick={() => navigate('discover')}>Choose search criteria <ArrowRight size={15} /></button><span className="feature-note">Public criteria are ready; online search comes later</span></article>
     </div>
     <div className="privacy-strip"><span className="privacy-icon"><ShieldCheck size={20} /></span><div><strong>Your story stays with you.</strong><p>Local processing. No product tracking. Clear disclosure before online discovery.</p></div><span className="local-label">LOCAL BY DEFAULT</span></div>
   </>;
@@ -111,12 +114,15 @@ function Upcoming({ page, navigate }: { page: keyof typeof upcoming; navigate: (
 
 export function App() {
   const [page, setPage] = useState<Page>('overview');
+  const [criteria, setCriteria] = useState<PublicSearchCriteria>(initialCriteria);
+
   const resume = useResumeImport();
   const engine = useEngine();
+  const searchPreview = useSearchPreview(Boolean(engine.health));
   const saved = useSavedProfile(Boolean(engine.health));
   const { appearance, changeAppearance } = useAppearance();
   return <div className="app-shell"><a className="skip-link" href="#main-content">Skip to main content</a>
     <aside className="sidebar"><a href="#" className="brand" onClick={event => { event.preventDefault(); setPage('overview'); }} aria-label="JobScout overview"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><div className="sidebar-label">YOUR WORKSPACE</div><nav aria-label="Main navigation">{navigation.map(({ id, label, icon: Icon }) => <button key={id} aria-label={label} title={label} className={`nav-item ${page === id ? 'active' : ''}`} aria-current={page === id ? 'page' : undefined} onClick={() => setPage(id)}><Icon size={18} strokeWidth={1.7} /><span>{label}</span>{page === id && <ChevronRight size={14} />}</button>)}</nav><div className="sidebar-bottom"><div className="sidebar-footer"><span className="mini-brand">Private by design</span><span>v0.1</span></div></div></aside>
-    <div className="workspace"><header className="topbar"><div className="breadcrumb">My workspace <ChevronRight size={12} /><span>{navigation.find(item => item.id === page)?.label}</span></div><EngineBadge engine={engine} /></header><main id="main-content" className="main-content" key={page} tabIndex={-1}>{page === 'overview' ? <Overview engine={engine} navigate={setPage} /> : page === 'profile' ? <ResumePicker resume={resume} saved={saved} /> : page === 'settings' ? <Settings engine={engine} appearance={appearance} changeAppearance={changeAppearance} /> : <Upcoming page={page} navigate={setPage} />}</main><footer className="workspace-footer"><span>Made for the next step.</span><span><LockKeyhole size={12} /> Personal by design</span></footer></div>
+    <div className="workspace"><header className="topbar"><div className="breadcrumb">My workspace <ChevronRight size={12} /><span>{navigation.find(item => item.id === page)?.label}</span></div><EngineBadge engine={engine} /></header><main id="main-content" className="main-content" key={page} tabIndex={-1}>{page === 'overview' ? <Overview engine={engine} navigate={setPage} /> : page === 'profile' ? <ResumePicker resume={resume} saved={saved} /> : page === 'settings' ? <Settings engine={engine} appearance={appearance} changeAppearance={changeAppearance} /> : page === 'discover' ? <SearchCriteria criteria={criteria} searchPreview={searchPreview} onChange={value => { searchPreview.invalidate(); setCriteria(value); }} /> : <Upcoming page={page} navigate={setPage} />}</main><footer className="workspace-footer"><span>Made for the next step.</span><span><LockKeyhole size={12} /> Personal by design</span></footer></div>
   </div>;
 }
