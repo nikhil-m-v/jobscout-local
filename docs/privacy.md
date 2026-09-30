@@ -1,6 +1,6 @@
 # Privacy is the product
 
-Status: product contract and implementation requirements. The current foundation has no resume ingestion or online job search. Future controls below must be implemented and verified before enabling those features.
+Status: product contract and implementation requirements. Local PDF/DOCX extraction, text review, and explicit reviewed-text saving/deletion are implemented. Online job search remains planned. Future controls below must be implemented and verified before enabling those features.
 
 ## Promise
 
@@ -49,3 +49,7 @@ IP masking, unlinkable credentials, provider retention guarantees, and anonymous
 Before advertising private online discovery, inspect captured outgoing requests using synthetic profiles with distinctive identifying markers. Verify that those markers, resume contents, embeddings, and extra fields never reach providers. Exercise malformed criteria, provider errors, redirects, malicious job text, cancellation, and offline behavior. Check that installed model inference uses only the local runtime and that no unexpected outbound requests occur while working locally.
 
 Also verify deletion of all app-owned copies, derived text, indexes, caches, and records. Respect shared models and explain what uninstall retains. Do not claim secure disk erasure. See the installation design for the setup experience.
+
+## Current saved-text controls
+
+Only explicitly saved reviewed text and its save timestamp persist in the local database. Original file bytes, filenames, and unsaved edits are not persisted. Save replaces the previous record. Discarding/removing a draft keeps saved data. Delete saved profile removes the saved record and clears the current draft/import in the UI; it leaves the original document intact. SQLite uses overwrite-on-delete and non-retained rollback journaling, with synthetic restart/replacement/deletion checks. This does not promise secure disk erasure or deletion from external backups. Storage is not encrypted. Installer/uninstall data retention is still unverified.

@@ -17,7 +17,7 @@ class ImportFailure(Exception):
 @dataclass
 class ExtractedDocument:
     text: str
-    page_count: int
+    page_count: int | None
     empty_pages: list[int]
 
 

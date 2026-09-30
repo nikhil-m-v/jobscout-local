@@ -22,13 +22,13 @@ export function useResumeImport() {
   function select(file: File | null, metadata?: ResumeSelection) {
     clearText();
     setSelected(file && metadata ? { file, metadata } : null);
-    setNotice(file ? 'File selected. Choose Extract text to read it on this computer.' : 'Document and review cleared. Your original file is unchanged.');
+    setNotice(file ? 'File selected. Choose Extract text to read it on this computer.' : 'Document and draft cleared. Any saved profile is kept; your original file is unchanged.');
   }
   async function extract() {
-    if (!selected || selected.metadata.format !== 'pdf' || busy) return;
+    if (!selected || busy) return;
     const controller = new AbortController();
     active.current = controller;
-    setBusy(true); setError(''); setNotice('Reading your PDF on this computer…');
+    setBusy(true); setError(''); setNotice('Reading your document on this computer…');
     try {
       const result = await extractResume(selected.file, controller.signal);
       if (active.current !== controller) return;
@@ -48,7 +48,8 @@ export function useResumeImport() {
     select, extract, setError, setNotice,
     edit(value: string) { setText(value); setReviewed(false); },
     cancel() { stop(); setNotice('Extraction cancelled. You can try again.'); },
-    discardText() { clearText(); setNotice('Extracted text and edits cleared. You can extract the selected PDF again.'); },
-    markReviewed() { setReviewed(true); setNotice('Reviewed for this session. Saving a profile will be available in a later update.'); },
+    discardText() { clearText(); setNotice('Draft and edits cleared. Any saved profile is kept.'); },
+    loadSaved(value: string) { clearText(); setSelected(null); setDocument({ text: value, page_count: null, empty_pages: [] }); setText(value); setNotice('Saved text copied into the review. Edits stay unsaved until you review and save again.'); },
+    markReviewed() { setReviewed(true); setNotice('Text reviewed. Choose Save reviewed text to keep it after closing the app.'); },
   };
 }

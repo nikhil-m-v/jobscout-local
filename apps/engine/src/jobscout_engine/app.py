@@ -1,7 +1,10 @@
 from contextlib import asynccontextmanager
 import asyncio
 import secrets
+import json
+import sqlite3
 from uuid import UUID
+from typing import Literal
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from starlette.requests import ClientDisconnect
@@ -12,7 +15,7 @@ from jobscout_engine.adapters.ollama import OllamaProvider
 from jobscout_engine.config import Settings
 from jobscout_engine.domain.contracts import EngineHealth, ModelProvider
 from jobscout_engine.storage import Database
-from jobscout_engine.domain.documents import ImportFailure, MAX_DOCUMENT_BYTES
+from jobscout_engine.domain.documents import ImportFailure, MAX_DOCUMENT_BYTES, MAX_TEXT_CHARACTERS
 from jobscout_engine.imports import ImportService
 
 
@@ -59,6 +62,52 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
         return JSONResponse({"error": error.code}, status_code=status,
                             headers={"Cache-Control": "no-store"})
 
+    def profile_response(value, status=200):
+        return JSONResponse(value, status_code=status, headers={"Cache-Control": "no-store"})
+
+    @application.get("/api/v1/profile", dependencies=[Depends(require_session)])
+    async def load_profile():
+        try:
+            return profile_response({"profile": await run_in_threadpool(database.load_profile)})
+        except sqlite3.Error:
+            return profile_response({"error": "storage_unavailable"}, 503)
+
+    @application.put("/api/v1/profile", dependencies=[Depends(require_session)])
+    async def save_profile(request: Request):
+        # Parse manually so validation responses never echo private input.
+        async def read_review():
+            body = bytearray()
+            async for chunk in request.stream():
+                if len(body) + len(chunk) > 1_200_128:
+                    raise ValueError()
+                body.extend(chunk)
+            return json.loads(body)
+        try:
+            if request.headers.get("content-type") != "application/json":
+                raise ValueError()
+            value = await asyncio.wait_for(read_review(), timeout=10)
+            if (not isinstance(value, dict) or set(value) != {"text", "reviewed"}
+                or value["reviewed"] is not True or not isinstance(value["text"], str)
+                or not value["text"].strip() or len(value["text"]) > MAX_TEXT_CHARACTERS
+                or "\x00" in value["text"]):
+                raise ValueError()
+            # Reject unpaired surrogates before passing text to SQLite.
+            value["text"].encode("utf-8")
+        except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
+            return profile_response({"error": "invalid_review"}, 422)
+        try:
+            return profile_response({"profile": await run_in_threadpool(database.save_profile, value["text"])})
+        except sqlite3.Error:
+            return profile_response({"error": "storage_unavailable"}, 503)
+
+    @application.delete("/api/v1/profile", dependencies=[Depends(require_session)])
+    async def delete_profile():
+        try:
+            await run_in_threadpool(database.delete_profile)
+            return profile_response({"deleted": True})
+        except sqlite3.Error:
+            return profile_response({"error": "storage_unavailable"}, 503)
+
     @application.post("/api/v1/imports", dependencies=[Depends(require_session)])
     async def reserve_import():
         return JSONResponse({"id": str(imports.reserve().id)}, headers={"Cache-Control": "no-store"})
@@ -68,12 +117,12 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
         imports.cancel(task_id)
         return JSONResponse({"cancelled": True}, headers={"Cache-Control": "no-store"})
 
-    @application.put("/api/v1/imports/{task_id}/pdf", dependencies=[Depends(require_session)])
-    async def extract_pdf(task_id: UUID, request: Request):
+    @application.put("/api/v1/imports/{task_id}/{format}", dependencies=[Depends(require_session)])
+    async def extract_document(task_id: UUID, format: Literal["pdf", "docx"], request: Request):
         task = imports.claim(task_id)
         try:
-            if request.headers.get("content-type") != "application/pdf":
-                raise ImportFailure("invalid_pdf")
+            if request.headers.get("content-type") != ("application/pdf" if format == "pdf" else "application/vnd.openxmlformats-officedocument.wordprocessingml.document") :
+                raise ImportFailure("invalid_pdf" if format == "pdf" else "invalid_docx")
             length = request.headers.get("content-length")
             if length and (not length.isdecimal() or len(length) > 8 or int(length) > MAX_DOCUMENT_BYTES):
                 raise ImportFailure("too_large")
@@ -102,7 +151,7 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
                 for pending in (read_task, cancel_task):
                     pending.cancel()
                 await asyncio.gather(read_task, cancel_task, return_exceptions=True)
-            result = await imports.extract(data, task, request.is_disconnected)
+            result = await imports.extract(data, task, request.is_disconnected, format)
             return JSONResponse(result, headers={"Cache-Control": "no-store"})
         except ClientDisconnect:
             raise ImportFailure("cancelled") from None

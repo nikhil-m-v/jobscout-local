@@ -25,7 +25,7 @@ async fn engine_health(state: tauri::State<'_, Arc<EngineState>>) -> Result<serd
 #[tauri::command]
 async fn resume_import(
     state: tauri::State<'_, Arc<EngineState>>, action: String,
-    id: Option<String>, data: Option<String>,
+    id: Option<String>, data: Option<String>, format: Option<String>,
 ) -> Result<serde_json::Value, String> {
     let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
         .clone().ok_or("Workspace is starting")?;
@@ -40,13 +40,18 @@ async fn resume_import(
         "start" => state.client.post(format!("{endpoint}{path}")),
         "cancel" => state.client.delete(format!("{endpoint}{path}")),
         "extract" => {
+            let (format, mime) = match format.as_deref() {
+                Some("pdf") => ("pdf", "application/pdf"),
+                Some("docx") => ("docx", "application/vnd.openxmlformats-officedocument.wordprocessingml.document"),
+                _ => return Err("Unsupported document format".into()),
+            };
             let encoded = data.ok_or("Document unavailable")?;
             if encoded.len() > 13_981_016 { return Err("Document too large".into()); }
             let bytes = base64::engine::general_purpose::STANDARD.decode(encoded)
                 .map_err(|_| "Document unavailable")?;
             if bytes.len() > 10 * 1024 * 1024 { return Err("Document too large".into()); }
-            state.client.put(format!("{endpoint}{path}/pdf"))
-                .header("Content-Type", "application/pdf").body(bytes)
+            state.client.put(format!("{endpoint}{path}/{format}"))
+                .header("Content-Type", mime).body(bytes)
         }
         _ => return Err("Unknown import action".into()),
     };
@@ -54,6 +59,30 @@ async fn resume_import(
     request.timeout(Duration::from_secs(50)).bearer_auth(&state.token)
         .send().await.map_err(|_| "Workspace connection unavailable")?
         .json().await.map_err(|_| "Workspace response could not be read".into())
+}
+
+#[tauri::command]
+async fn profile_record(
+    state: tauri::State<'_, Arc<EngineState>>, action: String, text: Option<String>, reviewed: Option<bool>,
+) -> Result<serde_json::Value, String> {
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
+        .clone().ok_or("Workspace is starting")?;
+    let url = format!("{endpoint}/api/v1/profile");
+    let request = match action.as_str() {
+        "load" => state.client.get(url),
+        "delete" => state.client.delete(url),
+        "save" => {
+            let text = text.ok_or("Reviewed text required")?;
+            if reviewed != Some(true) || text.chars().count() > 200_000 || text.trim().is_empty() {
+                return Err("Reviewed text required".into());
+            }
+            state.client.put(url).json(&serde_json::json!({"text": text, "reviewed": true}))
+        },
+        _ => return Err("Unknown profile action".into()),
+    };
+    request.timeout(Duration::from_secs(15)).bearer_auth(&state.token)
+        .send().await.map_err(|_| "Local storage connection unavailable")?
+        .json().await.map_err(|_| "Local storage response could not be read".into())
 }
 
 pub fn run() {
@@ -69,7 +98,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .manage(state)
-        .invoke_handler(tauri::generate_handler![engine_health, resume_import])
+        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record])
         .setup(|app| {
             let state = app.state::<Arc<EngineState>>().inner().clone();
             let directory = app.path().app_data_dir()?;

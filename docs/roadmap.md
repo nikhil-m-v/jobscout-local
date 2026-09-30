@@ -12,7 +12,7 @@ The aim is a usable personal alpha: import a resume, review a local profile, fin
 | 4 | Local DOCX extraction | Paragraphs/tables produce usable text; embedded external content is not fetched. |
 | 5 | Background import task lifecycle | Progress, cancellation, timeout, and retry keep navigation responsive. |
 | 6 | Extracted-text review | User can inspect/edit the text and decide whether to keep it. |
-| 7 | Profile persistence and deletion | Reviewed data survives restart; discard/delete removes app-owned imported copies. |
+| 7 | Profile persistence and deletion | Implemented: explicit saved text survives restart; separate draft discard and saved-profile delete. Restart/replacement/deletion tests pass; native profile UI remains unverified. |
 | 8 | Local runtime setup | Detect/reuse Ollama and explain setup later and failure recovery. |
 | 9 | Reviewed model catalog | Exact model licenses, sources, size, and measured hardware guidance. |
 | 10 | Explicit model acquisition | User starts/cancels download; real progress and interrupted-download recovery. |

@@ -4,15 +4,15 @@ Find your next role. Keep your personal story private.
 
 JobScout is an open-source Windows application designed to keep resumes, AI analysis, and career records on your computer. Its defining promise is local intelligence without uploading your personal career data. Built with Tauri 2, React, TypeScript, and a Python/FastAPI local engine.
 
-**Status: early foundation.** The interface, navigation, engine connection, SQLite initialization, Ollama availability check, and local PDF/DOCX file selection are implemented. Text extraction, profile saving, model downloads, RAG matching, online job search, and application tracking are planned. The UI identifies those features clearly.
+**Status: early foundation.** The interface, navigation, engine connection, SQLite initialization, Ollama availability check, and local PDF/DOCX file selection are implemented. Local PDF/DOCX extraction and session-only editable review are implemented. Reviewed profile text can be saved and deleted locally. Model downloads, RAG matching, online job search, and application tracking are planned. The UI identifies those features clearly.
 
 ![JobScout glass interface in light appearance](docs/images/glass-light.png)
 
-Choose Light, Dark, or Follow system from the appearance control at the top of the window. The choice is remembered on this device. The Windows app uses the same interface in a Tauri desktop window; the browser preview is a development convenience.
+Choose Light, Dark, or Follow system from the appearance control in Settings. The choice is remembered on this device. The Windows app uses the same interface in a Tauri desktop window; the browser preview is a development convenience.
 
 ![JobScout glass interface in dark appearance](docs/images/glass-dark.png)
 
-The My profile page accepts a local PDF or DOCX selection up to 10 MiB and shows only its metadata. It does not read or save document contents yet. Invalid selections have readable errors; cancelling a replacement keeps the previous selection. Selection metadata lasts only while the app is open. The next milestone is local text extraction and an editable review.
+The My profile page reads local text-based PDFs (up to 50 pages) and Word DOCX documents up to 10 MiB. Extraction runs in a bounded, cancellable local worker. Review and edit the text before marking it reviewed for this session. Importing and editing do not save automatically. Mark text reviewed, then explicitly save it to keep it after restart. Closing the app clears unsaved drafts. Word body paragraphs and tables are supported; headers, footers, images, and embedded documents are omitted. Scanned PDFs need OCR, which is not implemented. Linked resources are never fetched.
 
 ![Resume picker in light appearance](docs/images/resume-picker-light.png)
 
@@ -91,16 +91,22 @@ Review Overview, My profile, and Settings with the engine connected, disconnecte
 
 ## Privacy and local connections
 
-Our product contract is that resume files, extracted text, profiles, embeddings, match explanations, and application notes stay local. The current picker validates filename, size, and operating-system MIME metadata for immediate feedback; the future engine parser must validate the actual file bytes and resource limits independently. No hosted AI fallback, product analytics, advertising trackers, or automatic uploads of diagnostics are part of the design.
+Our product contract is that resume files, extracted text, profiles, embeddings, match explanations, and application notes stay local. The current picker validates filename, size, and operating-system MIME metadata for immediate feedback; the engine independently validates file structure and resource limits. No hosted AI fallback, product analytics, advertising trackers, or automatic uploads of diagnostics are part of the design.
 
 Planned online discovery will send only user-reviewed, generic job criteria through a restricted search adapter. It will not send your resume or identity. Online search is **not implemented yet**. A search provider can still see queries, connection metadata such as an IP address, and the account associated with an API key; JobScout does not currently provide network anonymity. Opening a job website or applying there creates a separate interaction with that site.
 
 See [the privacy contract](docs/privacy.md) for the exact boundary, implementation requirements, and release checks. Privacy statements must describe verified behavior, not imply that planned safeguards already exist.
 
-The engine binds only to `127.0.0.1`, requires a fresh app-session token on every API request, and does not enable cross-origin access. The browser preview uses Vite's server-side proxy for its single health route; the token is not embedded in frontend assets. Tauri requests health through a narrowly scoped Rust command. No resume or search credentials are collected in this release.
+The engine binds only to `127.0.0.1`, requires a fresh app-session token on every API request, and does not enable cross-origin access. The browser preview uses Vite's server-side proxy for narrowly scoped health and import routes; the token is not embedded in frontend assets. Tauri requests health through a narrowly scoped Rust command. Resume bytes go only to this authenticated local engine; online search credentials are not collected.
 
 ## Next milestone
 
-Local PDF text extraction with byte-level validation and an editable review. Start with [the current memory checkpoint](MEMORY.md), [today's progress](docs/progress/2026-09-29.md), and [the roughly 30-session roadmap](docs/roadmap.md). Also see [the architecture decision](docs/architecture/0001-foundation.md), [project instructions](AGENTS.md), and [contribution guidance](CONTRIBUTING.md).
+Local runtime setup: detect/reuse Ollama and explain setup later and recovery. Start with [the current memory checkpoint](MEMORY.md), [latest progress](docs/progress/2026-09-30.md), and [the roughly 30-session roadmap](docs/roadmap.md). Also see [the architecture decision](docs/architecture/0001-foundation.md), [project instructions](AGENTS.md), and [contribution guidance](CONTRIBUTING.md).
 
 Licensed under MIT. Model weights, provider services, and third-party dependencies retain their own licenses and terms.
+
+## Saved profile data
+
+My profile keeps one explicitly saved text record in local SQLite storage. Saving replaces the previous saved text. Review saved text copies it into an editable draft; edits remain unsaved until reviewed and saved again. Discarding a draft or removing the selected document leaves saved text intact. Delete saved profile removes that record and clears the current import and draft, while keeping the original file. Storage is not encrypted, and deletion is not secure disk erasure or removal of external backups. Installer data-retention behavior remains unverified. See [the storage decision](docs/architecture/0003-reviewed-profile-storage.md).
+
+![Saved profile with synthetic data](docs/images/saved-profile-dark.jpg)

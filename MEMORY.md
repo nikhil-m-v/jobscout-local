@@ -16,8 +16,8 @@ The governing promise is in [docs/privacy.md](docs/privacy.md). Resumes, profile
 - Browser preview starts the real local engine, uses session authentication, and shows actual engine/storage/runtime status.
 - Windows development prerequisites are installed: Rust/Cargo stable MSVC, Visual Studio C++ Desktop workload, and the documented Python desktop extra. Native NSIS installer generation succeeds; installer execution and upgrade behavior remain unverified.
 - Overview, Settings, and labeled planned-feature pages exist. Appearance is saved locally through a styled Settings control. The sidebar uses a more translucent glass fill, page changes use a brief reduced-motion-aware transition, and static UI text is not selectable. Glass has opaque and accessibility fallbacks.
-- My profile selects a local PDF/DOCX up to 10 MiB. Text-based PDFs (up to 50 pages and bounded extracted text) can be read by a disposable local worker and shown in an editable, session-only review. DOCX extraction, OCR, and profile persistence remain future work. The picker contract is in `docs/architecture/0002-resume-selection.md`.
-- No resume parsing, model inference, embeddings, RAG, Tavily search, key storage, or application tracking is implemented yet. The privacy boundary for future search is a documented contract, not an implemented filter.
+- My profile selects a local PDF/DOCX up to 10 MiB. Text-based PDFs (up to 50 pages and bounded extracted text) can be read by a disposable local worker and shown in an editable, session-only review. DOCX body/table extraction is also implemented. Reviewed text can now be explicitly saved, loaded after restart, replaced, and deleted locally. OCR remains future work. The picker contract is in `docs/architecture/0002-resume-selection.md`.
+- No model inference, embeddings, RAG, Tavily search, key storage, or application tracking is implemented yet. The privacy boundary for future search is a documented contract, not an implemented filter.
 - The prior privacy increment is commit `882079a`; day 2 adds the first resume-selection slice. Check Git status before publication.
 
 ## Evidence and limitations
@@ -37,9 +37,19 @@ Day 3: local PDF extraction and editable review are implemented. Twenty engine t
 ## Start the next session
 
 1. Read `AGENTS.md`, this file, the privacy contract, and [the roadmap](docs/roadmap.md). Check local status and remote history.
-2. Continue the import milestone with **local DOCX extraction**, then profile persistence and deletion. Keep search and model generation out of this slice.
+2. Continue the import milestone with **local runtime setup**: detect/reuse Ollama and explain setup later and recovery. Keep model acquisition and search out of this slice.
 3. Review the generated NSIS installer and verify clean install/uninstall behavior before release packaging work.
 4. Use the repository `.venv` if present. `npm run dev` launches the local browser preview. Follow `README.md` to recreate dependencies; do not assume yesterday's preview process is still running.
 5. End with the relevant checks, a clean reviewable commit, confirmed publication when authorized, and an updated checkpoint/progress entry. Do not mark planned features complete based on placeholder screens.
 
 Detailed record: [2026-09-30](docs/progress/2026-09-30.md). Approximate next 30 working sessions: [roadmap](docs/roadmap.md). No recurring automation has been scheduled.
+
+DOCX follow-up (2026-09-30): bounded ZIP/XML extraction now shares the authenticated import lifecycle and session-only editable review. Ten new synthetic tests pass, bringing the engine suite to 30. Frontend typecheck/build and four selection tests pass. No new dependency. Browser/native DOCX interaction has not yet been visually verified. Included in the import-and-profile publication checkpoint below.
+
+DOCX native packaging check: `npm run desktop:build` passed and produced the Windows NSIS installer. This verifies compilation/packaging, not DOCX UI interaction or installer lifecycle.
+
+Reviewed-text persistence (2026-09-30): one SQLite profile (text + timestamp), explicit save after review, reload/review saved text, inline delete confirmation, and separate draft discard. No original file or filename is saved. DELETE journaling and secure_delete remove old records without retained WAL frames; no encryption or secure-erasure claim. See architecture decision 0003. All 44 engine tests, frontend build/typecheck, four picker tests, and native NSIS packaging passed. Browser verified DOCX extraction/edit/save, save gating, reload dropping unsaved edits, saved-text review, draft discard retaining saved text, and delete confirmation/keep flow; narrow and desktop dark views had no horizontal overflow. Native profile UI and installer lifecycle remain unverified. Synthetic preview record was cleaned up. Included in the import-and-profile publication checkpoint below.
+
+## Publication checkpoint — 2026-09-30
+
+User authorized committing and pushing the completed DOCX import and reviewed-profile storage work to the existing repository. Commit title: `Add local DOCX import and reviewed profile storage`. Remote main matched the starting PDF commit before publication. Validation remains 44 engine tests, frontend build/typecheck, four picker tests, browser synthetic workflow checks, and native installer generation. No personal data, local database, credentials, or generated installer is included. Next action remains local runtime setup and recovery guidance. Verify remote history when resuming.

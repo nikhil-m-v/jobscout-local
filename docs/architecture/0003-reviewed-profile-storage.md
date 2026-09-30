@@ -1,0 +1,13 @@
+# 0003 — Reviewed profile text on this computer
+
+Status: accepted, 2026-09-30.
+
+Keep one saved text profile in the existing local SQLite database. This increment stores reviewed text and a UTC save timestamp only: no original file bytes, filename, page metadata, embeddings, or revision history. Structured AI profile suggestions remain a later feature. Importing and editing are in-memory operations. Mark reviewed enables an explicit save; edits revoke that review. Saving replaces the previous record. The user can load saved text into a fresh draft without changing the saved record.
+
+The authenticated loopback API exposes only fixed GET/PUT/DELETE profile routes, through a restricted browser proxy or native command. PUT has a bounded body, ten-second read timeout, strict allowed fields, reviewed=true, and the shared text length limit. Validation/storage failures return fixed codes without echoing private payloads or paths. API reads/writes use the background thread pool, and responses are no-store. UI operations serialize, keep navigation available, and retain drafts on failed saves. After an uncertain operation, reload before retrying.
+
+SQLite uses DELETE journaling, with secure_delete enabled on replacement/deletion connections. This small single-profile workload does not justify WAL concurrency; avoiding retained WAL frames simplifies deletion. Startup switches an existing foundation database to this mode and creates the additive profile table. Existing foundation schema remains readable. Tests verify replacement and deletion remove distinctive synthetic markers from app-owned database/journal files after successful operations and restart.
+
+Delete requires an inline confirmation and removes the saved record, then clears the UI's selected file, extracted draft and edits. Discarding/removing an import leaves the saved record intact. The application never copied the original document to disk, so the original is unchanged. This is logical app deletion, not secure disk erasure: backups, filesystem snapshots, crash journals, and external software are outside the guarantee. Storage is not encrypted. No automatic backups or history are added.
+
+Native data remains in the configured OS application-data directory; development preview uses the ignored .local directory and synthetic fixtures. Installer upgrades reuse the database. Uninstall retention and clean install/upgrade/uninstall are not verified; users should delete the saved profile in the application before uninstalling when they want it removed. No dependency or online configuration is introduced; Ollama and search are optional and unused for this feature.

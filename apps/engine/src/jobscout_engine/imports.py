@@ -1,4 +1,5 @@
 import asyncio
+from functools import partial
 from dataclasses import asdict, dataclass, field
 import multiprocessing
 from multiprocessing.connection import Connection
@@ -24,13 +25,15 @@ def watch_parent() -> None:
         os._exit(1)
 
 
-def parse_worker(connection: Connection, data: bytes) -> None:
+def parse_worker(connection: Connection, data: bytes, format: str = "pdf") -> None:
     from jobscout_engine.worker_limits import limit_memory
     try:
         threading.Thread(target=watch_parent, daemon=True).start()
         memory_guard = limit_memory()
         from jobscout_engine.adapters.pdf import PdfParser
-        result = {"result": asdict(PdfParser().extract(data))}
+        from jobscout_engine.adapters.docx import DocxParser
+        parser = DocxParser() if format == "docx" else PdfParser()
+        result = {"result": asdict(parser.extract(data))}
     except ImportFailure as error:
         result = {"error": error.code}
     except BaseException:
@@ -82,12 +85,12 @@ class ImportService:
         if self.task is task:
             self.task = None
 
-    async def extract(self, data: bytes, task: ImportTask, disconnected) -> dict:
+    async def extract(self, data: bytes, task: ImportTask, disconnected, format: str = "pdf") -> dict:
         if task.cancelled.is_set():
             raise ImportFailure("cancelled")
         context = multiprocessing.get_context("spawn")
         receiver, sender = context.Pipe(duplex=False)
-        process = context.Process(target=self.worker, args=(sender, data), daemon=True)
+        process = context.Process(target=partial(parse_worker, format=format) if format == "docx" else self.worker, args=(sender, data), daemon=True)
         started = False
         try:
             # Spawn and pipe transfer may block on Windows; keep health/cancel responsive.
@@ -106,7 +109,7 @@ class ImportService:
                         raise ImportFailure(message["error"])
                     return message["result"]
                 if not process.is_alive():
-                    raise ImportFailure("complex_pdf")
+                    raise ImportFailure("complex_docx" if format == "docx" else "complex_pdf")
                 await asyncio.sleep(0.04)
         except (EOFError, OSError):
             raise ImportFailure("worker_unavailable") from None
