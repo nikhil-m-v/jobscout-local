@@ -25,8 +25,11 @@ No telemetry, tracking pixels, remote fonts, automatic crash uploads, or backgro
 | Provider connection check (planned) | Provider credential and a fixed non-personal request | Explain possible quota use before the check. |
 | Model/runtime download (planned) | Model identifier and required download request | Show source, license, size, and network requirement; never attach profile data. |
 | Open a provider or job website | Normal browser navigation | Clearly indicate that this opens an external site with its own data practices. Never append personal data to URLs. |
+| Periodic job discovery (planned mature feature) | The same reviewed generic criteria as an interactive search, sent at the user-selected interval | Explain that requests occur while the desktop is closed, may consume credits, and reveal timing/network/account metadata. Provide pause/off/next-run controls. No resume or personal career data is sent. |
 
 Credentials go only to their intended provider, over HTTPS, and belong in an OS-backed secret store. JobScout requires no central account. Provider accounts may be necessary for search APIs.
+
+Automatic applications are outside the current permitted outbound actions. Before implementation, extend this contract to define the exact reviewed personal fields, resume artifact, answers, recipient and authorization that may leave the computer. Background discovery permission is never application-submission permission. Any future unattended mode requires a narrow, revocable, expiring standing policy with per-run/day caps and must route sensitive, legal, ambiguous or changed questions back to the user.
 
 ## Search without disclosing the user's identity
 

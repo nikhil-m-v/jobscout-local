@@ -89,6 +89,8 @@ Keep installer, setup screens, and setup services separate. Define small service
 
 Each new dependency or provider must specify required/optional status, detection rules, setup fields, official guidance links, outbound data, secret handling, recovery actions, and upgrade behavior. Reopen only the affected setup section when a requirement changes. Make the wizard available through Settings so users can change models or providers later.
 
+A mature release may offer optional background discovery following [architecture decision 0008](../architecture/0008-background-discovery-service.md). Keep it disabled by default. Its setup must name and explain the Windows service, per-user scheduled task, provider-credit/network use while the app is closed, interval, power/network conditions, notifications, pause control, next run and uninstall behavior. Machine-service registration may elevate, but user secrets, profile data and scheduled-task configuration stay in the user's context. Enabling discovery must not enable automatic applications; unattended applications require a separate standing-policy flow after the interactive workflow and privacy extension exist.
+
 On upgrades, preserve user data and secrets, migrate settings with a recovery path, and disclose new required downloads. Uninstall should explain retained personal data and app-owned models, with a deliberate optional cleanup flow. Do not remove shared Ollama installations or shared models as part of JobScout removal.
 
 ## Small delivery steps

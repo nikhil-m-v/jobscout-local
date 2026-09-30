@@ -101,3 +101,5 @@ Deletion removes owned derived facts, matches, indexes, reports and artifact cop
 | Automatic applications | Approved privacy-contract extension; supported adapters; scoped approval invalidation, duplicate prevention, uncertain-outcome recovery, batch stop and synthetic receipt tests before any live submission |
 
 Every stage verifies offline/error recovery, malicious job content, deletion, native responsiveness, accessibility, Light/Dark/System and resource impact. Capture synthetic outbound requests to prove discovery never carries personal markers and submission sends only the reviewed package to approved destinations. Later stages do not delay the no-model core or introduce dependencies until an evaluated benefit warrants them.
+
+Periodic discovery and its later unattended-application integration are specified separately in [decision 0008](0008-background-discovery-service.md). That design keeps the Windows service away from personal records and places user-scoped ranking, notification and standing application policy in a per-user scheduled agent.
