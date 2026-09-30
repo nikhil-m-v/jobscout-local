@@ -101,7 +101,9 @@ The engine binds only to `127.0.0.1`, requires a fresh app-session token on ever
 
 ## Next milestone
 
-Local runtime setup: detect/reuse Ollama and explain setup later and recovery. Start with [the current memory checkpoint](MEMORY.md), [latest progress](docs/progress/2026-09-30.md), and [the roughly 30-session roadmap](docs/roadmap.md). Also see [the architecture decision](docs/architecture/0001-foundation.md), [project instructions](AGENTS.md), and [contribution guidance](CONTRIBUTING.md).
+The first [production engine resource baseline](docs/resource-baseline.md) includes a reproducible Windows benchmark, measured startup/import memory, and provisional regression thresholds. Full desktop and installed measurements remain outstanding.
+
+Measure production storage/startup/RAM, close remaining native checks, then implement private job discovery. The core search workflow will not require a model download; semantic matching and a local generative assistant are optional later enhancements. Start with [the current memory checkpoint](MEMORY.md), [latest progress](docs/progress/2026-09-30.md), and [the roughly 30-session roadmap](docs/roadmap.md). Also see [the architecture decision](docs/architecture/0001-foundation.md), [project instructions](AGENTS.md), and [contribution guidance](CONTRIBUTING.md).
 
 Licensed under MIT. Model weights, provider services, and third-party dependencies retain their own licenses and terms.
 

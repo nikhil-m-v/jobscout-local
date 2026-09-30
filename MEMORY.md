@@ -37,7 +37,7 @@ Day 3: local PDF extraction and editable review are implemented. Twenty engine t
 ## Start the next session
 
 1. Read `AGENTS.md`, this file, the privacy contract, and [the roadmap](docs/roadmap.md). Check local status and remote history.
-2. Continue the import milestone with **local runtime setup**: detect/reuse Ollama and explain setup later and recovery. Keep model acquisition and search out of this slice.
+2. Follow the revised **search-first roadmap**: measure production resource use, close native import/profile checks, then build public criteria and the outbound privacy boundary before discovery. Model setup and generation are optional later increments.
 3. Review the generated NSIS installer and verify clean install/uninstall behavior before release packaging work.
 4. Use the repository `.venv` if present. `npm run dev` launches the local browser preview. Follow `README.md` to recreate dependencies; do not assume yesterday's preview process is still running.
 5. End with the relevant checks, a clean reviewable commit, confirmed publication when authorized, and an updated checkpoint/progress entry. Do not mark planned features complete based on placeholder screens.
@@ -53,3 +53,15 @@ Reviewed-text persistence (2026-09-30): one SQLite profile (text + timestamp), e
 ## Publication checkpoint — 2026-09-30
 
 User authorized committing and pushing the completed DOCX import and reviewed-profile storage work to the existing repository. Commit title: `Add local DOCX import and reviewed profile storage`. Remote main matched the starting PDF commit before publication. Validation remains 44 engine tests, frontend build/typecheck, four picker tests, browser synthetic workflow checks, and native installer generation. No personal data, local database, credentials, or generated installer is included. Next action remains local runtime setup and recovery guidance. Verify remote history when resuming.
+
+## Roadmap revision — 2026-09-30
+
+User requested recording the search-first, optional-AI direction in the roadmap. The no-model core discovers, filters, ranks, saves and tracks jobs. Small local embeddings are optional; generative LLM assistance comes later only when evaluated benefits justify resource cost. Personal processing remains local and discovery stays behind the reviewed generic-query privacy gate. Increments 1–7 remain; 8 starts production resource measurements, 10–15 cover criteria/boundary/provider/privacy verification, 23 targets a usable core alpha, and 24–30 add optional AI. This supersedes earlier next-action notes about immediate Ollama setup. Next concrete action: measure installed/temp footprint, cold startup, idle RAM and peak import RAM in the production app, then set budgets. Documentation-only change; no application behavior or dependency change.
+
+## Timeline re-estimate — 2026-09-30
+
+The 30-session plan is an upper allowance for the broader AI-assisted product, not a minimum. From the current checkpoint, target 4–6 additional sessions for a first search demo, 10–15 total for a model-free personal alpha, and 16–25 total for an optional-AI alpha. Reassess after the first search demo; defer optional AI first if source quality, privacy verification, or Windows release work takes longer.
+
+## Resource baseline continuation — 2026-09-30
+
+Added a dependency-free Windows production-engine benchmark and [baseline](docs/resource-baseline.md). Three synthetic DOCX runs passed: health readiness 2.16–2.20 s, idle private memory 48.04–48.41 MiB, sampled import private peak 73.19–74.52 MiB, temporary engine extraction 29.22 MiB, installer 22.04 MiB. The benchmark uses isolated ignored storage and never reads personal documents. Process enumeration required scoped sandbox approval. Full desktop/WebView2 RAM, installed footprint, reboot-cold startup, PDF peak and installer lifecycle remain unmeasured; milestone 8 is partial. Next concrete action: native DOCX save/restart/delete and installer lifecycle, completing desktop resource measurements. Next feature: controlled public search criteria, followed by outbound validation and query preview. User authorized publishing this baseline and the pending search-first roadmap documentation together. Commit title: `Record search-first roadmap and production engine baseline`. Verify publication against remote main when resuming.
