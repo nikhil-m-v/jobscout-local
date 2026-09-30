@@ -16,7 +16,7 @@ The governing promise is in [docs/privacy.md](docs/privacy.md). Resumes, profile
 - Browser preview starts the real local engine, uses session authentication, and shows actual engine/storage/runtime status.
 - Windows development prerequisites are installed: Rust/Cargo stable MSVC, Visual Studio C++ Desktop workload, and the documented Python desktop extra. Native NSIS installer generation succeeds; installer execution and upgrade behavior remain unverified.
 - Overview, Settings, and labeled planned-feature pages exist. Appearance is saved locally through a styled Settings control. The sidebar uses a more translucent glass fill, page changes use a brief reduced-motion-aware transition, and static UI text is not selectable. Glass has opaque and accessibility fallbacks.
-- My profile selects a local PDF/DOCX up to 10 MiB. Text-based PDFs (up to 50 pages and bounded extracted text) can be read by a disposable local worker and shown in an editable, session-only review. DOCX body/table extraction is also implemented. Reviewed text can now be explicitly saved, loaded after restart, replaced, and deleted locally. OCR remains future work. The picker contract is in `docs/architecture/0002-resume-selection.md`.
+- My profile selects a local PDF/DOCX up to 10 MiB. Text-based PDFs (up to 10 pages and bounded extracted text) can be read by a disposable local worker and shown in an editable, session-only review. DOCX body/table extraction is also implemented. Reviewed text can now be explicitly saved, loaded after restart, replaced, and deleted locally. OCR remains future work. The picker contract is in `docs/architecture/0002-resume-selection.md`.
 - No model inference, embeddings, RAG, Tavily search, key storage, or application tracking is implemented yet. The privacy boundary for future search is a documented contract, not an implemented filter.
 - The prior privacy increment is commit `882079a`; day 2 adds the first resume-selection slice. Check Git status before publication.
 
@@ -107,3 +107,11 @@ User reported Tauri build-helper access denied replacing the debug engine execut
 ## Publication checkpoint — search preview, 2026-10-01
 
 User authorized publishing all pending public criteria, authoritative query construction, Discover preview and managed debug-cache recovery changes. Remote main matched local HEAD before publication. Commit title: Add controlled public search criteria and local query preview. Evidence: 69 engine tests, 13 frontend tests, frontend production build/typecheck, native release check and managed debug check/build; real-engine browser review/invalidation/navigation/reset flow. No online dispatch, provider credentials, personal data, generated binaries or private logs included. Native runtime preview and broader UI/provider privacy gates remain pending. Next: native preview verification, then provider configuration and restrictive transport. Verify remote main on resuming.
+
+## Resume/discovery clarification — 2026-10-01
+
+Reduced PDF resume limit to 10 pages in engine, picker guidance and error copy. Twenty PDF tests pass, including acceptance at 10 and rejection at 11; frontend typecheck/build passes. DOCX uses size/text/complexity bounds because rendered pagination is unavailable. Recorded assisted discovery in the roadmap: local reviewed category suggestions, generic provider search, then local profile-based ranking on Discover. Current criteria preview is foundational and has no online search or resume ranking. Next: provider configuration/transport privacy controls, then normalized results and deterministic profile assistance. Native package not rebuilt; changes local and unpublished.
+
+## Publication checkpoint — resume/discovery clarification — 2026-10-01
+
+User authorized committing and pushing the 10-page PDF limit and assisted-discovery roadmap clarification. Commit title: Limit PDF resumes and clarify assisted discovery. Validation: 20 PDF tests, frontend typecheck/production build and diff whitespace check passed. Native installer not rebuilt. Next: provider configuration and transport privacy controls, then normalized results and local profile assistance.

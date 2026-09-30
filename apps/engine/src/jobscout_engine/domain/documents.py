@@ -3,7 +3,7 @@ from typing import Protocol
 
 MAX_DOCUMENT_BYTES = 10 * 1024 * 1024
 MAX_TEXT_CHARACTERS = 200_000
-MAX_PAGES = 50
+MAX_PAGES = 10
 
 
 class ImportFailure(Exception):

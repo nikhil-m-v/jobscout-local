@@ -12,7 +12,7 @@ Choose Light, Dark, or Follow system from the appearance control in Settings. Th
 
 ![JobScout glass interface in dark appearance](docs/images/glass-dark.png)
 
-The My profile page reads local text-based PDFs (up to 50 pages) and Word DOCX documents up to 10 MiB. Extraction runs in a bounded, cancellable local worker. Review and edit the text before marking it reviewed for this session. Importing and editing do not save automatically. Mark text reviewed, then explicitly save it to keep it after restart. Closing the app clears unsaved drafts. Word body paragraphs and tables are supported; headers, footers, images, and embedded documents are omitted. Scanned PDFs need OCR, which is not implemented. Linked resources are never fetched.
+The My profile page reads local text-based PDFs (up to 10 pages) and Word DOCX documents up to 10 MiB. Extraction runs in a bounded, cancellable local worker. Review and edit the text before marking it reviewed for this session. Importing and editing do not save automatically. Mark text reviewed, then explicitly save it to keep it after restart. Closing the app clears unsaved drafts. Word body paragraphs and tables are supported; headers, footers, images, and embedded documents are omitted. Scanned PDFs need OCR, which is not implemented. Linked resources are never fetched.
 
 ![Resume picker in light appearance](docs/images/resume-picker-light.png)
 

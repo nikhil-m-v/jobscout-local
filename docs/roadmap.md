@@ -34,6 +34,16 @@ Potential LLM use cases are editable structured resume suggestions, detailed mat
 
 Personal resume/profile text, embeddings, notes, retrieval context, and generated assessments remain local. Models must never construct unconstrained outbound search queries; search continues to use the restrictive, user-reviewed generic criteria boundary in [privacy.md](privacy.md). No hosted-model fallback.
 
+## Resume-assisted discovery experience — 2026-10-01
+
+Discover is the intended home for assisted job finding, not a separate future page. Its current manual criteria/query preview is foundation work, not the completed product experience. Resume import currently extracts and saves reviewed text; it does not yet identify structured qualifications, suggest criteria, search online, or rank jobs against the profile.
+
+The target flow is: import and review a resume locally → suggest controlled public role/skill categories locally → review those categories and location/work preferences → preview the generic provider query → explicitly find jobs → filter and rank returned jobs locally against the reviewed profile, with evidence and editable preferences. Never send parsed career details to a search API. Criteria suggestions must map to the fixed public catalog and require review; employer names, career history, contact details and unconstrained generated text cannot enter provider queries.
+
+Keep the first provider slice small, but treat manual criteria as the initial fallback. After basic results normalization, the next product increment should connect the saved profile to evidence-based local ranking and reviewed category suggestions, using deterministic rules first. Optional structured AI extraction can improve this later. Evaluate the assisted flow against manual search by relevance and effort saved; do not treat a working query form as completion of the discovery experience.
+
+PDF resumes are now limited to 10 pages. DOCX remains bounded by file size, extracted text and parser complexity; it has no reliable rendered-page count.
+
 ## Resource and search quality gates
 
 - Measure production installed size, temporary extraction space, cold-start time, idle RAM, and peak import/search RAM separately. Set initial budgets after measuring the baseline and track changes per release. Development build caches are not the shipped application.

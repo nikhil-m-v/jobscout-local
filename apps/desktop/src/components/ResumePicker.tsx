@@ -40,7 +40,7 @@ export function ResumePicker({ resume, saved }: { resume: ReturnType<typeof useR
     </section>
     <section className="settings-panel resume-panel" aria-labelledby="resume-title">
       <div className="settings-title"><span className="icon-tile lavender"><FileText size={20} /></span><div><h2 id="resume-title">Start with your resume.</h2><p>Your experience, under your control.</p></div></div>
-      <p id="resume-guidance" className="resume-guidance">PDF or Word (.docx), up to 10 MiB. Read text-based PDFs of up to 50 pages locally. Word body paragraphs and tables are supported. Scanned-PDF recognition is coming later.</p>
+      <p id="resume-guidance" className="resume-guidance">PDF or Word (.docx), up to 10 MiB. Read text-based PDFs of up to 10 pages locally. Word body paragraphs and tables are supported. Scanned-PDF recognition is coming later.</p>
       <input ref={input} type="file" hidden accept={RESUME_ACCEPT} aria-label="Choose a resume" onChange={event => {
         const file = event.currentTarget.files?.[0];
         if (!file) return;

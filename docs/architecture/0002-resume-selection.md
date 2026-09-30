@@ -11,6 +11,8 @@ The next local engine parser must validate bytes, format structure, and resource
 
 ## Extraction implementation
 
+PDF extraction accepts at most 10 pages (reduced from 50 on 2026-10-01), enforced by the engine before text extraction. Picker guidance and the recoverable page-limit error show the same limit. DOCX pagination is not reliably available; its size/text/complexity bounds still apply.
+
 Explicit extraction sends file bytes only to the authenticated loopback engine, without the filename. PDF and DOCX use the same disposable worker, memory limit, cancellation, and timeout. Neither files nor extracted text are persisted. The selection now retains the browser File in memory so users can explicitly extract or retry it.
 
 DOCX uses Python's standard-library ZIP/XML reader without adding a dependency. It reads only word/document.xml, rejects duplicate package entries, encrypted entries and DTD/entity declarations, and bounds package count, expanded size, document XML, and extracted text. It never follows relationships or opens external resources. Body paragraphs, including table-cell paragraphs, retain document order. Headers, footers, images and embedded documents are omitted; users must review the original for missing details. DOCX returns no page count because OOXML does not reliably determine rendered pagination.

@@ -51,6 +51,12 @@ def test_compressed_stream_limit():
         PdfParser().extract(data)
 
 
+def test_ten_page_resume_is_accepted():
+    result = PdfParser().extract(make_pdf(pages=10))
+    assert result.page_count == 10
+    assert "SYNTHETIC RESUME" in result.text
+
+
 @pytest.mark.parametrize(("data", "code"), [
     (b"", "empty_file"),
     (b"not a PDF", "invalid_pdf"),
@@ -59,7 +65,7 @@ def test_compressed_stream_limit():
     (make_pdf(encrypted=True), "encrypted_pdf"),
     (make_pdf(text=None), "no_text"),
     (make_pdf(pages=0), "no_pages"),
-    (make_pdf(text=None, pages=51), "too_many_pages"),
+    (make_pdf(text=None, pages=11), "too_many_pages"),
     (make_pdf("x" * 200_001), "too_much_text"),
 ], ids=['empty', 'wrong-format', 'corrupt', 'oversized', 'encrypted', 'image-only', 'no-pages', 'page-limit', 'text-limit'])
 def test_recoverable_errors_do_not_echo_documents(data, code, capsys):

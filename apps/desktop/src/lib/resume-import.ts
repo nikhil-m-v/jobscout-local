@@ -14,7 +14,7 @@ const errors: Record<string, string> = {
   invalid_pdf: 'This file could not be read as a PDF. Export a new PDF and try again.',
   encrypted_pdf: 'This PDF is password protected. Export an unlocked copy to read it locally.',
   no_pages: 'This PDF has no pages. Choose another copy.',
-  too_many_pages: 'Choose a PDF with 50 pages or fewer.',
+  too_many_pages: 'Choose a PDF with 10 pages or fewer.',
   too_much_text: 'This document contains too much text to review here. Export just the resume pages.',
   complex_pdf: 'This PDF is too complex to read within the local limits. Export a simpler copy.',
   no_text: 'No readable text was found. This PDF may be scanned or image-only. Export a text-based PDF; local OCR is not available yet.',
