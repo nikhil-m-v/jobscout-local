@@ -115,12 +115,17 @@ function Upcoming({ page, navigate }: { page: keyof typeof upcoming; navigate: (
 }
 
 export function App() {
-  const [page, setPage] = useState<Page>('overview');
+  const [page, setCurrentPage] = useState<Page>('overview');
   const [criteria, setCriteria] = useState<PublicSearchCriteria>(initialCriteria);
 
   const resume = useResumeImport();
   const engine = useEngine();
   const searchPreview = useSearchPreview(Boolean(engine.health));
+  const setPage = (next: Page) => {
+    // Settings can change the saved provider; discard its old preview and review first.
+    if (next === 'settings') searchPreview.invalidate();
+    setCurrentPage(next);
+  };
   const saved = useSavedProfile(Boolean(engine.health));
   const { appearance, changeAppearance } = useAppearance();
   return <div className="app-shell"><a className="skip-link" href="#main-content">Skip to main content</a>

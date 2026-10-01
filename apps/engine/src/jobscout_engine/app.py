@@ -170,8 +170,16 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
             query = construct_public_query(value)
         except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
             return profile_response({"error": "invalid_search_criteria"}, 422)
+        # Presence only: never read the key or contact a provider for a preview.
+        configured_provider = None
+        try:
+            async with secret_lock:
+                if await run_in_threadpool(provider_secrets.contains):
+                    configured_provider = "tavily"
+        except SecretStoreUnavailable:
+            pass  # Local query construction remains usable without vault access.
         return profile_response({"query": query, "query_version": QUERY_VERSION,
-                                 "provider": None, "dispatch_available": False})
+                                 "provider": configured_provider, "dispatch_available": False})
 
     @application.get("/api/v1/profile", dependencies=[Depends(require_session)])
     async def load_profile():

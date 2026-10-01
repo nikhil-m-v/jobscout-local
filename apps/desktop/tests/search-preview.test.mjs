@@ -72,4 +72,17 @@ test('disconnect/unmount invalidation ignores late failures', async () => {
 test('unsupported versions, dispatch, provider and malformed query fail closed', () => {
   for (const payload of [null, {}, { ...valid, query_version: 2 }, { ...valid, dispatch_available: true }, { ...valid, provider: 'unexpected' }, { ...valid, query: '' }, { ...valid, query: 'x'.repeat(1025) }, { ...valid, query: 'jobs\nprivate' }, { ...valid, extra: 'SYNTHETIC_PRIVATE' }]) assert.throws(() => validateSearchPreview(payload));
   assert.ok(Object.isFrozen(validateSearchPreview(valid)));
+  assert.equal(validateSearchPreview({ ...valid, provider: 'tavily' }).provider, 'tavily');
+});
+
+test('refreshing provider metadata clears the previous review', async () => {
+  let provider = null;
+  const store = createSearchPreviewState(async () => ({ ...valid, provider }));
+  await store.generate(initialCriteria);
+  store.review();
+  store.invalidate(); // Settings navigation discards any prior provider snapshot.
+  provider = 'tavily';
+  await store.generate(initialCriteria);
+  assert.equal(store.getSnapshot().preview.provider, 'tavily');
+  assert.equal(store.getSnapshot().reviewed, false);
 });

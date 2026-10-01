@@ -86,3 +86,35 @@ def test_every_catalog_choice_constructs_and_frontend_identifiers_match():
             assert 'jobs' in query
             if catalog[key]:
                 assert catalog[key] in query
+
+
+def test_preview_reports_presence_without_reading_key_or_contacting_provider(tmp_path, monkeypatch):
+    import httpx
+    from test_providers import MemorySecrets
+    from jobscout_engine.adapters.tavily import TavilyConnection
+    store = MemorySecrets()
+    def forbidden(*args, **kwargs):
+        raise AssertionError('Preview read a secret, profile, or contacted a provider')
+    monkeypatch.setattr(store, 'read', forbidden)
+    monkeypatch.setattr(Database, 'load_profile', forbidden)
+    monkeypatch.setattr(httpx.AsyncClient, 'request', forbidden)
+    monkeypatch.setattr(TavilyConnection, 'check', forbidden)
+    with TestClient(create_app(Settings(data_dir=tmp_path, session_token='synthetic-token'),
+                              OfflineModel(), secret_store=store)) as client:
+        for key, expected in [(None, None), ('SYNTHETIC-ONLY', 'tavily'), (None, None)]:
+            store.key = key
+            response = client.post(URL, headers=HEADERS, json=CRITERIA)
+            assert response.status_code == 200
+            assert response.json() == {'query': 'Software engineer jobs', 'query_version': 1,
+                                       'provider': expected, 'dispatch_available': False}
+            assert 'SYNTHETIC' not in response.text
+
+
+def test_vault_unavailable_still_allows_local_preview(tmp_path):
+    from jobscout_engine.adapters.secrets import UnavailableSecretStore
+    with TestClient(create_app(Settings(data_dir=tmp_path, session_token='synthetic-token'),
+                              OfflineModel(), secret_store=UnavailableSecretStore())) as client:
+        response = client.post(URL, headers=HEADERS, json=CRITERIA)
+        assert response.status_code == 200
+        assert response.json()['provider'] is None
+        assert response.json()['dispatch_available'] is False

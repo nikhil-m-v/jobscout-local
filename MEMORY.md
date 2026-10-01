@@ -39,7 +39,7 @@ Day 3: local PDF extraction and editable review are implemented. Twenty engine t
 ## Start the next session
 
 1. Read `AGENTS.md`, this file, the privacy contract, and [the roadmap](docs/roadmap.md). Check local status and remote history.
-2. Follow the revised **search-first roadmap**: add configured-provider query preview, then bounded discovery and the captured-request search privacy gate before enabling results. Public criteria/query preview, vault setup and a restricted explicit account connection check are implemented. Continue browser/native/release checks alongside this work. Model setup and generation are optional later increments.
+2. Follow the revised **search-first roadmap**: implement bounded discovery and the captured-request search privacy gate before enabling results. Public criteria/provider-aware query preview, vault setup and a restricted explicit account connection check are implemented. Continue browser/native/release checks alongside this work. Model setup and generation are optional later increments.
 3. Review the generated NSIS installer and verify clean install/uninstall behavior before release packaging work.
 4. Use the repository `.venv` if present. `npm run dev` launches the local browser preview. Follow `README.md` to recreate dependencies; do not assume yesterday's preview process is still running.
 5. End with the relevant checks, a clean reviewable commit, confirmed publication when authorized, and an updated checkpoint/progress entry. Do not mark planned features complete based on placeholder screens.
@@ -151,3 +151,11 @@ Next concrete action: verify the new connection panel when browser automation re
 ## Local commit checkpoint — 2026-10-01
 
 User authorized committing the completed provider-key setup, restricted account connection check and recovery/documentation work before continuing. Commit title: `Add secure Tavily setup and restricted connection checks`. Evidence remains 140 engine tests, 22 frontend tests, frontend build and native NSIS packaging. Browser/native connection interaction remains unverified. Only source, synthetic tests, documentation and the earlier synthetic setup screenshot are included; no ignored test harness/data/key/binary is staged. This is a local commit, not authorization or evidence of a push. Next change: configured-provider query preview while search dispatch stays unavailable.
+
+## Provider-aware local query preview — 2026-10-01
+
+Prior provider setup/connection work is committed locally as `51953f7` (`Add secure Tavily setup and restricted connection checks`). Implemented the next narrow increment: local previews identify saved Tavily configuration, disclose the future fixed search endpoint and visible query/authentication/network/account information, and keep dispatch unavailable. Engine checks vault presence only in a background thread; no key readback, profile access or provider call. Missing/unavailable vault keeps the local query usable. Settings navigation synchronously discards old provider snapshots and review; Clear preview supports an explicit refresh. No new dependency or native command change.
+
+Evidence: 142 engine tests and 23 frontend tests pass; frontend typecheck and production build pass. New synthetic checks cover presence/removal/unavailable vault, forbidden secret/profile/network access, strict provider response validation and fresh review. Uses existing semantic disclosure and wrapping URL styles. New visual/native interaction verification remains pending because browser automation was unavailable in the preceding session. No live Tavily request or private fixture used.
+
+Next concrete action: implement bounded Tavily discovery behind fresh query/provider confirmation, with captured synthetic outgoing search requests and failure limits before enabling live search. Continue pending browser/native checks. Both changes are local commits; no push requested or performed.
