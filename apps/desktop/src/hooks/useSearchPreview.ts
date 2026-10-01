@@ -11,6 +11,7 @@ export function useSearchPreview(connected: boolean) {
   return { ...state, connected, preview: connected ? state.preview : null,
     reviewed: connected && state.reviewed, busy: connected && state.busy,
     invalidate: store.invalidate, cancel: store.invalidate,
+    consumeReview: store.consumeReview,
     review: () => { if (connected) store.review(); },
     generate: (criteria: PublicSearchCriteria) => { if (connected) void store.generate(criteria); },
   };

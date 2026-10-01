@@ -1,14 +1,15 @@
 import type { PublicSearchCriteria } from './public-search-criteria.ts';
 
-export interface SearchPreview { query: string; query_version: 1; provider: 'tavily' | null; dispatch_available: false }
+export interface SearchPreview { query: string; query_version: 1; provider: 'tavily' | null; dispatch_available: boolean }
 export function validateSearchPreview(value: unknown): SearchPreview {
   if (!value || typeof value !== 'object') throw new Error('Invalid preview');
   const data = value as Record<string, unknown>;
   if (Object.keys(data).sort().join(',') !== 'dispatch_available,provider,query,query_version' ||
       typeof data.query !== 'string' || !data.query.trim() || data.query.length > 1024 ||
       /[\u0000-\u001f\u007f]/.test(data.query) || data.query_version !== 1 ||
-      (data.provider !== null && data.provider !== 'tavily') || data.dispatch_available !== false) throw new Error('Invalid preview');
-  return Object.freeze({ query: data.query, query_version: 1, provider: data.provider, dispatch_available: false });
+      (data.provider !== null && data.provider !== 'tavily') || typeof data.dispatch_available !== 'boolean' ||
+      (data.provider === null && data.dispatch_available)) throw new Error('Invalid preview');
+  return Object.freeze({ query: data.query, query_version: 1, provider: data.provider, dispatch_available: data.dispatch_available });
 }
 
 type PreviewState = Readonly<{ preview: SearchPreview | null; busy: boolean; reviewed: boolean; error: string }>;
@@ -28,6 +29,7 @@ export function createSearchPreviewState(request: PreviewRequest) {
     subscribe: (listener: () => void) => { listeners.add(listener); return () => { listeners.delete(listener); }; },
     invalidate,
     review: () => { if (state.preview && !state.busy) publish({ ...state, reviewed: true }); },
+    consumeReview: () => { publish({ ...state, reviewed: false }); },
     async generate(criteria: PublicSearchCriteria) {
       invalidate();
       const current = generation;

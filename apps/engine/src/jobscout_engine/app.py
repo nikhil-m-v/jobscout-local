@@ -4,6 +4,7 @@ import secrets
 import json
 import sqlite3
 from uuid import UUID
+from dataclasses import asdict
 from typing import Literal
 from fastapi import Depends, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
@@ -14,6 +15,8 @@ from jobscout_engine import __version__
 from jobscout_engine.adapters.ollama import OllamaProvider
 from jobscout_engine.adapters.secrets import SecretStore, SecretStoreUnavailable, create_secret_store
 from jobscout_engine.adapters.tavily import TavilyConnection, ProviderCheckFailure
+from jobscout_engine.adapters.tavily_search import TavilySearch
+from jobscout_engine.domain.discovery import SearchProvider, DiscoveryFailure
 from jobscout_engine.domain.providers import MAX_PROVIDER_BODY_BYTES, validate_tavily_key, provider_status
 from jobscout_engine.config import Settings
 from jobscout_engine.domain.contracts import EngineHealth, ModelProvider
@@ -29,7 +32,8 @@ from jobscout_engine.domain.search import (
 def create_app(settings: Settings, model_provider: ModelProvider | None = None,
                import_service: ImportService | None = None,
                secret_store: SecretStore | None = None,
-               provider_connection: TavilyConnection | None = None) -> FastAPI:
+               provider_connection: TavilyConnection | None = None,
+               search_provider: SearchProvider | None = None) -> FastAPI:
     database = Database(settings.data_dir)
     provider = model_provider or OllamaProvider(settings.ollama_url)
     bearer = HTTPBearer(auto_error=False)
@@ -38,6 +42,8 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
     secret_lock = asyncio.Lock()
     connection = provider_connection if provider_connection is not None else TavilyConnection()
     connection_lock = asyncio.Lock()
+    discovery = search_provider if search_provider is not None else TavilySearch()
+    search_lock = asyncio.Lock()
 
     @asynccontextmanager
     async def lifespan(_: FastAPI):
@@ -179,7 +185,44 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
         except SecretStoreUnavailable:
             pass  # Local query construction remains usable without vault access.
         return profile_response({"query": query, "query_version": QUERY_VERSION,
-                                 "provider": configured_provider, "dispatch_available": False})
+                                 "provider": configured_provider, "dispatch_available": configured_provider is not None})
+
+    @application.post("/api/v1/search", dependencies=[Depends(require_session)])
+    async def search_jobs(request: Request):
+        try:
+            if request.headers.get('content-type') != 'application/json':
+                raise ValueError()
+            async def read_confirmation():
+                body = bytearray()
+                async for chunk in request.stream():
+                    if len(body) + len(chunk) > 6144:
+                        raise ValueError()
+                    body.extend(chunk)
+                return json.loads(body, object_pairs_hook=reject_duplicate_keys)
+            value = await asyncio.wait_for(read_confirmation(), timeout=5)
+            if (type(value) is not dict or set(value) != {'criteria', 'provider', 'query_version', 'reviewed_query', 'confirmed'}
+                    or value['provider'] != 'tavily' or type(value['query_version']) is not int
+                    or value['query_version'] != QUERY_VERSION or value['confirmed'] is not True):
+                raise ValueError()
+            query = construct_public_query(value['criteria'])
+            if type(value['reviewed_query']) is not str or value['reviewed_query'] != query:
+                raise ValueError()
+        except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
+            return profile_response({'error': 'search_confirmation_required'}, 422)
+        if search_lock.locked():
+            return profile_response({'error': 'search_busy'}, 409)
+        try:
+            async with search_lock:
+                async with secret_lock:
+                    key = await run_in_threadpool(provider_secrets.read)
+                if key is None:
+                    return profile_response({'error': 'provider_key_missing'}, 409)
+                result = await discovery.search(value['criteria'], key=key, reviewed_query=query)
+                return profile_response(asdict(result))
+        except SecretStoreUnavailable:
+            return profile_response({'error': 'secret_store_unavailable'}, 503)
+        except DiscoveryFailure as error:
+            return profile_response({'error': error.code}, 503)
 
     @application.get("/api/v1/profile", dependencies=[Depends(require_session)])
     async def load_profile():

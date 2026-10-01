@@ -60,7 +60,7 @@ def test_preview_requires_auth_and_cannot_read_profile_or_send_http(tmp_path, mo
         assert response.status_code == 200
         assert response.json() == {'query': 'Software engineer jobs', 'query_version': 1, 'provider': None, 'dispatch_available': False}
         assert response.headers['cache-control'] == 'no-store'
-        assert client.post('/api/v1/search', headers=HEADERS, json=CRITERIA).status_code == 404
+        assert client.post('/api/v1/search', headers=HEADERS, json=CRITERIA).status_code == 422
 
 
 @pytest.mark.parametrize('content', [
@@ -106,7 +106,7 @@ def test_preview_reports_presence_without_reading_key_or_contacting_provider(tmp
             response = client.post(URL, headers=HEADERS, json=CRITERIA)
             assert response.status_code == 200
             assert response.json() == {'query': 'Software engineer jobs', 'query_version': 1,
-                                       'provider': expected, 'dispatch_available': False}
+                                       'provider': expected, 'dispatch_available': expected is not None}
             assert 'SYNTHETIC' not in response.text
 
 

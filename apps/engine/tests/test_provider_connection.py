@@ -64,7 +64,7 @@ def test_explicit_check_captures_only_fixed_endpoint_and_saved_auth_no_private_c
         assert KEY not in result.text
         # No durable/session-wide verified flag; local status never sends a check.
         assert client.get('/api/v1/providers/tavily', headers=HEADERS).json()['connection_verified'] is False
-        assert client.post('/api/v1/search', headers=HEADERS, json={}).status_code == 404
+        assert client.post('/api/v1/search', headers=HEADERS, json={}).status_code == 422
     assert len(captured) == 1
     request = captured[0]
     assert request.method == 'GET'

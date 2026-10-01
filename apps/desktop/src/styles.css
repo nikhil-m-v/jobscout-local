@@ -266,3 +266,8 @@ svg { flex-shrink: 0; }
 .criteria-skill-grid input:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .criteria-skill-grid label:has(input:disabled) { opacity: .65; }
 @media (max-width: 650px) { .criteria-grid, .criteria-skill-grid { grid-template-columns: 1fr; } }
+
+.discovery-results { list-style: none; padding: 0; margin: 20px 0; }
+.discovery-results li + li { border-top: 1px solid var(--line); margin-top: 20px; padding-top: 20px; }
+.discovery-results h3 { overflow-wrap: anywhere; }
+.discovery-snippet { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.65; user-select: text; -webkit-user-select: text; }

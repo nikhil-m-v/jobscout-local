@@ -3,6 +3,7 @@ import { SearchCriteria } from './components/SearchCriteria';
 import { SearchProviderSettings } from './components/SearchProviderSettings';
 import { initialCriteria, type PublicSearchCriteria } from './lib/public-search-criteria';
 import { useSearchPreview } from './hooks/useSearchPreview';
+import { useDiscovery } from './hooks/useDiscovery';
 import { ArrowRight, ArrowUpRight, BriefcaseBusiness, ChevronRight, CircleHelp, Compass, FileText, LayoutDashboard, ListChecks, LockKeyhole, Monitor, Moon, RefreshCw, Settings2, ShieldCheck, Sparkles, Sun, Zap } from 'lucide-react';
 import { useEngine } from './hooks/useEngine';
 import { useAppearance, type Appearance } from './hooks/useAppearance';
@@ -121,15 +122,16 @@ export function App() {
   const resume = useResumeImport();
   const engine = useEngine();
   const searchPreview = useSearchPreview(Boolean(engine.health));
+  const discovery = useDiscovery(Boolean(engine.health));
   const setPage = (next: Page) => {
     // Settings can change the saved provider; discard its old preview and review first.
-    if (next === 'settings') searchPreview.invalidate();
+    if (next === 'settings') { searchPreview.invalidate(); discovery.invalidate(); }
     setCurrentPage(next);
   };
   const saved = useSavedProfile(Boolean(engine.health));
   const { appearance, changeAppearance } = useAppearance();
   return <div className="app-shell"><a className="skip-link" href="#main-content">Skip to main content</a>
     <aside className="sidebar"><a href="#" className="brand" onClick={event => { event.preventDefault(); setPage('overview'); }} aria-label="JobScout overview"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><div className="sidebar-label">YOUR WORKSPACE</div><nav aria-label="Main navigation">{navigation.map(({ id, label, icon: Icon }) => <button key={id} aria-label={label} title={label} className={`nav-item ${page === id ? 'active' : ''}`} aria-current={page === id ? 'page' : undefined} onClick={() => setPage(id)}><Icon size={18} strokeWidth={1.7} /><span>{label}</span>{page === id && <ChevronRight size={14} />}</button>)}</nav><div className="sidebar-bottom"><div className="sidebar-footer"><span className="mini-brand">Private by design</span><span>v0.1</span></div></div></aside>
-    <div className="workspace"><header className="topbar"><div className="breadcrumb">My workspace <ChevronRight size={12} /><span>{navigation.find(item => item.id === page)?.label}</span></div><EngineBadge engine={engine} /></header><main id="main-content" className="main-content" key={page} tabIndex={-1}>{page === 'overview' ? <Overview engine={engine} navigate={setPage} /> : page === 'profile' ? <ResumePicker resume={resume} saved={saved} /> : page === 'settings' ? <Settings engine={engine} appearance={appearance} changeAppearance={changeAppearance} /> : page === 'discover' ? <SearchCriteria criteria={criteria} searchPreview={searchPreview} onChange={value => { searchPreview.invalidate(); setCriteria(value); }} /> : <Upcoming page={page} navigate={setPage} />}</main><footer className="workspace-footer"><span>Made for the next step.</span><span><LockKeyhole size={12} /> Personal by design</span></footer></div>
+    <div className="workspace"><header className="topbar"><div className="breadcrumb">My workspace <ChevronRight size={12} /><span>{navigation.find(item => item.id === page)?.label}</span></div><EngineBadge engine={engine} /></header><main id="main-content" className="main-content" key={page} tabIndex={-1}>{page === 'overview' ? <Overview engine={engine} navigate={setPage} /> : page === 'profile' ? <ResumePicker resume={resume} saved={saved} /> : page === 'settings' ? <Settings engine={engine} appearance={appearance} changeAppearance={changeAppearance} /> : page === 'discover' ? <SearchCriteria criteria={criteria} discovery={discovery} searchPreview={searchPreview} onChange={value => { searchPreview.invalidate(); discovery.invalidate(); setCriteria(value); }} /> : <Upcoming page={page} navigate={setPage} />}</main><footer className="workspace-footer"><span>Made for the next step.</span><span><LockKeyhole size={12} /> Personal by design</span></footer></div>
   </div>;
 }

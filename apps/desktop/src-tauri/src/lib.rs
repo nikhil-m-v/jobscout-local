@@ -138,6 +138,21 @@ async fn provider_connection(
         .json().await.map_err(|_| "Connection result could not be read".into())
 }
 
+#[tauri::command]
+async fn job_search(
+    state: tauri::State<'_, Arc<EngineState>>, confirmation: serde_json::Value,
+) -> Result<serde_json::Value, String> {
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
+        .clone().ok_or("Workspace is starting")?;
+    let body = serde_json::to_vec(&confirmation).map_err(|_| "Invalid confirmation")?;
+    if body.len() > 6144 { return Err("Invalid confirmation".into()); }
+    state.client.post(format!("{endpoint}/api/v1/search"))
+        .header("Content-Type", "application/json").body(body)
+        .timeout(Duration::from_secs(30)).bearer_auth(&state.token)
+        .send().await.map_err(|_| "Search could not be confirmed")?
+        .json().await.map_err(|_| "Search response could not be read".into())
+}
+
 pub fn run() {
     let state = Arc::new(EngineState {
         endpoint: Mutex::new(None), child: Mutex::new(None),
@@ -151,7 +166,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .manage(state)
-        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, search_preview, search_provider, provider_connection])
+        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, search_preview, search_provider, provider_connection, job_search])
         .setup(|app| {
             let state = app.state::<Arc<EngineState>>().inner().clone();
             let directory = app.path().app_data_dir()?;
