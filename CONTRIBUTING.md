@@ -10,6 +10,8 @@ Provider setup checks: run `npm run test:provider` and the engine suite. On Wind
 
 Connection checks: run `npm run test:connection`. Engine connection tests use captured HTTPX mock transports, never live provider calls. Keep endpoint/TLS/proxy/redirect/byte/time/header protections and explicit confirmation intact. Local key-status tests must never perform an account check. Any live check requires a deliberate review/send action, and does not establish the search privacy release gate.
 
+Discovery adapter checks: run the engine suite, including `test_tavily_search.py`. Use synthetic captured transports only. Preserve controlled query construction, exact reviewed-query comparison, fixed options/endpoint, request/response bounds and cancellation cleanup. Treat returned candidates as untrusted text; never fetch result URLs or embedded resources during normalization. The isolated adapter is not yet an enabled search route; the application confirmation/rendering privacy gate must pass before dispatch is exposed.
+
 For UI changes, include a screenshot where practical and review keyboard navigation, readable contrast, reduced motion, narrow windows, and responsiveness during slow work. Describe unavailable or planned features honestly.
 
 New runtime, model, or provider requirements must update the [installation design](docs/design/installation.md) with setup guidance, defaults, privacy effects, recovery, and upgrade behavior.

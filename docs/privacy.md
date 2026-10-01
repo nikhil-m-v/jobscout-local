@@ -51,6 +51,8 @@ IP masking, unlinkable credentials, provider retention guarantees, and anonymous
 
 ## Release evidence
 
+The isolated Tavily search adapter has captured synthetic request tests for controlled-query serialization, fixed authentication/options/endpoint, forbidden private fields, redirects, response bounds and malicious result text/URLs. It performs no result-page or embedded-resource fetch. It is not exposed through a dispatch API or UI yet; these adapter checks do not complete the application confirmation/rendering privacy gate. See [decision 0011](architecture/0011-bounded-discovery-adapter.md).
+
 Before advertising private online discovery, inspect captured outgoing requests using synthetic profiles with distinctive identifying markers. Verify that those markers, resume contents, embeddings, and extra fields never reach providers. Exercise malformed criteria, provider errors, redirects, malicious job text, cancellation, and offline behavior. Check that installed model inference uses only the local runtime and that no unexpected outbound requests occur while working locally.
 
 Also verify deletion of all app-owned copies, derived text, indexes, caches, and records. Respect shared models and explain what uninstall retains. Do not claim secure disk erasure. See the installation design for the setup experience.
