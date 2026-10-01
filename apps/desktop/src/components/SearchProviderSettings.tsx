@@ -29,7 +29,7 @@ export function SearchProviderSettings({ connected }: { connected: boolean }) {
       setStatus(result); setConfirmRemove(false);
       if (action !== 'load') {
         setKey(''); setShow(false);
-        setNotice(action === 'save' ? 'Key saved locally. Connection has not been checked; online search is still unavailable.' : 'Saved key removed. Local profile features remain available.');
+        setNotice(action === 'save' ? 'Key saved locally. Connection has not been checked. Open Discover to prepare, review, and explicitly send a query.' : 'Saved key removed. Local profile features remain available.');
         input.current?.focus();
       }
     } catch (cause) {
@@ -70,7 +70,7 @@ export function SearchProviderSettings({ connected }: { connected: boolean }) {
       {connection.verified && <p className="resume-notice" role="status">Tavily accepted the saved key for this check. This does not guarantee search credits or enable online discovery.</p>}
       {connection.error && <p className="inline-error" role="alert">{connection.error}</p>}
     </div>
-    <p className="resume-notice" role="status">{notice || (!connected ? 'Reconnect the workspace to manage keys. Local documents remain on this computer.' : busy ? 'Working with the local secret store…' : connection.busy ? 'Checking Tavily…' : 'Saving or checking local key status makes no request to Tavily. Online search remains unavailable.')}</p>
+    <p className="resume-notice" role="status">{notice || (!connected ? 'Reconnect the workspace to manage keys. Local documents remain on this computer.' : busy ? 'Working with the local secret store…' : connection.busy ? 'Checking Tavily…' : 'Saving or checking local key status makes no request to Tavily. Use Discover to prepare, review, and explicitly send a search.')}</p>
     {error && <p className="inline-error" role="alert">{error}</p>}
   </section>;
 }
