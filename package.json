@@ -13,6 +13,8 @@
     "test:preview": "node --experimental-strip-types --test apps/desktop/tests/search-preview.test.mjs",
     "test:criteria": "node --experimental-strip-types --test apps/desktop/tests/public-search-criteria.test.mjs",
     "test:selection": "node --experimental-strip-types --test apps/desktop/tests/resume-selection.test.mjs",
+    "test:provider": "node --experimental-strip-types --test apps/desktop/tests/search-provider.test.mjs",
+    "test:connection": "node --experimental-strip-types --test apps/desktop/tests/provider-connection.test.mjs",
     "engine:build": "node scripts/build-engine.mjs"
   }
 }

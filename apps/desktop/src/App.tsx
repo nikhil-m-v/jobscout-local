@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { SearchCriteria } from './components/SearchCriteria';
+import { SearchProviderSettings } from './components/SearchProviderSettings';
 import { initialCriteria, type PublicSearchCriteria } from './lib/public-search-criteria';
 import { useSearchPreview } from './hooks/useSearchPreview';
 import { ArrowRight, ArrowUpRight, BriefcaseBusiness, ChevronRight, CircleHelp, Compass, FileText, LayoutDashboard, ListChecks, LockKeyhole, Monitor, Moon, RefreshCw, Settings2, ShieldCheck, Sparkles, Sun, Zap } from 'lucide-react';
@@ -81,6 +82,7 @@ function Settings({ engine, appearance, changeAppearance }: { engine: Engine; ap
   return <>
     <div className="page-heading"><div><p className="eyebrow">MAKE IT YOURS</p><h1>Your workspace, at a glance.</h1><p className="muted">See what is ready and what needs a little attention.</p></div></div>
     <PrivacyPanel />
+    <SearchProviderSettings connected={Boolean(engine.health)} />
     <section className="settings-panel appearance-panel" aria-labelledby="appearance-title">
       <div className="settings-title"><span className="icon-tile lavender"><Sun size={20} /></span><div><h2 id="appearance-title">Appearance</h2><p>Choose how JobScout looks on this computer.</p></div></div>
       <div className="appearance-options" role="group" aria-label="Appearance preference">
@@ -97,7 +99,7 @@ function Settings({ engine, appearance, changeAppearance }: { engine: Engine; ap
     <section className="settings-panel" aria-labelledby="ai-title"><div className="settings-title"><span className="icon-tile lavender"><Sparkles size={20} /></span><div><h2 id="ai-title">Local AI</h2><p>A model that runs where your information lives.</p></div><span className={`status-text ${ai?.status === 'available' ? 'positive' : ''}`}>{ai?.status === 'available' ? 'Ollama connected' : ai?.status === 'error' ? 'Needs attention' : 'Not connected'}</span></div>
       <div className="ai-explanation"><h3>{ai?.status === 'available' ? `${ai.installed_models} installed ${ai.installed_models === 1 ? 'model' : 'models'} detected` : ai?.status === 'error' ? 'Ollama did not return a usable response.' : ai?.status === 'unavailable' ? 'Ollama is not running yet.' : 'Connect the workspace to check local AI.'}</h3><p>We are building a guided model picker and download experience. For now, JobScout checks whether Ollama is available. A connected runtime does not mean a suitable model has been selected.</p><button className="button secondary" onClick={() => { setLinkError(false); void openOllamaWebsite().catch(() => setLinkError(true)); }}>Visit Ollama <ArrowUpRight size={14} /></button>{linkError && <p className="inline-error" role="alert">The website could not be opened. Visit ollama.com in your browser.</p>}</div>
     </section>
-    <section className="coming-panel"><CircleHelp size={20} /><div><h3>More setup, less guesswork.</h3><p>Model downloads, storage choices, and secure search-provider keys will join this space as we build each feature. Online job search is not configured in this release.</p></div><span className="badge">COMING NEXT</span></section>
+    <section className="coming-panel"><CircleHelp size={20} /><div><h3>More setup, less guesswork.</h3><p>Model downloads, storage choices, and online search will join this space as we build each feature. Saving a provider key does not enable online search in this release.</p></div><span className="badge">COMING NEXT</span></section>
   </>;
 }
 

@@ -85,7 +85,7 @@ The revised sequence below preserves increments 1–7 and moves resource measure
 | 10 | Public search-criteria contract | Implemented local controlled choices and session review; synthetic validation tests pass. No adapter/network yet; browser/native UI verification pending. |
 | 11 | Outbound privacy boundary | Engine validation and deterministic local query construction implemented; 24 search tests pass. Provider endpoint allowlist/redirect controls pending transport. |
 | 12 | Search preview and disclosure | Engine-generated query shown with explicit review and stale-result invalidation; real-engine browser flow verified. Provider is none; native interaction and configured-provider preview pending. |
-| 13 | Provider configuration and secrets | Select one source; OS-backed keys if required, masked controls, skip/remove behavior, safe connection checks. |
+| 13 | Provider configuration and secrets | Partial: Tavily vault setup and separate disclosed fixed account-usage connection check implemented, with restricted transport and synthetic captured-request tests. No active provider/search yet. Next: configured-provider preview and bounded discovery; browser/native check interaction and live provider verification pending. |
 | 14 | First search adapter (Tavily candidate) | Bounded explicit discovery, cancellation, quota/offline handling; keep public release disabled pending the privacy gate. |
 | 15 | Search privacy verification gate | Captured synthetic requests contain no personal markers; malformed inputs, redirects and malicious job text fail safely. |
 | 16 | Results normalization and filtering | Canonical links, source/time, deduplication, explicit preference filters, and no remote trackers. |

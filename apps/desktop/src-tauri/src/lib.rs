@@ -101,6 +101,43 @@ async fn search_preview(
         .json().await.map_err(|_| "Preview response could not be read".into())
 }
 
+#[tauri::command]
+async fn search_provider(
+    state: tauri::State<'_, Arc<EngineState>>, action: String, key: Option<String>,
+) -> Result<serde_json::Value, String> {
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
+        .clone().ok_or("Workspace is starting")?;
+    let url = format!("{endpoint}/api/v1/providers/tavily");
+    let request = match action.as_str() {
+        "load" => state.client.get(url),
+        "delete" => state.client.delete(url),
+        "save" => {
+            let key = key.ok_or("Invalid provider key")?;
+            if key.is_empty() || key.len() > 512 || !key.bytes().all(|b| (33..=126).contains(&b)) {
+                return Err("Invalid provider key".into());
+            }
+            state.client.put(url).json(&serde_json::json!({"key": key}))
+        },
+        _ => return Err("Unknown provider action".into()),
+    };
+    request.timeout(Duration::from_secs(10)).bearer_auth(&state.token)
+        .send().await.map_err(|_| "Key status could not be confirmed")?
+        .json().await.map_err(|_| "Key status could not be read".into())
+}
+
+#[tauri::command]
+async fn provider_connection(
+    state: tauri::State<'_, Arc<EngineState>>,
+) -> Result<serde_json::Value, String> {
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
+        .clone().ok_or("Workspace is starting")?;
+    state.client.post(format!("{endpoint}/api/v1/providers/tavily/check"))
+        .json(&serde_json::json!({"confirmed": true}))
+        .timeout(Duration::from_secs(20)).bearer_auth(&state.token)
+        .send().await.map_err(|_| "Connection check could not be confirmed")?
+        .json().await.map_err(|_| "Connection result could not be read".into())
+}
+
 pub fn run() {
     let state = Arc::new(EngineState {
         endpoint: Mutex::new(None), child: Mutex::new(None),
@@ -114,7 +151,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .manage(state)
-        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, search_preview])
+        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, search_preview, search_provider, provider_connection])
         .setup(|app| {
             let state = app.state::<Arc<EngineState>>().inner().clone();
             let directory = app.path().app_data_dir()?;

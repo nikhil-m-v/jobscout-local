@@ -12,6 +12,9 @@ from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from starlette.concurrency import run_in_threadpool
 from jobscout_engine import __version__
 from jobscout_engine.adapters.ollama import OllamaProvider
+from jobscout_engine.adapters.secrets import SecretStore, SecretStoreUnavailable, create_secret_store
+from jobscout_engine.adapters.tavily import TavilyConnection, ProviderCheckFailure
+from jobscout_engine.domain.providers import MAX_PROVIDER_BODY_BYTES, validate_tavily_key, provider_status
 from jobscout_engine.config import Settings
 from jobscout_engine.domain.contracts import EngineHealth, ModelProvider
 from jobscout_engine.storage import Database
@@ -24,11 +27,17 @@ from jobscout_engine.domain.search import (
 
 
 def create_app(settings: Settings, model_provider: ModelProvider | None = None,
-               import_service: ImportService | None = None) -> FastAPI:
+               import_service: ImportService | None = None,
+               secret_store: SecretStore | None = None,
+               provider_connection: TavilyConnection | None = None) -> FastAPI:
     database = Database(settings.data_dir)
     provider = model_provider or OllamaProvider(settings.ollama_url)
     bearer = HTTPBearer(auto_error=False)
     imports = import_service or ImportService()
+    provider_secrets = secret_store if secret_store is not None else create_secret_store(settings.data_dir)
+    secret_lock = asyncio.Lock()
+    connection = provider_connection if provider_connection is not None else TavilyConnection()
+    connection_lock = asyncio.Lock()
 
     @asynccontextmanager
     async def lifespan(_: FastAPI):
@@ -68,6 +77,80 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
 
     def profile_response(value, status=200):
         return JSONResponse(value, status_code=status, headers={"Cache-Control": "no-store"})
+
+    @application.get("/api/v1/providers/tavily", dependencies=[Depends(require_session)])
+    async def load_search_provider():
+        try:
+            async with secret_lock:
+                saved = await run_in_threadpool(provider_secrets.contains)
+            return profile_response(provider_status(saved))
+        except SecretStoreUnavailable:
+            return profile_response({"error": "secret_store_unavailable"}, 503)
+
+    @application.put("/api/v1/providers/tavily", dependencies=[Depends(require_session)])
+    async def save_search_provider(request: Request):
+        async def read_key():
+            body = bytearray()
+            async for chunk in request.stream():
+                if len(body) + len(chunk) > MAX_PROVIDER_BODY_BYTES:
+                    raise ValueError()
+                body.extend(chunk)
+            return json.loads(body, object_pairs_hook=reject_duplicate_keys)
+        try:
+            if request.headers.get("content-type") != "application/json":
+                raise ValueError()
+            key = validate_tavily_key(await asyncio.wait_for(read_key(), timeout=5))
+        except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
+            return profile_response({"error": "invalid_provider_key"}, 422)
+        try:
+            async with secret_lock:
+                await run_in_threadpool(provider_secrets.save, key)
+            return profile_response(provider_status(True))
+        except SecretStoreUnavailable:
+            return profile_response({"error": "secret_store_unavailable"}, 503)
+
+    @application.delete("/api/v1/providers/tavily", dependencies=[Depends(require_session)])
+    async def remove_search_provider():
+        try:
+            async with secret_lock:
+                await run_in_threadpool(provider_secrets.delete)
+            return profile_response(provider_status(False))
+        except SecretStoreUnavailable:
+            return profile_response({"error": "secret_store_unavailable"}, 503)
+
+    @application.post("/api/v1/providers/tavily/check", dependencies=[Depends(require_session)])
+    async def check_search_provider(request: Request):
+        async def read_confirmation():
+            body = bytearray()
+            async for chunk in request.stream():
+                if len(body) + len(chunk) > 256:
+                    raise ValueError()
+                body.extend(chunk)
+            return json.loads(body, object_pairs_hook=reject_duplicate_keys)
+        try:
+            if request.headers.get("content-type") != "application/json":
+                raise ValueError()
+            value = await asyncio.wait_for(read_confirmation(), timeout=5)
+            if not isinstance(value, dict) or set(value) != {"confirmed"} or value["confirmed"] is not True:
+                raise ValueError()
+        except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
+            return profile_response({"error": "provider_confirmation_required"}, 422)
+        if connection_lock.locked():
+            return profile_response({"error": "provider_check_busy"}, 409)
+        try:
+            async with connection_lock:
+                async with secret_lock:
+                    key = await run_in_threadpool(provider_secrets.read)
+                if key is None:
+                    return profile_response({"error": "provider_key_missing"}, 409)
+                await connection.check(key)
+            # Transient evidence only. No account details or verification persistence.
+            return profile_response({"provider": "tavily", "connection_verified": True,
+                                     "dispatch_available": False})
+        except SecretStoreUnavailable:
+            return profile_response({"error": "secret_store_unavailable"}, 503)
+        except ProviderCheckFailure as error:
+            return profile_response({"error": error.code}, 503)
 
     @application.post("/api/v1/search/preview", dependencies=[Depends(require_session)])
     async def preview_search(request: Request):

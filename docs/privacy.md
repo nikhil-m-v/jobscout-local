@@ -1,6 +1,6 @@
 # Privacy is the product
 
-Status: product contract and implementation requirements. Local PDF/DOCX extraction, text review, and explicit reviewed-text saving/deletion are implemented. Online job search remains planned. Future controls below must be implemented and verified before enabling those features.
+Status: product contract and implementation requirements. Local PDF/DOCX extraction, text review, and explicit reviewed-text saving/deletion are implemented. Optional provider-key setup and an explicit account connection check are implemented. Online job search remains planned. Future controls below must be implemented and verified before enabling those features.
 
 ## Promise
 
@@ -22,12 +22,14 @@ No telemetry, tracking pixels, remote fonts, automatic crash uploads, or backgro
 | Action | Permitted outbound content | User guidance |
 |---|---|---|
 | Job search (planned) | Reviewed generic role, broad search region, seniority, work arrangement, and selected public skill categories; required provider authentication | Preview the actual query and provider. Omit region if the user prefers. A search region is a job preference, not an inferred home address. |
-| Provider connection check (planned) | Provider credential and a fixed non-personal request | Explain possible quota use before the check. |
+| Provider connection check | Saved Tavily credential in the Authorization header for one fixed HTTPS GET to its account usage endpoint; no request body, profile or job criteria | Review the exact endpoint/data disclosure before explicitly sending. No search is performed; provider billing/rate-limit rules apply. Stopping waiting cannot recall a sent request. |
 | Model/runtime download (planned) | Model identifier and required download request | Show source, license, size, and network requirement; never attach profile data. |
 | Open a provider or job website | Normal browser navigation | Clearly indicate that this opens an external site with its own data practices. Never append personal data to URLs. |
 | Periodic job discovery (planned mature feature) | The same reviewed generic criteria as an interactive search, sent at the user-selected interval | Explain that requests occur while the desktop is closed, may consume credits, and reveal timing/network/account metadata. Provide pause/off/next-run controls. No resume or personal career data is sent. |
 
 Credentials go only to their intended provider, over HTTPS, and belong in an OS-backed secret store. JobScout requires no central account. Provider accounts may be necessary for search APIs.
+
+Implemented local setup: Settings can explicitly save/replace/remove a Tavily key in Windows Credential Manager and check whether one is saved. These local operations send nothing to Tavily. A separate reviewed connection check sends the saved credential only to the fixed Tavily account usage endpoint; it does not search or send career data. The response is reduced to transient acceptance/fixed error information; account details are not retained or returned to the UI. Online job discovery remains unimplemented. Saved key bytes are never returned to the interface or stored in the profile database. Each workspace has a separate vault entry; unsupported/unavailable stores have no plaintext fallback. Other software running as the same user may access credentials. Uninstall currently retains vault entries independently of app data; remove the key in Settings before uninstalling or manage its JobScout entry in Windows Credential Manager afterward. See [the checked transport contract](architecture/0010-provider-connection-check.md) for bounds and remaining release evidence.
 
 Automatic applications are outside the current permitted outbound actions. Before implementation, extend this contract to define the exact reviewed personal fields, resume artifact, answers, recipient and authorization that may leave the computer. Background discovery permission is never application-submission permission. Any future unattended mode requires a narrow, revocable, expiring standing policy with per-run/day caps and must route sensitive, legal, ambiguous or changed questions back to the user.
 
@@ -55,4 +57,4 @@ Also verify deletion of all app-owned copies, derived text, indexes, caches, and
 
 ## Current saved-text controls
 
-Only explicitly saved reviewed text and its save timestamp persist in the local database. Original file bytes, filenames, and unsaved edits are not persisted. Save replaces the previous record. Discarding/removing a draft keeps saved data. Delete saved profile removes the saved record and clears the current draft/import in the UI; it leaves the original document intact. SQLite uses overwrite-on-delete and non-retained rollback journaling, with synthetic restart/replacement/deletion checks. This does not promise secure disk erasure or deletion from external backups. Storage is not encrypted. Installer/uninstall data retention is still unverified.
+Only explicitly saved reviewed text and its save timestamp persist in the local database. Original file bytes, filenames, and unsaved edits are not persisted. Save replaces the previous record. Discarding/removing a draft keeps saved data. Delete saved profile removes the saved record and clears the current draft/import in the UI; it leaves the original document intact. SQLite uses overwrite-on-delete and non-retained rollback journaling, with synthetic restart/replacement/deletion checks. This does not promise secure disk erasure or deletion from external backups. Storage is not encrypted. Default profile retention passed a scoped silent install/uninstall check; interactive optional data cleanup remains unverified.
