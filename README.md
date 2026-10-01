@@ -128,3 +128,5 @@ Save your optional Tavily key in Settings, then open Discover. Choose public cri
 Each retry requires review again. Stop waiting discards late replies but cannot undo a sent request. Editing criteria or opening Settings clears the preview/results. Results are session-only web search candidates, not verified vacancies or ranked matches. URLs are selectable text; the app does not open result websites or load their images. No automatic or background discovery.
 
 Synthetic API/privacy/rendering tests and Windows packaging pass. Browser/native interaction and a deliberate live-provider search remain unverified. See [the implementation contract](docs/architecture/0012-explicit-search-flow.md).
+
+Tavily currently supplies web discovery through its direct HTTP API; JobScout uses no LangChain integration or hosted model for searching. The search-provider interface is replaceable. Local matching and optional future models do not depend on Tavily. A live usage-only connection check now passes after supporting nullable key limits; a real search remains a separate deliberate trial.

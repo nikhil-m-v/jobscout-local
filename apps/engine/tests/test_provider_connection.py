@@ -168,6 +168,20 @@ def test_exact_response_byte_limit_is_accepted_but_never_returned():
     assert outgoing.is_closed
 
 
+def test_nullable_key_limit_is_valid_authentication_evidence():
+    # Observed provider shape: a null limit must not be mistaken for bad JSON.
+    outgoing = response({'key': {'usage': 0, 'limit': None}, 'account': {}})
+    assert asyncio.run(TavilyConnection(transport=httpx.MockTransport(lambda request: outgoing)).check(KEY)) is None
+    assert outgoing.is_closed
+
+
+@pytest.mark.parametrize('limit', [True, -1, 'unlimited', 1.5])
+def test_nullable_limit_does_not_allow_other_invalid_types(limit):
+    with pytest.raises(ProviderCheckFailure, match='^provider_invalid_response$'):
+        asyncio.run(TavilyConnection(transport=httpx.MockTransport(
+            lambda request: response({'key': {'usage': 0, 'limit': limit}, 'account': {}}))).check(KEY))
+
+
 def test_transport_configuration_ignores_proxies_netrc_and_keeps_tls_verification(monkeypatch):
     original = httpx.AsyncClient
     config = []

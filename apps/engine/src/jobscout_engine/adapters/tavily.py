@@ -68,8 +68,10 @@ class TavilyConnection:
                     if not isinstance(data, dict) or not isinstance(data.get("account"), dict):
                         raise ValueError()
                     usage = data.get("key")
-                    if not isinstance(usage, dict) or any(type(usage.get(field)) is not int or not 0 <= usage[field] <= 1_000_000_000
-                                                         for field in ("usage", "limit")):
+                    if (not isinstance(usage, dict) or type(usage.get('usage')) is not int
+                            or not 0 <= usage['usage'] <= 1_000_000_000 or 'limit' not in usage
+                            or (usage['limit'] is not None and
+                                (type(usage['limit']) is not int or not 0 <= usage['limit'] <= 1_000_000_000))):
                         raise ValueError()
                 except (ValueError, UnicodeError, RecursionError):
                     raise ProviderCheckFailure("provider_invalid_response") from None
