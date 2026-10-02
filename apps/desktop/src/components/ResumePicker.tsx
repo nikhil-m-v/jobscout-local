@@ -21,7 +21,34 @@ export function ResumePicker({ resume, saved }: { resume: ReturnType<typeof useR
   useEffect(() => { if (document) editor.current?.focus(); }, [document]);
 
   return <>
-    <div className="page-heading"><div><p className="eyebrow">YOUR STORY, IN ONE PLACE</p><h1>Read. Review. Make it yours.</h1><p className="muted">Bring your resume into a private, local workspace.</p></div></div>
+
+    <section className={`settings-panel resume-panel upload-panel ${selection || document ? 'has-resume' : ''}`} aria-labelledby="resume-title">
+      <div className="settings-title"><span className="icon-tile lavender"><FileText size={20} /></span><div><h2 id="resume-title">Start with your resume</h2><p>Select a file from your computer to get started.</p></div></div>
+      <p id="resume-guidance" className="resume-guidance">PDF or Word · Up to 10 MB · PDFs up to 10 pages</p>
+      <input ref={input} type="file" hidden accept={RESUME_ACCEPT} aria-label="Choose a resume" onChange={event => {
+        const file = event.currentTarget.files?.[0];
+        if (!file) return;
+        const result = validateResumeSelection(file);
+        resume.setNotice('');
+        if (result.ok) resume.select(file, result.selection, true);
+        else resume.setError(`${result.error}${selection ? ' Your previous selection and review are kept.' : ''}`);
+        event.currentTarget.value = '';
+      }} />
+      {selection && <div className="resume-selection"><span className="icon-tile green"><FileText size={20} /></span><div><h3 className="resume-filename">{selection.name}</h3><p>{selection.format === 'pdf' ? 'PDF document' : 'Word document'} · {selection.size < 1024 ? `${selection.size} bytes` : `${(selection.size / 1024 / 1024).toLocaleString(undefined, { maximumFractionDigits: 2 })} MiB`} · This session only</p></div></div>}
+      <div className="resume-actions">
+        <button ref={chooseButton} className={`button ${selection ? 'secondary' : 'primary'}`} disabled={locked} aria-describedby="resume-guidance" onClick={() => input.current?.click()}>{selection ? 'Choose a different file' : 'Choose resume'} <FileText size={16} /></button>
+        {selection && !document && !busy && <button className="button primary" disabled={saved.busy} onClick={() => void resume.extract()}>Read resume again</button>}
+        {busy && <button className="button secondary" onClick={() => { resume.cancel(); requestAnimationFrame(() => chooseButton.current?.focus()); }}>Cancel extraction</button>}
+        {selection && !busy && <button className="button secondary" disabled={saved.busy} onClick={() => { resume.select(null); chooseButton.current?.focus(); }}>Remove document</button>}
+      </div>
+      {!saved.connected && <p className="resume-guidance" role="status">{saved.error ? "Your local workspace is unavailable. Open Settings and choose Check again." : "Connecting to your local workspace. Resume selection will be available shortly."}</p>}
+      {busy && <p className="import-progress"><LoaderCircle size={16} className="spinning" aria-hidden="true" /> Reading locally. You can keep using the workspace.</p>}
+      {resume.error && <p className="inline-error" role="alert">{resume.error}</p>}
+      <p className="resume-notice" role="status" aria-live="polite">{resume.notice}</p>
+      <p className="upload-reassurance"><LockKeyhole size={14} /> Your resume stays on this computer.</p>
+      <details className="upload-help"><summary>File support & privacy details</summary><p className="resume-guidance">Text-based PDFs and Word body paragraphs/tables are supported. Scanned PDFs need text recognition, which is not available yet. The limit is 10 MiB (10,485,760 bytes).</p><p className="resume-guidance">The file and unsaved edits stay in memory until removed or the app closes. Removing a draft keeps your saved profile. Use saved-data controls to delete saved text; your original document stays intact.</p></details>
+    </section>
+    <details className="saved-profile-details"><summary>Saved resume & data controls{saved.profile ? ' · Resume saved' : ''}</summary>
     <section className="settings-panel resume-panel" aria-labelledby="saved-title" aria-busy={saved.busy}>
       <div className="settings-title"><span className="icon-tile green"><LockKeyhole size={20} /></span><div><h2 id="saved-title">Your saved profile.</h2><p>{!saved.connected ? 'Waiting for your local workspace.' : saved.profile ? 'Reviewed text, kept on this computer.' : saved.ready ? 'Save when your words are ready.' : saved.error ? 'Local storage could not be checked.' : 'Checking local storage.'}</p></div></div>
       {saved.profile && <p className="resume-guidance">{saved.profile.text.length.toLocaleString()} characters · Saved {new Date(saved.profile.saved_at).toLocaleString()}</p>}
@@ -38,38 +65,15 @@ export function ResumePicker({ resume, saved }: { resume: ReturnType<typeof useR
       {saved.error && <p className="inline-error" role="alert">{saved.error}</p>}
       <p className="resume-notice" role="status" aria-live="polite">{saved.notice}</p>
     </section>
-    <section className="settings-panel resume-panel" aria-labelledby="resume-title">
-      <div className="settings-title"><span className="icon-tile lavender"><FileText size={20} /></span><div><h2 id="resume-title">Start with your resume.</h2><p>Your experience, under your control.</p></div></div>
-      <p id="resume-guidance" className="resume-guidance">PDF or Word (.docx), up to 10 MiB. Read text-based PDFs of up to 10 pages locally. Word body paragraphs and tables are supported. Scanned-PDF recognition is coming later.</p>
-      <input ref={input} type="file" hidden accept={RESUME_ACCEPT} aria-label="Choose a resume" onChange={event => {
-        const file = event.currentTarget.files?.[0];
-        if (!file) return;
-        const result = validateResumeSelection(file);
-        resume.setNotice('');
-        if (result.ok) resume.select(file, result.selection);
-        else resume.setError(`${result.error}${selection ? ' Your previous selection and review are kept.' : ''}`);
-        event.currentTarget.value = '';
-      }} />
-      {selection && <div className="resume-selection"><span className="icon-tile green"><FileText size={20} /></span><div><h3 className="resume-filename">{selection.name}</h3><p>{selection.format === 'pdf' ? 'PDF document' : 'Word document'} · {selection.size < 1024 ? `${selection.size} bytes` : `${(selection.size / 1024 / 1024).toLocaleString(undefined, { maximumFractionDigits: 2 })} MiB`} · This session only</p></div></div>}
-      <div className="resume-actions">
-        <button ref={chooseButton} className={`button ${selection ? 'secondary' : 'primary'}`} disabled={locked} aria-describedby="resume-guidance" onClick={() => input.current?.click()}>{selection ? 'Choose a different file' : 'Choose a resume'} <FileText size={16} /></button>
-        {selection && !document && !busy && <button className="button primary" disabled={saved.busy} onClick={() => void resume.extract()}>Extract text</button>}
-        {busy && <button className="button secondary" onClick={() => { resume.cancel(); requestAnimationFrame(() => chooseButton.current?.focus()); }}>Cancel extraction</button>}
-        {selection && !busy && <button className="button secondary" disabled={saved.busy} onClick={() => { resume.select(null); chooseButton.current?.focus(); }}>Remove document</button>}
-      </div>
-      {busy && <p className="import-progress"><LoaderCircle size={16} className="spinning" aria-hidden="true" /> Reading locally. You can keep using the workspace.</p>}
-      {resume.error && <p className="inline-error" role="alert">{resume.error}</p>}
-      <p className="resume-notice" role="status" aria-live="polite">{resume.notice}</p>
-      <p className="privacy-note resume-privacy"><LockKeyhole size={14} /><span>Your document is read only on this computer. The selected file and unsaved draft stay in memory until you remove the document or close the app. Removing or discarding a draft keeps any saved profile. Use Delete saved profile to remove saved text.</span></p>
-    </section>
-    {document && <section className="settings-panel resume-panel review-panel" aria-labelledby="review-title">
-      <div className="settings-title"><div><p className="eyebrow">CHECK THE DETAILS</p><h2 id="review-title">Your words, ready to review.</h2><p>{!selection ? 'Saved text loaded' : document.page_count === null ? 'Word body text read' : `${document.page_count} ${document.page_count === 1 ? 'page' : 'pages'} read`} · No AI changes</p></div></div>
+    </details>
+    {document && <details className="resume-review-details" open={!resume.reviewed}><summary>{resume.reviewed ? "Resume reviewed · Edit text" : "Review extracted resume text"}</summary><section className="settings-panel resume-panel review-panel" aria-labelledby="review-title">
+      <div className="settings-title"><div><p className="eyebrow">CHECK THE DETAILS</p><h2 id="review-title">Check your resume.</h2><p>{!selection ? 'Saved text loaded' : document.page_count === null ? 'Word body text read' : `${document.page_count} ${document.page_count === 1 ? 'page' : 'pages'} read`} · No AI changes</p></div></div>
       <p id="review-guidance" className="resume-guidance">Document layouts can change the reading order. Word headers, footers, images, and embedded files are not extracted. Correct the text below, mark it reviewed, then choose Save reviewed text. Closing the app clears unsaved edits. Saving replaces the previous saved text.</p>
       {document.empty_pages.length > 0 && <p className="inline-error" role="status">No readable text on {document.empty_pages.length === 1 ? 'page' : 'pages'} {document.empty_pages.join(', ')}. These pages may contain images or scans. Check the original for missing details.</p>}
       <label className="review-label" htmlFor="resume-text">Resume text</label>
       <textarea ref={editor} id="resume-text" className="review-editor" value={resume.text} maxLength={MAX_REVIEW_CHARACTERS} disabled={saved.busy} spellCheck={false} autoComplete="off" aria-describedby="review-guidance review-count" onChange={event => resume.edit(event.target.value)} />
       <p id="review-count" className="resume-notice">{resume.text.length.toLocaleString()} / {MAX_REVIEW_CHARACTERS.toLocaleString()} characters · {resume.reviewed ? 'Reviewed' : 'Awaiting your review'}</p>
-      <div className="resume-actions"><button className="button primary" disabled={saved.busy || !resume.text.trim() || resume.reviewed} onClick={resume.markReviewed}>{resume.reviewed ? 'Reviewed' : 'Mark reviewed'}</button><button className="button primary" disabled={locked || !saved.ready || !resume.reviewed || !resume.text.trim() || saved.profile?.text === resume.text} onClick={() => void saved.save(resume.text)}>{saved.profile?.text === resume.text ? 'Saved on this computer' : saved.profile ? 'Replace saved profile' : 'Save reviewed text'}</button><button className="button secondary" disabled={saved.busy} onClick={() => { resume.discardText(); chooseButton.current?.focus(); }}>Discard text and edits</button></div>
-    </section>}
+      <div className="resume-actions"><button className="button primary" disabled={saved.busy || !resume.text.trim() || resume.reviewed} onClick={resume.markReviewed}>{resume.reviewed ? 'Reviewed' : 'Continue to job preferences'}</button><button className="button secondary" disabled={locked || !saved.ready || !resume.reviewed || !resume.text.trim() || saved.profile?.text === resume.text} onClick={() => void saved.save(resume.text)}>{saved.profile?.text === resume.text ? 'Saved on this computer' : saved.profile ? 'Replace saved profile' : 'Save reviewed text'}</button><button className="button secondary" disabled={saved.busy} onClick={() => { resume.discardText(); chooseButton.current?.focus(); }}>Discard text and edits</button></div>
+    </section></details>}
   </>;
 }

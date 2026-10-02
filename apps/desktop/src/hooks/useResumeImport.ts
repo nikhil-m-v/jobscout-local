@@ -19,18 +19,22 @@ export function useResumeImport() {
   function clearText() {
     stop(); setDocument(null); setText(''); setReviewed(false); setError('');
   }
-  function select(file: File | null, metadata?: ResumeSelection) {
+  function select(file: File | null, metadata?: ResumeSelection, readImmediately = false) {
     clearText();
     setSelected(file && metadata ? { file, metadata } : null);
-    setNotice(file ? 'File selected. Choose Extract text to read it on this computer.' : 'Document and draft cleared. Any saved profile is kept; your original file is unchanged.');
+    if (file && metadata && readImmediately) void readFile(file);
+    setNotice(file ? (readImmediately ? 'Reading your resume locally…' : 'File selected. Choose Read resume to continue.') : 'Document and draft cleared. Any saved profile is kept; your original file is unchanged.');
   }
   async function extract() {
     if (!selected || busy) return;
+    await readFile(selected.file);
+  }
+  async function readFile(file: File) {
     const controller = new AbortController();
     active.current = controller;
     setBusy(true); setError(''); setNotice('Reading your document on this computer…');
     try {
-      const result = await extractResume(selected.file, controller.signal);
+      const result = await extractResume(file, controller.signal);
       if (active.current !== controller) return;
       setDocument(result); setText(result.text); setReviewed(false);
       setNotice('Text is ready to review. Check the reading order and correct anything missing.');

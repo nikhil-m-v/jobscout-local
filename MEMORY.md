@@ -1,6 +1,6 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-01. This is project memory for contributors and future assistant sessions, not a store for user information.
+Last checkpoint: 2026-10-02. This is project memory for contributors and future assistant sessions, not a store for user information.
 
 ## Direction
 
@@ -192,3 +192,32 @@ User reported that search/results did not appear available. Source review found 
 Next concrete action: open the latest rebuilt native application and exercise Discover: criteria, prepare preview, review and Send. Synthetic dispatch/results checks already pass and live usage-only authentication succeeds; actual search/native interaction remains unverified. Job-specific normalization/filtering, structured role/employer/location details, external-open actions, local ranking and larger shortlists are subsequent product building blocks.
 
 Signposting verification: frontend typecheck/production build, Rust release and rebuilt NSIS package pass (22.09 MiB); git diff --check passes. This low-impact copy change does not require new behavioral tests. Rebuilding does not update a previously installed copy; install the rebuilt package or explicitly launch the latest development build. No live search or interactive UI verification performed.
+
+## Discovery pages — 2026-10-02
+
+Replaced the long stacked Discover view with three separate pages: Resume, Job options, Results. A sticky, keyboard-accessible numbered navigation shows the current step and disables unavailable pages. Resume selection/existing local profile or explicit Search without a resume unlocks options; a completed search (including zero candidates) unlocks and opens results. Returning to earlier pages retains session inputs and reached steps. Criteria edits still clear stale preview/review/results and require preparing, reviewing and explicitly sending again. Cleared Results shows recovery guidance. Resume matching is explicitly still planned; no search query is derived from resume data.
+
+Evidence: frontend production build/typecheck and all 37 frontend tests pass; new renderer tests cover locked steps, backward availability, page separation, empty/cleared results and query context. Existing review/dispatch, cancellation and safe text rendering checks still pass. Locked dependencies restored with npm ci; no dependency or lockfile change. Browser automation and sandboxed shell could not initialize because of the Windows sandbox startup failure; checks used scoped shell escalation. No screenshot, interactive keyboard/theme/compact/native rendering verification or live provider call is claimed. No engine/native transport changes, commit or push.
+
+Next concrete action: verify the three-page flow interactively in light/dark and compact windows when browser automation works, then rebuild/relaunch the native app to try Resume/skip, options review/search, results, and revisions. Existing installed builds do not automatically receive these source changes. Continue normalization/filtering and local ranking after deliberate first-search evaluation.
+
+## Guided workspace redesign — 2026-10-02
+
+Replaced the overview/sidebar/planned pages with one Find jobs workspace and secondary Settings. Resume selection now automatically starts bounded local extraction. Text review reveals preferences in place; optional skills and saved-data controls are collapsed. Users may search without a resume. Query preview/review/explicit dispatch remain intact, and focus/scroll advances to preferences, query and results. Provider setup is available inline when unavailable; settings preserve the mounted resume workflow. No profile-derived query, automatic provider request, ranking claim, dependency addition or persistence change.
+
+Evidence: frontend typecheck/production build and 23 selection/criteria/preview/discovery/render tests pass. Browser inspection was attempted but the browser automation kernel failed during Windows sandbox initialization; screenshots, visual themes/window sizes and native interaction remain unverified. Changes are local and unpublished. Next: visually exercise synthetic upload/review/search/retry and inline provider setup in light/dark and narrow windows, then implement evidence-based local category suggestions/ranking so resume-assisted discovery actually reduces manual effort.
+
+Landing UI follow-up (2026-10-02): made the resume chooser visually dominant with a centered headline/card, large accent Choose resume action, short format guidance and one-line local-privacy reassurance. Expanded file/privacy prose is behind a disclosure; the redundant home navigation button is removed. Source contains no View privacy & setup action; an installed older build needs updating separately. Frontend build/typecheck and diff whitespace checks pass. Updated preview opened; automation visual verification remains unavailable. Native rebuilding is not completed in this worktree (engine development environment is absent).
+
+Post-crash checkpoint (2026-10-02): redesign source and documentation survived. Re-ran frontend production build/typecheck, all 23 selection/criteria/preview/discovery/render checks and git diff --check successfully. Changes remain uncommitted/unpublished; native packaging and interactive visual verification are still pending. The Windows crash cause was not investigated or attributed to JobScout.
+
+Checkout synchronization (2026-10-02): diagnosed old landing UI in the clean primary checkout while the redesign existed only in the isolated worktree. Applied all eight redesign files to primary checkout after confirming matching base revision and no local edits. Production frontend build, 23 checks and whitespace validation pass there. Native packaging started in primary checkout; wait for completion before claiming the executable is updated. Changes remain uncommitted and unpublished.
+
+Synchronization completion: native release compilation and NSIS packaging passed in the primary checkout with the redesigned frontend. The new release executable and installer are available; existing installed shortcuts and already-running windows remain separate copies. No interactive native verification or installer execution was performed.
+
+
+## Combined workspace publication — 2026-10-02
+
+User authorized publishing the UI changes to the repository's default branch (main). This worktree started detached at the local main signposting commit; the remote was six prerequisite commits behind. The primary checkout also contained a newer uncommitted focused landing redesign. Integrated that redesign (automatic local resume extraction, collapsed optional controls, inline provider setup and two-page workspace) with the requested clickable Resume / Job options / Results pages before publication, avoiding restoration of the older sidebar/Overview UI. Initial screen is now the resume page. Frontend build/typecheck, all 37 frontend checks and whitespace validation pass for the combined source. No private data, provider requests or new dependencies. Interactive visual/native behavior remains unverified because automation failed to initialize.
+
+The earlier Discovery pages note describes the first implementation; this combined version supersedes its Overview/sidebar placement. Publication and native build results will be verified next. Preserve the primary checkout's original uncommitted redesign in a recoverable Git stash before fast-forwarding it to the combined commit; do not discard it or unrelated work. An already-running/installed app still needs reopening from the fresh build or installer.

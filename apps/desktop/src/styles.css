@@ -271,3 +271,58 @@ svg { flex-shrink: 0; }
 .discovery-results li + li { border-top: 1px solid var(--line); margin-top: 20px; padding-top: 20px; }
 .discovery-results h3 { overflow-wrap: anywhere; }
 .discovery-snippet { white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.65; user-select: text; -webkit-user-select: text; }
+
+/* One workspace: resume, preferences, and results. */
+.focused-shell .topbar { position: sticky; top: 0; z-index: 5; background: var(--canvas); }
+.focused-shell .main-content { max-width: 900px; }
+.flow-nav { display: flex; gap: 8px; }
+.flow-nav [aria-current="page"] { background: var(--selected); color: var(--ink); }
+.flow-steps { list-style: none; display: flex; gap: 28px; padding: 0; margin: 0 0 28px; color: var(--muted); }
+.flow-steps li { display: flex; align-items: center; gap: 8px; }
+.flow-steps span { display: grid; place-items: center; width: 27px; height: 27px; border-radius: 50%; border: 1px solid var(--line); font-size: 12px; }
+.flow-steps [aria-current="step"] { color: var(--accent); font-weight: 600; }
+.flow-steps [aria-current="step"] span { background: var(--accent); color: var(--canvas); border-color: var(--accent); }
+.saved-profile-details, .resume-review-details, .inline-setup { margin: 16px 0; }
+.find-workspace summary { cursor: pointer; padding: 14px 0; color: var(--muted); }
+.find-workspace summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.optional-skills { margin: 12px 0; }
+.manual-search { margin: 20px 0; }
+.search-stage { scroll-margin-top: 90px; }
+.find-workspace .review-editor { min-height: 180px; max-height: 320px; }
+.find-workspace .settings-panel { margin-bottom: 16px; }
+@media (max-width: 600px) {
+  .focused-shell .topbar { padding: 12px 16px; gap: 8px; flex-wrap: wrap; }
+  .focused-shell .brand { font-size: 20px; padding: 0; }
+  .focused-shell .main-content { padding: 24px 16px; }
+  .flow-nav .button { padding: 10px 12px; }
+  .flow-steps { gap: 12px; font-size: 12px; }
+  .flow-steps li { gap: 5px; }
+}
+
+.query-preview, .results-panel { scroll-margin-top: 90px; }
+.focused-shell [hidden] { display: none !important; }
+
+/* The landing screen puts the resume action ahead of setup. */
+.search-intro { text-align: center; justify-content: center; margin: 28px 0 32px; }
+.search-intro h1 { font-size: clamp(32px, 5vw, 48px); letter-spacing: -.045em; }
+.search-intro .muted { max-width: 480px; margin: 14px auto 0; }
+.find-workspace .flow-steps { justify-content: center; margin-bottom: 32px; }
+.find-workspace .upload-panel:not(.has-resume) { text-align: center; padding: 40px 28px 24px; border-radius: 24px; background: var(--card); box-shadow: var(--shadow); }
+.upload-panel:not(.has-resume) .settings-title { flex-direction: column; gap: 16px; }
+.upload-panel:not(.has-resume) .settings-title .icon-tile { width: 56px; height: 56px; border-radius: 16px; }
+.upload-panel:not(.has-resume) .settings-title h2 { font-size: 24px; }
+.upload-panel:not(.has-resume) .resume-actions { justify-content: center; margin: 24px 0 16px; }
+.upload-panel:not(.has-resume) .button.primary { min-height: 52px; min-width: 230px; font-size: 16px; background: var(--accent); color: var(--canvas); }
+.upload-panel:not(.has-resume) .button.primary:hover { filter: brightness(.94); }
+.upload-reassurance { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 12px; color: var(--muted); margin-top: 12px; }
+.upload-help summary { font-size: 12px; }
+.upload-help p { text-align: left; }
+.find-workspace > .saved-profile-details, .find-workspace > .manual-search { font-size: 12px; }
+@media (max-width: 600px) { .search-intro { margin-top: 16px; } .find-workspace .upload-panel:not(.has-resume) { padding: 28px 16px 20px; } }
+.discovery-steps { position: sticky; top: 94px; z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 8px; margin-bottom: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--canvas); }
+.discovery-step { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 10px; border: 1px solid transparent; border-radius: 12px; color: var(--muted); background: transparent; }
+.discovery-step:hover:not(:disabled) { background: var(--hover); color: var(--ink); }
+.discovery-step.active { background: var(--selected); border-color: var(--accent); color: var(--ink); font-weight: 600; }
+.step-number { flex-shrink: 0; display: grid; place-items: center; width: 24px; height: 24px; border: 1px solid var(--line); border-radius: 50%; font-size: 11px; }
+.journey-intro { max-width: 800px; }
+@media (max-width: 620px) { .discovery-steps { top: 84px; gap: 3px; padding: 5px; } .discovery-step { flex-direction: column; gap: 4px; padding: 8px 2px; font-size: 11px; } }
