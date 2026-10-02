@@ -5,7 +5,7 @@ import { MAX_REVIEW_CHARACTERS } from '../lib/resume-import';
 import type { useSavedProfile } from '../hooks/useSavedProfile';
 import type { useResumeImport } from '../hooks/useResumeImport';
 
-export function ResumePicker({ resume, saved, onSearchWithoutResume }: { resume: ReturnType<typeof useResumeImport>; saved: ReturnType<typeof useSavedProfile>; onSearchWithoutResume?: () => void }) {
+export function ResumePicker({ resume, saved, onSearchWithoutResume, onResumeReviewed }: { resume: ReturnType<typeof useResumeImport>; saved: ReturnType<typeof useSavedProfile>; onSearchWithoutResume?: () => void; onResumeReviewed?: () => void }) {
   const { selection, document, busy } = resume;
   const [confirmDelete, setConfirmDelete] = useState(false);
   const locked = busy || saved.busy || !saved.connected;
@@ -73,7 +73,7 @@ export function ResumePicker({ resume, saved, onSearchWithoutResume }: { resume:
       <label className="review-label" htmlFor="resume-text">Resume text</label>
       <textarea ref={editor} id="resume-text" className="review-editor" value={resume.text} maxLength={MAX_REVIEW_CHARACTERS} disabled={saved.busy} spellCheck={false} autoComplete="off" aria-describedby="review-guidance review-count" onChange={event => resume.edit(event.target.value)} />
       <p id="review-count" className="resume-notice">{resume.text.length.toLocaleString()} / {MAX_REVIEW_CHARACTERS.toLocaleString()} characters · {resume.reviewed ? 'Reviewed' : 'Awaiting your review'}</p>
-      <div className="resume-actions"><button className="button primary" disabled={saved.busy || !resume.text.trim() || resume.reviewed} onClick={resume.markReviewed}>{resume.reviewed ? 'Reviewed' : 'Continue to job preferences'}</button><button className="button secondary" disabled={locked || !saved.ready || !resume.reviewed || !resume.text.trim() || saved.profile?.text === resume.text} onClick={() => void saved.save(resume.text)}>{saved.profile?.text === resume.text ? 'Saved on this computer' : saved.profile ? 'Replace saved profile' : 'Save reviewed text'}</button><button className="button secondary" disabled={saved.busy} onClick={() => { resume.discardText(); chooseButton.current?.focus(); }}>Discard text and edits</button></div>
+      <div className="resume-actions"><button className="button primary" disabled={saved.busy || !resume.text.trim() || resume.reviewed} onClick={() => { resume.markReviewed(); onResumeReviewed?.(); }}>{resume.reviewed ? 'Reviewed' : 'Continue to job preferences'}</button><button className="button secondary" disabled={locked || !saved.ready || !resume.reviewed || !resume.text.trim() || saved.profile?.text === resume.text} onClick={() => void saved.save(resume.text)}>{saved.profile?.text === resume.text ? 'Saved on this computer' : saved.profile ? 'Replace saved profile' : 'Save reviewed text'}</button><button className="button secondary" disabled={saved.busy} onClick={() => { resume.discardText(); chooseButton.current?.focus(); }}>Discard text and edits</button></div>
     </section></details>}
   </>;
 }
