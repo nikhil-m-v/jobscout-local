@@ -319,10 +319,14 @@ svg { flex-shrink: 0; }
 .upload-help p { text-align: left; }
 .find-workspace > .saved-profile-details, .find-workspace > .manual-search { font-size: 12px; }
 @media (max-width: 600px) { .search-intro { margin-top: 16px; } .find-workspace .upload-panel:not(.has-resume) { padding: 28px 16px 20px; } }
-.discovery-steps { position: sticky; top: 94px; z-index: 2; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; padding: 8px; margin-bottom: 24px; border: 1px solid var(--line); border-radius: 18px; background: var(--canvas); }
-.discovery-step { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 48px; padding: 10px; border: 1px solid transparent; border-radius: 12px; color: var(--muted); background: transparent; }
-.discovery-step:hover:not(:disabled) { background: var(--hover); color: var(--ink); }
-.discovery-step.active { background: var(--selected); border-color: var(--accent); color: var(--ink); font-weight: 600; }
+.discovery-steps { position: sticky; top: 94px; z-index: 2; display: flex; justify-content: center; gap: clamp(12px, 4vw, 40px); padding: 8px 0; margin-bottom: 24px; background: var(--canvas); }
+.discovery-step { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 44px; padding: 8px 4px; color: var(--muted); background: transparent; }
+.discovery-step:hover:not(:disabled) { color: var(--accent); }
+.discovery-step:disabled { cursor: default; pointer-events: none; }
+.discovery-step.active { color: var(--accent); font-weight: 600; text-shadow: 0 0 12px color-mix(in srgb, var(--accent) 24%, transparent); }
+.discovery-step.active .step-number { border-color: color-mix(in srgb, var(--accent) 55%, transparent); background: color-mix(in srgb, var(--accent) 8%, transparent); box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 12%, transparent); }
 .step-number { flex-shrink: 0; display: grid; place-items: center; width: 24px; height: 24px; border: 1px solid var(--line); border-radius: 50%; font-size: 11px; }
-.journey-intro { max-width: 800px; }
+.journey-actions { display: flex; flex-direction: column; align-items: center; gap: 14px; margin: 20px 0; }
+.resume-skip-link { color: var(--accent); font-size: 12px; text-decoration: none; padding: 8px 0; }
+.resume-skip-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 620px) { .discovery-steps { top: 84px; gap: 3px; padding: 5px; } .discovery-step { flex-direction: column; gap: 4px; padding: 8px 2px; font-size: 11px; } }

@@ -18,16 +18,13 @@ export function DiscoveryJourney({ step, navigate, optionsAvailable, resultsAvai
   return <>
     <nav className="discovery-steps" aria-label="Job search steps">
       {([['resume', 'Resume', true], ['options', 'Job options', optionsAvailable], ['results', 'Results', resultsAvailable]] as const).map(([id, label, available], index) =>
-        <button type="button" key={id} className={`discovery-step ${step === id ? 'active' : ''}`} disabled={!available} aria-current={step === id ? 'step' : undefined} onClick={() => navigate(id)} title={!available ? id === 'options' ? 'Choose a resume or continue without one first' : 'Complete a search first' : label}>
+        <button type="button" key={id} className={`discovery-step ${step === id ? 'active' : ''}`} disabled={!available} aria-current={step === id ? 'step' : undefined} onClick={available ? () => navigate(id) : undefined}>
           <span className="step-number">{index + 1}</span><span>{label}</span>
         </button>)}
     </nav>
     {step === 'resume' ? <>
-      <section className="settings-panel journey-intro"><h2>Start your search.</h2><p className="criteria-help">Bring a resume or search without one. Current searches use your reviewed public choices; resume matching comes later.</p>
-        <div className="criteria-actions"><button className="button primary" type="button" disabled={!optionsAvailable} onClick={() => navigate('options')}>Continue to job options</button><button className="button secondary" type="button" onClick={continueWithoutResume}>Search without a resume</button></div>
-      </section>
       <ResumePicker resume={resume} saved={saved} />
-      <div className="criteria-actions"><button className="button primary" type="button" disabled={!optionsAvailable} onClick={() => navigate('options')}>Continue to job options</button></div>
+      <div className="journey-actions">{optionsAvailable && <button className="button primary" type="button" onClick={() => navigate('options')}>Continue to job options</button>}<a className="resume-skip-link" href="#job-options" onClick={event => { event.preventDefault(); continueWithoutResume(); }}>Search without a resume</a></div>
     </> : step === 'options' ? <><SearchCriteria criteria={criteria} searchPreview={searchPreview} discovery={discovery} onChange={onChange} />{searchPreview.preview?.provider !== 'tavily' && <details className="inline-setup"><summary>Set up online search</summary><SearchProviderSettings connected={searchPreview.connected} /></details>}</> : <SearchResults discovery={discovery} />}
   </>;
 }
