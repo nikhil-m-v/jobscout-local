@@ -330,3 +330,33 @@ svg { flex-shrink: 0; }
 .resume-skip-link { color: var(--accent); font-size: 12px; text-decoration: none; padding: 8px 0; }
 .resume-skip-link:hover { text-decoration: underline; text-underline-offset: 3px; }
 @media (max-width: 620px) { .discovery-steps { top: 84px; gap: 3px; padding: 5px; } .discovery-step { flex-direction: column; gap: 4px; padding: 8px 2px; font-size: 11px; } }
+
+.focused-shell .main-content { padding-top: 22px; padding-bottom: 22px; }
+.search-intro { margin: 12px 0 18px; }
+.search-intro h1 { font-size: clamp(28px, 4vw, 40px); }
+.search-intro .muted { margin-top: 8px; }
+.discovery-steps { margin-bottom: 16px; padding-top: 4px; padding-bottom: 4px; }
+.find-workspace .settings-panel { padding: 20px; margin-bottom: 14px; }
+.find-workspace .settings-title { padding-bottom: 14px; }
+.find-workspace .upload-panel:not(.has-resume) { padding: 26px 22px 18px; }
+.upload-panel:not(.has-resume) .settings-title { gap: 10px; }
+.upload-panel:not(.has-resume) .settings-title .icon-tile { width: 44px; height: 44px; }
+.upload-panel:not(.has-resume) .resume-actions { margin: 18px 0 10px; }
+.resume-choice { display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.resume-choice .resume-skip-link { padding: 7px 0; }
+.find-workspace .resume-notice:empty { display: none; }
+.find-workspace .resume-guidance { padding-top: 14px; }
+.find-workspace .resume-actions { align-items: flex-start; }
+.search-card { max-width: 800px; margin-left: auto; margin-right: auto; perspective: 1200px; }
+.search-card-switch { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 18px; border-bottom: 1px solid var(--line); }
+.search-card-switch button { padding: 10px 0; background: transparent; color: var(--muted); border-bottom: 2px solid transparent; }
+.search-card-switch button[aria-pressed="true"] { color: var(--accent); border-bottom-color: var(--accent); }
+.search-card-face { animation: card-flip .18s ease-out both; }
+@keyframes card-flip { from { opacity: .5; transform: rotateY(30deg); } to { opacity: 1; transform: rotateY(0); } }
+.search-card .criteria-grid { gap: 14px; }
+.search-card .criteria-help { margin: 10px 0; }
+.query-label { margin: 0 0 6px; font-size: 13px; }
+.query-editor { display: block; width: 100%; margin-top: 0; min-height: 100px; max-height: 180px; resize: vertical; padding: 12px; color: var(--ink); font: inherit; font-size: 14px; line-height: 1.6; }
+.query-editor:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.search-disclosure summary { font-size: 12px; }
+.find-workspace .review-editor { min-height: 220px; max-height: 55vh; }

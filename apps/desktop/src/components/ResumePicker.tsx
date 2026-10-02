@@ -5,7 +5,7 @@ import { MAX_REVIEW_CHARACTERS } from '../lib/resume-import';
 import type { useSavedProfile } from '../hooks/useSavedProfile';
 import type { useResumeImport } from '../hooks/useResumeImport';
 
-export function ResumePicker({ resume, saved }: { resume: ReturnType<typeof useResumeImport>; saved: ReturnType<typeof useSavedProfile> }) {
+export function ResumePicker({ resume, saved, onSearchWithoutResume }: { resume: ReturnType<typeof useResumeImport>; saved: ReturnType<typeof useSavedProfile>; onSearchWithoutResume?: () => void }) {
   const { selection, document, busy } = resume;
   const [confirmDelete, setConfirmDelete] = useState(false);
   const locked = busy || saved.busy || !saved.connected;
@@ -36,7 +36,7 @@ export function ResumePicker({ resume, saved }: { resume: ReturnType<typeof useR
       }} />
       {selection && <div className="resume-selection"><span className="icon-tile green"><FileText size={20} /></span><div><h3 className="resume-filename">{selection.name}</h3><p>{selection.format === 'pdf' ? 'PDF document' : 'Word document'} · {selection.size < 1024 ? `${selection.size} bytes` : `${(selection.size / 1024 / 1024).toLocaleString(undefined, { maximumFractionDigits: 2 })} MiB`} · This session only</p></div></div>}
       <div className="resume-actions">
-        <button ref={chooseButton} className={`button ${selection ? 'secondary' : 'primary'}`} disabled={locked} aria-describedby="resume-guidance" onClick={() => input.current?.click()}>{selection ? 'Choose a different file' : 'Choose resume'} <FileText size={16} /></button>
+        <div className="resume-choice"><button ref={chooseButton} className={`button ${selection ? 'secondary' : 'primary'}`} disabled={locked} aria-describedby="resume-guidance" onClick={() => input.current?.click()}>{selection ? 'Choose a different file' : 'Choose resume'} <FileText size={16} /></button>{onSearchWithoutResume && <a className="resume-skip-link" href="#job-options" onClick={event => { event.preventDefault(); onSearchWithoutResume(); }}>Search without a resume</a>}</div>
         {selection && !document && !busy && <button className="button primary" disabled={saved.busy} onClick={() => void resume.extract()}>Read resume again</button>}
         {busy && <button className="button secondary" onClick={() => { resume.cancel(); requestAnimationFrame(() => chooseButton.current?.focus()); }}>Cancel extraction</button>}
         {selection && !busy && <button className="button secondary" disabled={saved.busy} onClick={() => { resume.select(null); chooseButton.current?.focus(); }}>Remove document</button>}

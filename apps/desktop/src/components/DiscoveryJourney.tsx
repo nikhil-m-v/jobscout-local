@@ -23,8 +23,8 @@ export function DiscoveryJourney({ step, navigate, optionsAvailable, resultsAvai
         </button>)}
     </nav>
     {step === 'resume' ? <>
-      <ResumePicker resume={resume} saved={saved} />
-      <div className="journey-actions">{optionsAvailable && <button className="button primary" type="button" onClick={() => navigate('options')}>Continue to job options</button>}<a className="resume-skip-link" href="#job-options" onClick={event => { event.preventDefault(); continueWithoutResume(); }}>Search without a resume</a></div>
+      <ResumePicker resume={resume} saved={saved} onSearchWithoutResume={continueWithoutResume} />
+      {optionsAvailable && <div className="journey-actions"><button className="button primary" type="button" onClick={() => navigate('options')}>Continue to job options</button></div>}
     </> : step === 'options' ? <><SearchCriteria criteria={criteria} searchPreview={searchPreview} discovery={discovery} onChange={onChange} />{searchPreview.preview?.provider !== 'tavily' && <details className="inline-setup"><summary>Set up online search</summary><SearchProviderSettings connected={searchPreview.connected} /></details>}</> : <SearchResults discovery={discovery} />}
   </>;
 }
