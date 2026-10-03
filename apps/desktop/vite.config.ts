@@ -6,7 +6,7 @@ export default defineConfig({
     name: 'local-import-boundary',
     configureServer(server) {
       server.middlewares.use((request, response, next) => {
-        if ((request.url?.startsWith('/engine/imports') || request.url?.startsWith('/engine/profile') || request.url?.startsWith('/engine/search') || request.url?.startsWith('/engine/providers')) && request.headers['x-jobscout-import'] !== '1') {
+        if ((request.url?.startsWith('/engine/imports') || request.url?.startsWith('/engine/profile') || request.url?.startsWith('/engine/search') || request.url?.startsWith('/engine/providers') || request.url?.startsWith('/engine/assistance')) && request.headers['x-jobscout-import'] !== '1') {
           response.statusCode = 403;
           response.end();
           return;
@@ -24,7 +24,7 @@ export default defineConfig({
     watch: { ignored: ['**/src-tauri/target/**', '**/src-tauri/binaries/**'] },
     proxy: process.env.JOBSCOUT_ENGINE_URL ? {
       // Expose only fixed local routes, never a general engine/network proxy.
-      '^/engine/(health|profile|search(/preview)?|providers/tavily(/check)?|imports(/[0-9a-f-]{36}(/(pdf|docx))?)?)$': {
+      '^/engine/(health|profile|assistance|search(/preview)?|providers/tavily(/check)?|imports(/[0-9a-f-]{36}(/(pdf|docx))?)?)$': {
         target: process.env.JOBSCOUT_ENGINE_URL,
         rewrite: path => path.replace(/^\/engine/, '/api/v1'),
         headers: { Authorization: `Bearer ${process.env.JOBSCOUT_SESSION_TOKEN}` },

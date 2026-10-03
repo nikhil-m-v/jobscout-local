@@ -4,6 +4,7 @@ import { SearchProviderSettings } from './components/SearchProviderSettings';
 import { initialCriteria, type PublicSearchCriteria } from './lib/public-search-criteria';
 import { useSearchPreview } from './hooks/useSearchPreview';
 import { useDiscovery } from './hooks/useDiscovery';
+import { useAssistance } from './hooks/useAssistance';
 import { ArrowUpRight, CircleHelp, LockKeyhole, Monitor, Moon, RefreshCw, Settings2, ShieldCheck, Sparkles, Sun } from 'lucide-react';
 import { useEngine } from './hooks/useEngine';
 import { useAppearance, type Appearance } from './hooks/useAppearance';
@@ -69,19 +70,48 @@ export function App() {
   const [optionsReached, setOptionsReached] = useState(false);
   const [resultsReached, setResultsReached] = useState(false);
   const [criteria, setCriteria] = useState<PublicSearchCriteria>(initialCriteria);
+  const [searchMode, setSearchMode] = useState<'resume' | 'manual' | null>(null);
+  const [reviewedText, setReviewedText] = useState('');
 
   const resume = useResumeImport();
   const engine = useEngine();
   const searchPreview = useSearchPreview(Boolean(engine.health));
   const discovery = useDiscovery(Boolean(engine.health));
+  const assistance = useAssistance(Boolean(engine.health));
+  const resultAnalysis = useAssistance(Boolean(engine.health));
+  const startManual = () => {
+    assistance.invalidate(); resultAnalysis.invalidate(); searchPreview.invalidate(); discovery.invalidate();
+    setSearchMode('manual'); setReviewedText(''); setCriteria(initialCriteria);
+    setOptionsReached(true); setDiscoveryStep('options');
+  };
+  const startAssisted = async () => {
+    searchPreview.invalidate(); discovery.invalidate(); resultAnalysis.invalidate();
+    setSearchMode('resume'); setReviewedText(resume.text); setOptionsReached(true); setDiscoveryStep('options');
+    const suggestion = await assistance.analyze(resume.text);
+    if (!suggestion) return;
+    const next = suggestion.criteria ?? { ...initialCriteria, skills: suggestion.skills.slice(0, 5) };
+    setCriteria(next);
+    // No role evidence means manual selection is required; never send a guessed role.
+    if (suggestion.criteria) searchPreview.generate(next);
+  };
+  useEffect(() => {
+    if (searchMode === 'resume' && (!resume.reviewed || resume.text !== reviewedText)) {
+      assistance.invalidate(); resultAnalysis.invalidate(); searchPreview.invalidate(); discovery.invalidate();
+      setSearchMode(null); setReviewedText(''); setOptionsReached(false); setResultsReached(false); setDiscoveryStep('resume');
+    }
+  }, [resume.text, resume.reviewed, searchMode, reviewedText, assistance.invalidate, resultAnalysis.invalidate, searchPreview.invalidate, discovery.invalidate]);
+  useEffect(() => {
+    resultAnalysis.invalidate();
+    if (discovery.result) void resultAnalysis.analyze(searchMode === 'resume' ? reviewedText : '', discovery.result.candidates);
+  }, [discovery.result, searchMode, reviewedText, resultAnalysis.analyze, resultAnalysis.invalidate]);
   const setPage = (next: Page) => {
     // Settings can change the saved provider; discard its old preview and review first.
-    if (next === 'settings') { searchPreview.invalidate(); discovery.invalidate(); }
+    if (next === 'settings') { if (assistance.busy) assistance.invalidate(); searchPreview.invalidate(); discovery.invalidate(); }
     setCurrentPage(next);
   };
   const saved = useSavedProfile(Boolean(engine.health));
   const { appearance, changeAppearance } = useAppearance();
-  const optionsAvailable = optionsReached || Boolean(resume.selection || resume.document || saved.profile);
+  const optionsAvailable = optionsReached && (searchMode === 'manual' || (searchMode === 'resume' && resume.reviewed && resume.text === reviewedText));
   const navigateStep = (next: DiscoveryStep) => {
     if ((next === 'options' && !optionsAvailable) || (next === 'results' && !resultsReached)) return;
     if (next === 'options') setOptionsReached(true);
@@ -101,8 +131,8 @@ export function App() {
     <div className="workspace"><header className="topbar"><a href="#" className="brand" onClick={event => { event.preventDefault(); setPage('discover'); }} aria-label="JobScout home"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><nav className="flow-nav" aria-label="Main navigation">{page === 'settings' && <button className="button secondary" onClick={() => setPage('discover')}>Back to job search</button>}<button className="button secondary" aria-current={page === 'settings' ? 'page' : undefined} onClick={() => setPage('settings')}><Settings2 size={16} />Settings</button></nav></header>
     <main id="main-content" className="main-content" tabIndex={-1}>
       <div hidden={page !== 'discover'} className="find-workspace">
-        <div className="page-heading search-intro"><div><h1>{discoveryStep === 'resume' ? 'Start with your resume.' : discoveryStep === 'options' ? 'Choose your job options.' : 'Your search results.'}</h1><p className="muted">{discoveryStep === 'resume' ? 'Choose a file to read and review on this computer.' : discoveryStep === 'options' ? 'Review your public preferences before searching.' : 'Explore candidates or revise your search.'}</p></div></div>
-        <DiscoveryJourney step={discoveryStep} navigate={navigateStep} optionsAvailable={optionsAvailable} resultsAvailable={resultsReached} continueWithoutResume={() => { setOptionsReached(true); setDiscoveryStep('options'); }} resume={resume} saved={saved} criteria={criteria} discovery={discovery} searchPreview={searchPreview} onChange={value => { searchPreview.invalidate(); discovery.invalidate(); setCriteria(value); }} />
+        <div className="page-heading search-intro"><div><h1>{discoveryStep === 'resume' ? 'Start with your resume.' : discoveryStep === 'options' ? searchMode === 'resume' ? 'Review your suggested search.' : 'Choose your job options.' : 'Your search results.'}</h1><p className="muted">{discoveryStep === 'resume' ? 'Choose a file to read and review on this computer.' : discoveryStep === 'options' ? 'Review the public categories and exact query before searching.' : 'Refine candidates with local filters and evidence.'}</p></div></div>
+        <DiscoveryJourney step={discoveryStep} navigate={navigateStep} optionsAvailable={optionsAvailable} resultsAvailable={resultsReached} continueWithoutResume={startManual} onResumeReviewed={() => void startAssisted()} assisted={searchMode === 'resume'} assistance={assistance} resultAnalysis={resultAnalysis} retryResultAnalysis={() => { if (discovery.result) void resultAnalysis.analyze(searchMode === 'resume' ? reviewedText : '', discovery.result.candidates); }} resume={resume} saved={saved} criteria={criteria} discovery={discovery} searchPreview={searchPreview} onChange={value => { searchPreview.invalidate(); discovery.invalidate(); setCriteria(value); }} />
       </div>
       {page === 'settings' && <Settings engine={engine} appearance={appearance} changeAppearance={changeAppearance} />}
     </main><footer className="workspace-footer"><span><LockKeyhole size={12} /> Resume stays on this computer</span><EngineBadge engine={engine} /></footer></div>

@@ -59,6 +59,8 @@ Also verify deletion of all app-owned copies, derived text, indexes, caches, and
 
 ## Result normalization
 
+Reviewed resume text can now be analysed through a separate authenticated local assistance route. Fixed word/alias rules suggest only supported public role/skill identifiers. Users see the category summary and engine query before explicit dispatch and can correct categories or use manual preferences. The assistance module has no provider, credential or database access; it stores nothing. Region, seniority and work preference are not inferred from private text. Candidate titles/snippets can be analysed locally for category mentions and compared with resume skill categories for transparent ordering and result filters. Private input, category analysis and result filters never become extra provider fields. See [decision 0015](architecture/0015-two-path-local-discovery.md). No LLM summary or model inference is implemented in this slice.
+
 Search result links are normalized and deduplicated locally: known tracking parameters and fragments are removed while job identifiers and unknown parameters remain. Source domains are displayed as plain text; the app does not resolve or fetch them. Retrieval timestamps come from the local engine and do not establish when a listing was posted or whether it is still open. Duplicate counts apply only to canonical links in one response. No normalization data is sent to providers or saved as durable search history. See [decision 0014](architecture/0014-candidate-link-normalization.md).
 
 ## Current saved-text controls

@@ -47,6 +47,8 @@ Prefer reusing an existing compatible Ollama installation. Treat its model stora
 
 ## Model selection
 
+Core discovery now has two model-free entry paths: reviewed resume text produces local supported-category suggestions and an automatic query preview; skipping a resume uses manual preferences/skills. Results offer local snippet-category filters and shared-skill ordering. No new setup permission, secret, model or storage path is required. Explain the limited catalog and word-based uncertainty, with retry/manual recovery when assistance is unavailable. A future local-LLM summary must remain optional, require compatible model selection through this guided setup, preserve the deterministic fallback, and never copy private prose into provider queries. Upgrades package the assistance engine and frontend/native bridge together, with no database migration.
+
 Each model card displays the exact model/version, license link, download size, recommended memory guidance, supported languages, and a plain explanation of the quality/speed tradeoff. Suggested groups are Lightweight and Balanced; the final default depends on measured device compatibility. CPU use must remain possible when supported, with an honest notice that analysis may take longer.
 
 Maintain a versioned, reviewed model catalog. Verify licenses before labeling a model open source; distinguish open weights when its license does not meet the project's open-source policy. Do not promise unlimited redistribution. Provide separate chat and embedding selections, with a sensible embedding default and an explanation: "This smaller model helps find relevant parts of your resume and job descriptions."

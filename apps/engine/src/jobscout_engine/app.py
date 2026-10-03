@@ -17,6 +17,7 @@ from jobscout_engine.adapters.secrets import SecretStore, SecretStoreUnavailable
 from jobscout_engine.adapters.tavily import TavilyConnection, ProviderCheckFailure
 from jobscout_engine.adapters.tavily_search import TavilySearch
 from jobscout_engine.domain.discovery import SearchProvider, DiscoveryFailure
+from jobscout_engine.domain.assistance import analyze_review
 from jobscout_engine.domain.providers import MAX_PROVIDER_BODY_BYTES, validate_tavily_key, provider_status
 from jobscout_engine.config import Settings
 from jobscout_engine.domain.contracts import EngineHealth, ModelProvider
@@ -157,6 +158,23 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
             return profile_response({"error": "secret_store_unavailable"}, 503)
         except ProviderCheckFailure as error:
             return profile_response({"error": error.code}, 503)
+
+    @application.post("/api/v1/assistance", dependencies=[Depends(require_session)])
+    async def local_assistance(request: Request):
+        async def read_review():
+            body = bytearray()
+            async for chunk in request.stream():
+                if len(body) + len(chunk) > 2_300_000:
+                    raise ValueError()
+                body.extend(chunk)
+            return json.loads(body, object_pairs_hook=reject_duplicate_keys)
+        try:
+            if request.headers.get('content-type') != 'application/json':
+                raise ValueError()
+            value = await asyncio.wait_for(read_review(), timeout=10)
+            return profile_response(await run_in_threadpool(analyze_review, value))
+        except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
+            return profile_response({'error': 'invalid_local_review'}, 422)
 
     @application.post("/api/v1/search/preview", dependencies=[Depends(require_session)])
     async def preview_search(request: Request):
