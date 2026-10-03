@@ -12,7 +12,7 @@ Latest continuation: milestone 17 now includes exact shared-category phrases fro
 
 Build an open-source Windows job finder that keeps personal career information local. Think big, act small: one useful, reviewable improvement per session. The UI matters from the first increment: minimal Apple-inspired glass, responsive layouts, Light/Dark/System appearance, keyboard access, and smooth background work.
 
-The governing promise is in [docs/privacy.md](docs/privacy.md). Resumes, profiles, embeddings, and AI analysis never go to online providers. Generic, reviewed job criteria may be sent when online discovery is implemented. Do not promise network anonymity: IP metadata and provider-account association remain visible.
+The governing promise is in [docs/privacy.md](docs/privacy.md). Resumes, profiles, embeddings and AI analysis never go to online providers. Implemented explicit discovery sends only reviewed generic job criteria. Do not promise network anonymity: IP metadata and provider-account association remain visible.
 
 ## Current state
 
@@ -21,15 +21,15 @@ The governing promise is in [docs/privacy.md](docs/privacy.md). Resumes, profile
 - React/TypeScript/Vite UI; Tauri 2 Windows shell configured; Python/FastAPI engine; SQLite startup; replaceable Ollama health adapter.
 - Browser preview starts the real local engine, uses session authentication, and shows actual engine/storage/runtime status.
 - Windows development prerequisites are installed: Rust/Cargo stable MSVC, Visual Studio C++ Desktop workload, and the documented Python desktop extra. Native NSIS installer generation succeeds; installer execution and upgrade behavior remain unverified.
-- Overview, Settings, and labeled planned-feature pages exist. Appearance is saved locally through a styled Settings control. The sidebar uses a more translucent glass fill, page changes use a brief reduced-motion-aware transition, and static UI text is not selectable. Glass has opaque and accessibility fallbacks.
-- My profile selects a local PDF/DOCX up to 10 MiB. Text-based PDFs (up to 10 pages and bounded extracted text) can be read by a disposable local worker and shown in an editable, session-only review. DOCX body/table extraction is also implemented. Reviewed text can now be explicitly saved, loaded after restart, replaced, and deleted locally. OCR remains future work. The picker contract is in `docs/architecture/0002-resume-selection.md`.
+- Find jobs contains Resume, Job options/Review query and Results steps; Settings is secondary. Appearance is remembered locally. Shared semantic glass styles include opaque/accessibility fallbacks; current native visual checks remain pending.
+- Resume selects a local PDF/DOCX up to 10 MiB and automatically starts bounded extraction. Text-based PDFs (up to 10 pages) and DOCX body/tables produce editable session-only review. Reviewed text can be explicitly saved, loaded after restart, replaced and deleted locally. OCR remains future work. The picker contract is in `docs/architecture/0002-resume-selection.md`.
 - Optional Tavily key setup uses Windows Credential Manager with masked entry, explicit save/replace/remove, local status and setup later. No provider requests occur during setup; saved keys do not enable search. See decision 0009 for workspace isolation and uninstall retention.
 - A separate explicit connection check sends only the saved credential to Tavily's fixed HTTPS account-usage endpoint. Restricted TLS/proxy/redirect/response/time rules and captured synthetic tests pass. No career data, criteria or query is sent, and no search is performed. Key acceptance is transient, not a persisted verification/credit guarantee. See decision 0010.
 - An isolated bounded Tavily search adapter and 68 synthetic capture/failure tests are implemented (decision 0011); explicit dispatch and session-only text result UI are integrated (decision 0012).
-- Result links now use conservative local canonicalization and tracking-variant deduplication; session results include source hostname, retrieval time and removed-duplicate count (decision 0014). Verified job attributes, cross-source identity and richer ranking evidence remain next work.
+- Result links use conservative local canonicalization and tracking-variant deduplication; session results include source hostname, retrieval time and removed-duplicate count (decision 0014). Shared categories now include literal resume/title/snippet evidence (decision 0016). Verified job attributes and cross-source identity remain pending.
 - Two discovery entry paths now exist: reviewed resumes suggest controlled role/skill categories and open the query directly; skipping uses manual preferences/skills. Engine-owned category comparisons support shared-skill ordering and local Results mention filters (decision 0015). LLM summaries and nuanced qualifications remain optional future work; the provider pool is still at most ten.
 - No model inference, embeddings, RAG, verified live-provider discovery, or application tracking is enabled yet. Engine-owned public query validation/preview is implemented; the transport privacy gate remains pending.
-- The prior privacy increment is commit `882079a`; day 2 adds the first resume-selection slice. Check Git status before publication.
+- Latest published roadmap clarification is `9b8a407`; publication was verified against remote main. Check Git status before new changes or publication.
 
 ## Evidence and limitations
 
