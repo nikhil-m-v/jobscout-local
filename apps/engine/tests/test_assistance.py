@@ -38,6 +38,7 @@ def test_job_category_evidence_is_bounded_and_profile_specific():
     result = analyze_review(review('Data analyst Python Tableau', candidates))
     first, second = result['matches']
     assert first == {'index': 0, 'roles': ['software-engineer'], 'skills': ['python', 'sql'], 'shared_skills': ['python'],
+                     'shared_evidence': [{'skill': 'python', 'resume_phrase': 'Python', 'job_phrase': 'Python', 'job_source': 'snippet'}],
                      'regions': ['india'], 'arrangements': ['remote'], 'seniorities': ['senior']}
     assert second['skills'] == ['analytics'] and second['regions'] == ['canada']
     assert second['seniorities'] == ['entry']
@@ -46,6 +47,29 @@ def test_job_category_evidence_is_bounded_and_profile_specific():
     analyst = analyze_review(review('Data analyst Tableau', candidates))
     assert [len(item['shared_skills']) for item in developer['matches']] == [2, 0]
     assert [len(item['shared_skills']) for item in analyst['matches']] == [0, 1]
+
+
+def test_evidence_preserves_exact_aliases_and_counts_each_category_once():
+    result = analyze_review(review('Software engineer AWS AWS PYTHON JavaScript NoSQL', [
+        {'title': 'Azure Python engineer', 'snippet': 'AWS Python Python Java SQL'},
+        {'title': 'No details', 'snippet': ''}]))
+    evidence = result['matches'][0]['shared_evidence']
+    assert evidence == [
+        {'skill': 'cloud', 'resume_phrase': 'AWS', 'job_phrase': 'Azure', 'job_source': 'title'},
+        {'skill': 'python', 'resume_phrase': 'PYTHON', 'job_phrase': 'Python', 'job_source': 'title'},
+    ]
+    assert result['matches'][1]['shared_evidence'] == []
+    assert all(item['resume_phrase'] in 'Software engineer AWS AWS PYTHON JavaScript NoSQL' for item in evidence)
+
+
+def test_skill_aliases_have_bounded_literal_evidence():
+    from jobscout_engine.domain.assistance import SKILL_ALIASES
+    for skill, aliases in SKILL_ALIASES.items():
+        for alias in aliases:
+            result = analyze_review(review(alias, [{'title': '', 'snippet': alias}]))
+            entry = next(item for item in result['matches'][0]['shared_evidence'] if item['skill'] == skill)
+            assert entry['resume_phrase'] == entry['job_phrase'] == alias
+            assert len(alias) <= 32
 
 
 @pytest.mark.parametrize('value', [None, {}, review('x') | {'reviewed': False}, review('x') | {'query': 'private'},
@@ -69,11 +93,13 @@ def test_authenticated_local_analysis_then_preview_dispatch_never_sends_private_
     monkeypatch.setattr(Database, 'load_profile', forbidden)
     monkeypatch.setattr(Database, 'save_profile', forbidden)
     with TestClient(app(tmp_path, store, httpx.MockTransport(transport))) as client:
-        data = review('PRIVATE_NAME PRIVATE_EMAIL PRIVATE_EMPLOYER Software engineer Python SQL')
+        data = review('PRIVATE_NAME PRIVATE_EMAIL PRIVATE_EMPLOYER Software engineer Python SQL',
+                      [{'title': 'Python role', 'snippet': 'SQL'}])
         assert client.post('/api/v1/assistance', json=data).status_code == 401
         local = client.post('/api/v1/assistance', headers=HEADERS, json=data)
         assert local.status_code == 200 and local.headers['cache-control'] == 'no-store'
         assert captured == [] and 'PRIVATE_' not in local.text
+        assert len(local.json()['matches'][0]['shared_evidence']) == 2
         criteria = local.json()['criteria']
         preview = client.post('/api/v1/search/preview', headers=HEADERS, json=criteria).json()
         assert captured == []

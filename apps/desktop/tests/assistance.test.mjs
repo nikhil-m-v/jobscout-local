@@ -17,15 +17,22 @@ test('review text goes only to the fixed local assistance route; URLs are omitte
   const original = globalThis.fetch;
   try {
     let captured;
-    const match = { index: 0, skills: ['python'], shared_skills: ['python'], roles: [], regions: [], arrangements: [], seniorities: [] };
+    const match = { index: 0, skills: ['python'], shared_skills: ['python'], shared_evidence: [{ skill: 'python', resume_phrase: 'Python', job_phrase: 'Python', job_source: 'snippet' }], roles: [], regions: [], arrangements: [], seniorities: [] };
     globalThis.fetch = async (url, options) => { captured = { url, options }; return { ok: true, json: async () => ({ ...result, matches: [match] }) }; };
-    await requestAssistance('PRIVATE_RESUME', [candidate], new AbortController().signal);
+    await requestAssistance('PRIVATE_RESUME Python', [candidate], new AbortController().signal);
     assert.equal(captured.url, '/engine/assistance');
-    assert.deepEqual(JSON.parse(captured.options.body), { text: 'PRIVATE_RESUME', reviewed: true, candidates: [{ title: candidate.title, snippet: candidate.snippet }] });
+    assert.deepEqual(JSON.parse(captured.options.body), { text: 'PRIVATE_RESUME Python', reviewed: true, candidates: [{ title: candidate.title, snippet: candidate.snippet }] });
     assert.equal(captured.options.redirect, 'error'); assert.equal(captured.options.credentials, 'omit'); assert.equal(captured.options.cache, 'no-store');
     globalThis.fetch = async () => { throw new Error('PRIVATE_DIAGNOSTIC'); };
     await assert.rejects(requestAssistance('PRIVATE_RESUME', [], new AbortController().signal), error => error.message === ASSISTANCE_ERROR);
   } finally { globalThis.fetch = original; }
+});
+test('shared evidence must be complete, bounded and present in the exact reviewed sources', () => {
+  const entry = { skill: 'python', resume_phrase: 'Python', job_phrase: 'Python', job_source: 'snippet' };
+  const match = { index: 0, skills: ['python'], shared_skills: ['python'], shared_evidence: [entry], roles: [], regions: [], arrangements: [], seniorities: [] };
+  const validate = evidence => validateAssistance({ ...result, matches: [{ ...match, shared_evidence: evidence }] }, 1, 'Python', [candidate]);
+  assert.ok(Object.isFrozen(validate([entry]).matches[0].shared_evidence[0]));
+  for (const evidence of [[], [entry, entry], [{ ...entry, skill: 'sql' }], [{ ...entry, resume_phrase: 'Invented' }], [{ ...entry, job_source: 'title' }], [{ ...entry, job_phrase: 'x'.repeat(33) }], [{ ...entry, url: 'https://collector.example.com' }]]) assert.throws(() => validate(evidence));
 });
 test('edits, skip, cancellation and newer analyses discard late native responses', async () => {
   let firstResolve;

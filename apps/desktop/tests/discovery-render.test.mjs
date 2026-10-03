@@ -41,7 +41,10 @@ test('job options and results render on separate pages', () => {
   assert.ok(render(true, false, true).includes('Search candidates'));
 });
 test('resume results expose shared category evidence and local filters with uncertainty guidance', () => {
-  const markup = render(true, false, true, false, { assisted: true, analysis: { busy: false, error: '', result: { skills: ['python'], matches: [{ index: 0, skills: ['python'], shared_skills: ['python'], roles: [], regions: [], arrangements: [], seniorities: [] }] } } });
+  const markup = render(true, false, true, false, { assisted: true, analysis: { busy: false, error: '', result: { skills: ['python'], matches: [{ index: 0, skills: ['python'], shared_skills: ['python'], shared_evidence: [{ skill: 'python', resume_phrase: 'PYTHON', job_phrase: 'Python', job_source: 'snippet' }], roles: [], regions: [], arrangements: [], seniorities: [] }] } } });
+  assert.ok(markup.includes('Why this candidate appears here'));
+  assert.ok(markup.includes('<q>PYTHON</q>'));
+  assert.ok(markup.includes('Job snippet:'));
   assert.ok(markup.includes('Shared skill mentions: Python'));
   assert.ok(markup.includes('Filter results locally'));
   assert.ok(markup.includes('Include candidates with missing category details'));

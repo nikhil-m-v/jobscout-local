@@ -22,16 +22,21 @@ SKILL_ALIASES.update({
 })
 
 
-def mentions(text: str, aliases: dict) -> list[str]:
+def mention_phrases(text: str, aliases: dict) -> dict[str, str]:
     # Whole terms avoid Java/JavaScript and SQL/NoSQL confusion. Order reflects
     # first mention, not inferred seniority, expertise, recency or desired career.
     found = []
     for key, names in aliases.items():
-        positions = [match.start() for name in names
+        hits = [(match.start(), match.group()) for name in names
                      if (match := re.search(r'(?<!\w)' + re.escape(name) + r'(?!\w)', text, re.IGNORECASE))]
-        if positions:
-            found.append((min(positions), key))
-    return [key for _, key in sorted(found)]
+        if hits:
+            position, phrase = min(hits)
+            found.append((position, key, phrase))
+    return {key: phrase for _, key, phrase in sorted(found)}
+
+
+def mentions(text: str, aliases: dict) -> list[str]:
+    return list(mention_phrases(text, aliases))
 
 
 def analyze_review(value: object) -> dict:
@@ -44,6 +49,7 @@ def analyze_review(value: object) -> dict:
     text = value['text']
     roles = mentions(text, ROLE_ALIASES)
     skills = mentions(text, SKILL_ALIASES)
+    resume_phrases = mention_phrases(text, SKILL_ALIASES)
     matches = []
     for index, candidate in enumerate(value['candidates']):
         if (type(candidate) is not dict or set(candidate) != {'title', 'snippet'}
@@ -52,8 +58,14 @@ def analyze_review(value: object) -> dict:
             raise ValueError()
         content = candidate['title'] + '\n' + candidate['snippet']
         job_skills = mentions(content, SKILL_ALIASES)
+        title_phrases = mention_phrases(candidate['title'], SKILL_ALIASES)
+        snippet_phrases = mention_phrases(candidate['snippet'], SKILL_ALIASES)
+        shared = [skill for skill in job_skills if skill in skills]
         matches.append({'index': index, 'skills': job_skills,
-                        'shared_skills': [skill for skill in job_skills if skill in skills],
+                        'shared_skills': shared,
+                        'shared_evidence': [{'skill': skill, 'resume_phrase': resume_phrases[skill],
+                                             'job_phrase': title_phrases.get(skill, snippet_phrases.get(skill)),
+                                             'job_source': 'title' if skill in title_phrases else 'snippet'} for skill in shared],
                         'roles': mentions(content, ROLE_ALIASES),
                         'regions': mentions(content, {key: (name,) for key, name in REGIONS.items() if name}),
                         'arrangements': mentions(content, {'remote': ('remote',), 'hybrid': ('hybrid',), 'onsite': ('on-site', 'onsite')}),

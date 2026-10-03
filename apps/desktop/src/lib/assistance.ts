@@ -2,14 +2,15 @@ import { invoke, isTauri } from '@tauri-apps/api/core';
 import { arrangements, regions, roles, seniorities, skills, validatePublicSearchCriteria, type PublicSearchCriteria } from './public-search-criteria.ts';
 import type { Candidate } from './discovery-state.ts';
 
-export type Mentions = Readonly<{ index: number; skills: readonly (keyof typeof skills)[]; shared_skills: readonly (keyof typeof skills)[]; roles: readonly (keyof typeof roles)[]; regions: readonly (keyof typeof regions)[]; arrangements: readonly (keyof typeof arrangements)[]; seniorities: readonly (keyof typeof seniorities)[] }>;
+export type SkillEvidence = Readonly<{ skill: keyof typeof skills; resume_phrase: string; job_phrase: string; job_source: 'title' | 'snippet' }>;
+export type Mentions = Readonly<{ index: number; skills: readonly (keyof typeof skills)[]; shared_skills: readonly (keyof typeof skills)[]; shared_evidence: readonly SkillEvidence[]; roles: readonly (keyof typeof roles)[]; regions: readonly (keyof typeof regions)[]; arrangements: readonly (keyof typeof arrangements)[]; seniorities: readonly (keyof typeof seniorities)[] }>;
 export type Assistance = Readonly<{ criteria: PublicSearchCriteria | null; roles: readonly (keyof typeof roles)[]; skills: readonly (keyof typeof skills)[]; matches: readonly Mentions[] }>;
 export const ASSISTANCE_ERROR = 'Local analysis could not finish. Retry or use manual preferences. Nothing was sent to a search provider.';
 function categoryList<T extends Record<string, string>>(value: unknown, catalog: T): readonly (keyof T)[] {
   if (!Array.isArray(value) || value.length > Object.keys(catalog).length || new Set(value).size !== value.length || value.some(id => typeof id !== 'string' || id === 'any' || !Object.hasOwn(catalog, id))) throw new Error(ASSISTANCE_ERROR);
   return Object.freeze([...value]);
 }
-export function validateAssistance(value: unknown, count: number): Assistance {
+export function validateAssistance(value: unknown, count: number, text = '', candidates: readonly Candidate[] = []): Assistance {
   if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error(ASSISTANCE_ERROR);
   const data = value as Record<string, unknown>;
   if (Object.keys(data).sort().join(',') !== 'criteria,matches,roles,skills' || !Array.isArray(data.matches) || data.matches.length !== count || count > 10) throw new Error(ASSISTANCE_ERROR);
@@ -19,10 +20,20 @@ export function validateAssistance(value: unknown, count: number): Assistance {
   const matches = data.matches.map((item, index) => {
     if (!item || typeof item !== 'object' || Array.isArray(item)) throw new Error(ASSISTANCE_ERROR);
     const record = item as Record<string, unknown>;
-    if (Object.keys(record).sort().join(',') !== 'arrangements,index,regions,roles,seniorities,shared_skills,skills' || record.index !== index) throw new Error(ASSISTANCE_ERROR);
+    if (Object.keys(record).sort().join(',') !== 'arrangements,index,regions,roles,seniorities,shared_evidence,shared_skills,skills' || record.index !== index) throw new Error(ASSISTANCE_ERROR);
     const jobSkills = categoryList(record.skills, skills), sharedSkills = categoryList(record.shared_skills, skills);
     if (sharedSkills.join(',') !== jobSkills.filter(id => detectedSkills.includes(id)).join(',')) throw new Error(ASSISTANCE_ERROR);
-    return Object.freeze({ index, roles: categoryList(record.roles, roles), skills: jobSkills, shared_skills: sharedSkills, regions: categoryList(record.regions, regions), arrangements: categoryList(record.arrangements, arrangements), seniorities: categoryList(record.seniorities, seniorities) });
+    if (!Array.isArray(record.shared_evidence) || record.shared_evidence.length !== sharedSkills.length) throw new Error(ASSISTANCE_ERROR);
+    const evidence = record.shared_evidence.map((entry, position) => {
+      if (!entry || typeof entry !== 'object' || Array.isArray(entry)) throw new Error(ASSISTANCE_ERROR);
+      const item = entry as Record<string, unknown>;
+      if (Object.keys(item).sort().join(',') !== 'job_phrase,job_source,resume_phrase,skill' || item.skill !== sharedSkills[position] || (item.job_source !== 'title' && item.job_source !== 'snippet')) throw new Error(ASSISTANCE_ERROR);
+      for (const [phrase, source] of [[item.resume_phrase, text], [item.job_phrase, candidates[index]?.[item.job_source]]] as const) {
+        if (typeof phrase !== 'string' || !phrase || phrase.length > 32 || /[\x00-\x1f\x7f]/.test(phrase) || !source?.includes(phrase)) throw new Error(ASSISTANCE_ERROR);
+      }
+      return Object.freeze({ skill: sharedSkills[position], resume_phrase: item.resume_phrase as string, job_phrase: item.job_phrase as string, job_source: item.job_source });
+    });
+    return Object.freeze({ index, roles: categoryList(record.roles, roles), skills: jobSkills, shared_skills: sharedSkills, shared_evidence: Object.freeze(evidence), regions: categoryList(record.regions, regions), arrangements: categoryList(record.arrangements, arrangements), seniorities: categoryList(record.seniorities, seniorities) });
   });
   return Object.freeze({ criteria, roles: detectedRoles, skills: detectedSkills, matches: Object.freeze(matches) });
 }
@@ -34,7 +45,7 @@ export async function requestAssistance(text: string, candidates: readonly Candi
       body: JSON.stringify(review), cache: 'no-store', credentials: 'omit', redirect: 'error',
       signal: AbortSignal.any([signal, AbortSignal.timeout(15_000)]),
     }).then(response => { if (!response.ok) throw new Error(); return response.json(); });
-    return validateAssistance(data, candidates.length);
+    return validateAssistance(data, candidates.length, text, candidates);
   } catch { throw new Error(ASSISTANCE_ERROR); }
 }
 

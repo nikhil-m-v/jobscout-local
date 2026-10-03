@@ -2,6 +2,8 @@
 
 Last checkpoint: 2026-10-04. This is project memory for contributors and future assistant sessions, not a store for user information.
 
+Latest continuation: milestone 17 now includes exact shared-category phrases from reviewed resume and job title/snippet in expandable result explanations (decision 0016). Analysis stays local and transient; ordering still counts categories once and preserves provider-order ties. No proficiency, verified-requirement or fit-score claim. Engine/frontend strict contracts require rebuilding/restarting together. Production frontend build/typecheck, 275 engine tests and 51 frontend tests pass. Production engine/Rust/NSIS packaging passes (22.09 MiB installer); interactive/live-provider checks remain unverified. Next concrete action: bounded broader fetching toward the 30–50-job shortlist with reviewed query/cost limits and ranking/coverage evaluation. Milestone 17 remains partial; saving/tracking follows this gate.
+
 ## Direction
 
 Build an open-source Windows job finder that keeps personal career information local. Think big, act small: one useful, reviewable improvement per session. The UI matters from the first increment: minimal Apple-inspired glass, responsive layouts, Light/Dark/System appearance, keyboard access, and smooth background work.
