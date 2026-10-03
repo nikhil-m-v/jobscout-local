@@ -101,11 +101,11 @@ Review Overview, My profile, and Settings with the engine connected, disconnecte
 
 Our product contract is that resume files, extracted text, profiles, embeddings, match explanations, and application notes stay local. The current picker validates filename, size, and operating-system MIME metadata for immediate feedback; the engine independently validates file structure and resource limits. No hosted AI fallback, product analytics, advertising trackers, or automatic uploads of diagnostics are part of the design.
 
-Planned online discovery will send only user-reviewed, generic job criteria through a restricted search adapter. It will not send your resume or identity. Online search is **not implemented yet**. A search provider can still see queries, connection metadata such as an IP address, and the account associated with an API key; JobScout does not currently provide network anonymity. Opening a job website or applying there creates a separate interaction with that site.
+Explicit online discovery is implemented for local development through a restricted search adapter using only reviewed generic job criteria. Resume/profile data stays local. Interactive release checks and a deliberate live-provider search remain pending. A search provider can still see queries, connection metadata such as an IP address, and the account associated with an API key; JobScout does not currently provide network anonymity. Opening a job website or applying there creates a separate interaction with that site.
 
 See [the privacy contract](docs/privacy.md) for the exact boundary, implementation requirements, and release checks. Privacy statements must describe verified behavior, not imply that planned safeguards already exist.
 
-The engine binds only to `127.0.0.1`, requires a fresh app-session token on every API request, and does not enable cross-origin access. The browser preview uses Vite's server-side proxy for narrowly scoped health and import routes; the token is not embedded in frontend assets. Tauri requests health through a narrowly scoped Rust command. Resume bytes go only to this authenticated local engine; online search credentials are not collected.
+The engine binds only to `127.0.0.1`, requires a fresh app-session token on every API request, and does not enable cross-origin access. The browser preview uses narrowly scoped Vite proxy routes; the token is not embedded in frontend assets. Tauri uses fixed Rust commands to reach the engine. Resume bytes go only to this authenticated local engine; optional search credentials use Windows Credential Manager with no plaintext fallback.
 
 ## Next milestone
 
@@ -123,9 +123,9 @@ My profile keeps one explicitly saved text record in local SQLite storage. Savin
 
 ## Try the first explicit search
 
-Save your optional Tavily key in Settings, then open Discover. Choose public criteria, prepare the local query preview, read the query/provider/data disclosure, and select I have reviewed this query. Send this query to Tavily makes one basic request that may consume credits and returns up to ten text candidates. A saved key does not guarantee accepted authentication or available credits. No resume/profile data is sent.
+Save your optional Tavily key in Settings, then return to Find jobs. Choose/review a local resume or select Search without a resume. On Job options, choose public criteria and select Find jobs to prepare the local query. Read the exact query/provider/data disclosure on the query face, then select Find jobs there to confirm and send one basic request. It may consume credits and returns up to ten text candidates. A saved key does not guarantee accepted authentication or available credits. No resume/profile data is sent.
 
-Each retry requires review again. Stop waiting discards late replies but cannot undo a sent request. Editing criteria or opening Settings clears the preview/results. Results are session-only web search candidates, not verified vacancies or ranked matches. URLs are selectable text; the app does not open result websites or load their images. No automatic or background discovery.
+Each retry requires explicit confirmation again. Stop waiting discards late replies but cannot undo a sent request. Editing criteria or opening Settings clears the preview/results. Results are session-only web search candidates, not verified vacancies or ranked matches. Known tracking parameters and duplicate links are removed locally. Results show source domains, retrieval time (not listing date), and duplicate-link counts; different links may still describe the same vacancy. URLs are selectable text; the app does not open result websites or load their images. No automatic or background discovery. See [the normalization decision](docs/architecture/0014-candidate-link-normalization.md).
 
 Synthetic API/privacy/rendering tests and Windows packaging pass. Browser/native interaction and a deliberate live-provider search remain unverified. See [the implementation contract](docs/architecture/0012-explicit-search-flow.md).
 

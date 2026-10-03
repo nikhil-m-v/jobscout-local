@@ -15,6 +15,8 @@ class DiscoveryResult:
     query: str
     provider: str
     candidates: tuple[SearchCandidate, ...]
+    retrieved_at: str
+    duplicates_removed: int
 
 
 class DiscoveryFailure(Exception):

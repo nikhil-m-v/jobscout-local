@@ -57,6 +57,10 @@ Before advertising private online discovery, inspect captured outgoing requests 
 
 Also verify deletion of all app-owned copies, derived text, indexes, caches, and records. Respect shared models and explain what uninstall retains. Do not claim secure disk erasure. See the installation design for the setup experience.
 
+## Result normalization
+
+Search result links are normalized and deduplicated locally: known tracking parameters and fragments are removed while job identifiers and unknown parameters remain. Source domains are displayed as plain text; the app does not resolve or fetch them. Retrieval timestamps come from the local engine and do not establish when a listing was posted or whether it is still open. Duplicate counts apply only to canonical links in one response. No normalization data is sent to providers or saved as durable search history. See [decision 0014](architecture/0014-candidate-link-normalization.md).
+
 ## Current saved-text controls
 
 Only explicitly saved reviewed text and its save timestamp persist in the local database. Original file bytes, filenames, and unsaved edits are not persisted. Save replaces the previous record. Discarding/removing a draft keeps saved data. Delete saved profile removes the saved record and clears the current draft/import in the UI; it leaves the original document intact. SQLite uses overwrite-on-delete and non-retained rollback journaling, with synthetic restart/replacement/deletion checks. This does not promise secure disk erasure or deletion from external backups. Storage is not encrypted. Default profile retention passed a scoped silent install/uninstall check; interactive optional data cleanup remains unverified.

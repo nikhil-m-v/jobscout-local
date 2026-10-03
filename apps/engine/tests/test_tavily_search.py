@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+from datetime import datetime
 import httpx
 import pytest
 from jobscout_engine.adapters import tavily_search
@@ -159,7 +160,31 @@ def test_empty_results_duplicates_exact_bound_and_unused_metadata():
     outgoing = response(chunks=[raw + b' ' * (MAX_RESPONSE_BYTES - len(raw))])
     result = run(TavilySearch(transport=httpx.MockTransport(lambda request: outgoing)))
     assert len(result.candidates) == 1 and outgoing.is_closed
+    assert result.duplicates_removed == 1
+    assert datetime.fromisoformat(result.retrieved_at).utcoffset().total_seconds() == 0
     assert 'PRIVATE_MARKER' not in repr(result) and KEY not in repr(result)
+
+
+def test_tracking_variants_merge_but_distinct_job_ids_and_paths_remain():
+    urls = ['https://JOBS.example.com:443/role?job=42&utm_source=board#apply',
+            'https://jobs.example.com/role?job=42&fbclid=abc',
+            'https://jobs.example.com/role?job=43',
+            'https://jobs.example.com/Role?job=42']
+    result = run(TavilySearch(transport=httpx.MockTransport(lambda request: response({
+        'results': [{**ITEM, 'url': url} for url in urls],
+    }))))
+    assert result.duplicates_removed == 1
+    assert [item.url for item in result.candidates] == [
+        'https://jobs.example.com/role?job=42', 'https://jobs.example.com/role?job=43',
+        'https://jobs.example.com/Role?job=42']
+    assert result.candidates[0].title == ITEM['title']
+
+
+@pytest.mark.parametrize('field', ['title', 'content', 'url'])
+def test_duplicate_or_tracking_cleanup_cannot_hide_credential_echo(field):
+    duplicate = {**ITEM, field: KEY if field != 'url' else f'https://jobs.example.com/role?utm_source={KEY}'}
+    with pytest.raises(DiscoveryFailure, match='^provider_invalid_response$'):
+        run(TavilySearch(transport=httpx.MockTransport(lambda request: response({'results': [ITEM, duplicate]}))))
 
 
 def test_tls_proxy_limits_and_no_cookie_reuse(monkeypatch):

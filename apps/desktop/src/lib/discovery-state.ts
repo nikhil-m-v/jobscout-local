@@ -2,7 +2,7 @@ import { validatePublicSearchCriteria, type PublicSearchCriteria } from './publi
 import type { SearchPreview } from './search-preview-state.ts';
 
 export interface Candidate { title: string; url: string; snippet: string }
-export interface SearchResult { query: string; provider: 'tavily'; candidates: readonly Candidate[] }
+export interface SearchResult { query: string; provider: 'tavily'; candidates: readonly Candidate[]; retrieved_at: string; duplicates_removed: number }
 export interface SearchConfirmation { criteria: PublicSearchCriteria; provider: 'tavily'; query_version: 1; reviewed_query: string; confirmed: true }
 const messages: Record<string, string> = {
   provider_invalid_key: 'Tavily did not accept the key. Replace it in Settings.',
@@ -29,7 +29,11 @@ function text(value: unknown, maximum: number, nonempty = false): value is strin
 export function validateSearchResult(value: unknown, query: string): SearchResult {
   if (!value || typeof value !== 'object') throw new SearchFailure('provider_invalid_response');
   const data = value as Record<string, unknown>;
-  if (Object.keys(data).sort().join(',') !== 'candidates,provider,query' || data.provider !== 'tavily' || data.query !== query || !Array.isArray(data.candidates) || data.candidates.length > 10) throw new SearchFailure('provider_invalid_response');
+  if (Object.keys(data).sort().join(',') !== 'candidates,duplicates_removed,provider,query,retrieved_at' || data.provider !== 'tavily' || data.query !== query || !Array.isArray(data.candidates) || data.candidates.length > 10) throw new SearchFailure('provider_invalid_response');
+  if (typeof data.retrieved_at !== 'string' || !/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(data.retrieved_at)
+    || !Number.isFinite(Date.parse(data.retrieved_at)) || new Date(data.retrieved_at).toISOString().replace('.000Z', 'Z') !== data.retrieved_at
+    || typeof data.duplicates_removed !== 'number' || !Number.isInteger(data.duplicates_removed) || data.duplicates_removed < 0
+    || data.candidates.length + data.duplicates_removed > 10 || (data.candidates.length === 0 && data.duplicates_removed !== 0)) throw new SearchFailure('provider_invalid_response');
   const candidates = data.candidates.map((item: unknown) => {
     if (!item || typeof item !== 'object') throw new SearchFailure('provider_invalid_response');
     const record = item as Record<string, unknown>;
@@ -38,7 +42,8 @@ export function validateSearchResult(value: unknown, query: string): SearchResul
     if (url.protocol !== 'https:' || url.username || url.password || (url.port && url.port !== '443') || /[\s\\]/.test(record.url)) throw new SearchFailure('provider_invalid_response');
     return Object.freeze({ title: record.title, url: record.url, snippet: record.snippet });
   });
-  return Object.freeze({ query, provider: 'tavily', candidates: Object.freeze(candidates) });
+  if (new Set(candidates.map(item => item.url)).size !== candidates.length) throw new SearchFailure('provider_invalid_response');
+  return Object.freeze({ query, provider: 'tavily', candidates: Object.freeze(candidates), retrieved_at: data.retrieved_at, duplicates_removed: data.duplicates_removed });
 }
 type State = Readonly<{ busy: boolean; result: SearchResult | null; error: string }>;
 const empty: State = { busy: false, result: null, error: '' };

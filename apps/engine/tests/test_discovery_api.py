@@ -44,7 +44,9 @@ def test_full_preview_confirmation_dispatch_privacy_flow(tmp_path, monkeypatch, 
         assert captured == []
         result = client.post(URL, headers=HEADERS, json=CONFIRMATION)
         assert result.status_code == 200 and result.headers['cache-control'] == 'no-store'
-        assert set(result.json()) == {'query', 'provider', 'candidates'}
+        assert set(result.json()) == {'query', 'provider', 'candidates', 'retrieved_at', 'duplicates_removed'}
+        assert result.json()['duplicates_removed'] == 0
+        assert result.json()['retrieved_at'].endswith('Z')
         assert result.json()['query'] == preview['query']
         assert result.json()['candidates'][0]['snippet'] == VALID['results'][0]['content']
         assert KEY not in result.text

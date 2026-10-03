@@ -1,6 +1,6 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-02. This is project memory for contributors and future assistant sessions, not a store for user information.
+Last checkpoint: 2026-10-04. This is project memory for contributors and future assistant sessions, not a store for user information.
 
 ## Direction
 
@@ -20,6 +20,7 @@ The governing promise is in [docs/privacy.md](docs/privacy.md). Resumes, profile
 - Optional Tavily key setup uses Windows Credential Manager with masked entry, explicit save/replace/remove, local status and setup later. No provider requests occur during setup; saved keys do not enable search. See decision 0009 for workspace isolation and uninstall retention.
 - A separate explicit connection check sends only the saved credential to Tavily's fixed HTTPS account-usage endpoint. Restricted TLS/proxy/redirect/response/time rules and captured synthetic tests pass. No career data, criteria or query is sent, and no search is performed. Key acceptance is transient, not a persisted verification/credit guarantee. See decision 0010.
 - An isolated bounded Tavily search adapter and 68 synthetic capture/failure tests are implemented (decision 0011); explicit dispatch and session-only text result UI are integrated (decision 0012).
+- Result links now use conservative local canonicalization and tracking-variant deduplication; session results include source hostname, retrieval time and removed-duplicate count (decision 0014). Job-specific filtering and local profile ranking remain next work.
 - No model inference, embeddings, RAG, verified live-provider discovery, or application tracking is enabled yet. Engine-owned public query validation/preview is implemented; the transport privacy gate remains pending.
 - The prior privacy increment is commit `882079a`; day 2 adds the first resume-selection slice. Check Git status before publication.
 
@@ -243,3 +244,13 @@ Card build completion (2026-10-02): source synchronized to the primary checkout.
 ## Continue-to-options navigation fix — 2026-10-02
 
 The resume review button now marks the text reviewed and immediately advances the DiscoveryJourney to Job options through an explicit callback. Previously it only changed resume state, leaving the user on Resume until they clicked the step navigation. Frontend build/typecheck and all 39 frontend checks pass. No privacy, query, provider, storage or dependency behavior changed.
+
+## Search-quality continuation — 2026-10-04
+
+Resumed with a clean checkout after the UI work. Implemented the first normalization slice of milestone 16: provider-independent public HTTPS URL validation/canonicalization, known tracking-key removal, default-port/host/root/fragment normalization and conservative URL deduplication. Job IDs, unknown/repeated parameters, ordering/escaping, path case and slashes remain intact. UI shows unique candidate count, duplicate links removed, source domain and UTC-derived local retrieval time, explicitly not a listing date. Selected-field credential echoes are checked before cleanup/deduplication. No provider request, personal-data access, persistence, dependency or setup change. Engine and UI must be rebuilt/restarted together for the strict response metadata contract. Decision 0014 records limits.
+
+Frontend build/typecheck, all 40 frontend checks, all 258 engine checks and whitespace validation pass. Remote main matched the starting local main. Browser automation still cannot initialize due to the Windows sandbox ACL error; no interactive/native/live-search claim. Native packaging uses a separate ignored output directory. See [today's progress](docs/progress/2026-10-04.md).
+
+Next concrete action: native chooser/skip, preferences/query confirmation, results/back/revise and a deliberate reviewed live search evaluation; then job-specific filtering and evidence-based local ranking/category suggestions. Normalization is partial milestone 16, not a verified shortlist. Optional AI remains later.
+
+Completion evidence: final production engine packaging, Rust release compilation and NSIS generation pass (22.09 MiB installer). Existing running/installed copies remain unchanged; reopen the fresh package to use the strict result metadata contract. This increment is checkpointed locally with commit title `Normalize candidate links and show retrieval context`; no push was requested this session. No native interaction, installer execution or live search is claimed.
