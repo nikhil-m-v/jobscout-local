@@ -36,7 +36,7 @@ Discovery and submission are distinct outbound capabilities. Personal analysis h
 
 | Module | Responsibility and interface | Allowed inputs |
 |---|---|---|
-| Profile service | Review/save text; later derive editable structured facts with source spans | Local resume text and user corrections |
+| Profile service | Review/save text; later derive editable structured facts with source spans, including role, seniority/experience signals, skills, tools, industries, achievements, education and certifications | Local resume text and user corrections |
 | Criteria suggestions | Map evidence to fixed catalog identifiers; return suggestions for review | Local profile; no arbitrary outbound query text |
 | Discovery service | Orchestrate bounded search, normalization and shortlist tasks | Reviewed criteria revision and local profile revision |
 | SearchProvider | Search pages through the authoritative boundary and restricted transport | Validated PublicSearchCriteria, approved provider configuration and opaque cursor; no profile access |
@@ -50,6 +50,10 @@ Discovery and submission are distinct outbound capabilities. Personal analysis h
 | Local repositories | Versioned SQLite persistence and bounded artifact storage | Explicit local records; credentials resolved separately through OS-backed secret storage |
 
 Add each interface with its first working slice. Domain contracts stay in domain modules, integration code in adapters, orchestration in services and persistence behind repositories. Fixed API routes/native commands expose workflows, not arbitrary HTTP, filesystem or shell access. Keep current saved-text storage compatible; structured facts and derived caches are additive future migrations rather than silently replacing the reviewed text.
+
+### Role and experience interpretation
+
+The future local analysis provider may suggest a primary role, adjacent roles and a seniority/experience band from dated employment, responsibility verbs, scope, tools and user corrections. Every suggestion must carry exact source spans, an uncertainty state and the model/taxonomy version. It may estimate signals such as “likely mid-level” or “about 3–5 years evidenced in the reviewed chronology” only when the source dates support that range; overlapping dates, incomplete resumes, internships, freelance work and ambiguous titles require a wider range or “not enough evidence.” It must never invent dates, employers, responsibilities or qualifications, infer seniority from a job title alone, or turn an unmentioned skill into a negative finding. Users review, edit or reject these facts before they influence local ranking. Only confirmed fixed catalog categories can reach the public query boundary.
 
 ## Core discovery pipeline
 
