@@ -2,6 +2,8 @@
 
 Last checkpoint: 2026-10-04. This is project memory for contributors and future assistant sessions, not a store for user information.
 
+Publication checkpoint: grounded skill-match evidence commit `d7f3121` is published to remote main with explicit user authorization. The earlier push-approval blocker is resolved. Continue milestone 17 with bounded broader discovery and shortlist-quality evaluation.
+
 Latest continuation: milestone 17 now includes exact shared-category phrases from reviewed resume and job title/snippet in expandable result explanations (decision 0016). Analysis stays local and transient; ordering still counts categories once and preserves provider-order ties. No proficiency, verified-requirement or fit-score claim. Engine/frontend strict contracts require rebuilding/restarting together. Production frontend build/typecheck, 275 engine tests and 51 frontend tests pass. Production engine/Rust/NSIS packaging passes (22.09 MiB installer); interactive/live-provider checks remain unverified. Next concrete action: bounded broader fetching toward the 30–50-job shortlist with reviewed query/cost limits and ranking/coverage evaluation. Milestone 17 remains partial; saving/tracking follows this gate.
 
 ## Direction
