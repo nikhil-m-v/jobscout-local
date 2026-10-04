@@ -67,6 +67,10 @@ The future local analysis provider may suggest a primary role, adjacent roles an
 
 Profile edits invalidate derived matches; criteria/provider changes invalidate search approval and results' applicability. Preserve the old view with an explicit stale label while recomputing, and never allow late responses to replace newer state. No automatic background provider refresh without a separately defined user control.
 
+## Weighted suitability extension
+
+[Decision 0017](0017-weighted-local-suitability.md) expands the planned JobMatcher with evidence-linked feature vectors, reviewed soft weights, hard-constraint separation and explicit unknown coverage. Optional local embeddings support section comparisons; later schema-validated LLM extraction/explanation complements deterministic scoring. No summary, vector or explanation enters the provider query, and no autonomous agent or hosted service is required. Milestones 25–26 implement/evaluate the weighted matcher; 29–30 add optional generative evidence assistance.
+
 ## AI skills and certification gaps
 
 Use the deduplicated shortlist snapshot as the analysis population. Local AI extracts requirement objects containing normalized skill/certification, required/preferred/unspecified classification, job ID, exact source span and confidence/uncertainty. Validate schema, span existence and bounds; reject unsupported output and count failed/insufficient descriptions separately. AI job text is data, never an instruction to access files or invoke tools.
