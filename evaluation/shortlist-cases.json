@@ -1,0 +1,244 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "developer-noise",
+      "review": "Software engineer Python SQL AWS pytest",
+      "filters": {
+        "role": "software-engineer"
+      },
+      "candidates": [
+        {
+          "id": "guide",
+          "title": "Software engineer interview guide",
+          "snippet": "Python SQL AWS pytest interview notes.",
+          "relevant": false,
+          "reason": "Editorial, not a vacancy."
+        },
+        {
+          "id": "backend",
+          "title": "Software engineer",
+          "snippet": "Open Python SQL services position.",
+          "relevant": true,
+          "reason": "Compatible opening."
+        },
+        {
+          "id": "analyst",
+          "title": "Data analyst",
+          "snippet": "Hiring Python SQL AWS analysts.",
+          "relevant": false,
+          "reason": "Different role."
+        },
+        {
+          "id": "qa",
+          "title": "Quality engineer",
+          "snippet": "Hiring Python SQL AWS pytest specialists.",
+          "relevant": false,
+          "reason": "Different role."
+        },
+        {
+          "id": "platform",
+          "title": "Software developer",
+          "snippet": "Hiring AWS Python developers.",
+          "relevant": true,
+          "reason": "Compatible role alias."
+        },
+        {
+          "id": "java",
+          "title": "Software engineer",
+          "snippet": "Java required; no Python positions.",
+          "relevant": false,
+          "reason": "Negated matching skill."
+        },
+        {
+          "id": "unknown",
+          "title": "Careers",
+          "snippet": "",
+          "relevant": false,
+          "reason": "No specific vacancy evidence."
+        },
+        {
+          "id": "cloud",
+          "title": "Backend developer",
+          "snippet": "Open Python SQL AWS position.",
+          "relevant": true,
+          "reason": "Compatible opening."
+        },
+        {
+          "id": "course",
+          "title": "Python SQL AWS pytest course",
+          "snippet": "Prepare for a software engineer career.",
+          "relevant": false,
+          "reason": "Training, not a vacancy."
+        },
+        {
+          "id": "api",
+          "title": "Software engineer",
+          "snippet": "Hiring Python API developers.",
+          "relevant": true,
+          "reason": "Compatible opening."
+        }
+      ]
+    },
+    {
+      "id": "analyst-filters",
+      "review": "Data analyst SQL Python Tableau",
+      "filters": {
+        "role": "data-analyst",
+        "region": "india",
+        "arrangement": "remote"
+      },
+      "candidates": [
+        {
+          "id": "canada",
+          "title": "Data analyst Canada hybrid",
+          "snippet": "SQL Python Tableau opening.",
+          "relevant": false,
+          "reason": "Region and arrangement mismatch."
+        },
+        {
+          "id": "remote",
+          "title": "Data analyst India remote",
+          "snippet": "Hiring SQL Tableau analysts.",
+          "relevant": true,
+          "reason": "Compatible opening."
+        },
+        {
+          "id": "engineer",
+          "title": "Data engineer India remote",
+          "snippet": "SQL Python Tableau pipelines position.",
+          "relevant": false,
+          "reason": "Different role."
+        },
+        {
+          "id": "onsite",
+          "title": "Data analyst India on-site",
+          "snippet": "SQL Python reporting opening.",
+          "relevant": false,
+          "reason": "Arrangement mismatch."
+        },
+        {
+          "id": "missing",
+          "title": "Data analyst",
+          "snippet": "Hiring SQL reporting specialists.",
+          "relevant": true,
+          "reason": "Compatible role; unknown preferences retained for review."
+        },
+        {
+          "id": "bi",
+          "title": "Business intelligence analyst India remote",
+          "snippet": "SQL Power BI opening.",
+          "relevant": true,
+          "reason": "Supported role and skill aliases."
+        },
+        {
+          "id": "directory",
+          "title": "Remote India data analyst directory",
+          "snippet": "SQL Python Tableau career resources.",
+          "relevant": false,
+          "reason": "Directory, not a specific opportunity."
+        },
+        {
+          "id": "python",
+          "title": "Data analyst India remote",
+          "snippet": "Hiring Python analysts.",
+          "relevant": true,
+          "reason": "Compatible opening."
+        },
+        {
+          "id": "training",
+          "title": "India remote data analyst training",
+          "snippet": "SQL Python Tableau courses.",
+          "relevant": false,
+          "reason": "Training, not a vacancy."
+        },
+        {
+          "id": "empty",
+          "title": "Careers",
+          "snippet": "",
+          "relevant": false,
+          "reason": "No vacancy evidence."
+        }
+      ]
+    },
+    {
+      "id": "aliases-unknowns",
+      "review": "Software engineer AWS JavaScript",
+      "filters": {
+        "role": "software-engineer"
+      },
+      "candidates": [
+        {
+          "id": "azure",
+          "title": "Software engineer",
+          "snippet": "Azure JavaScript required; AWS experience is not accepted.",
+          "relevant": false,
+          "reason": "Explicit incompatible requirement hidden by broad cloud alias."
+        },
+        {
+          "id": "aws",
+          "title": "Software engineer",
+          "snippet": "Hiring AWS JavaScript developers.",
+          "relevant": true,
+          "reason": "Compatible opening."
+        },
+        {
+          "id": "java",
+          "title": "Software engineer",
+          "snippet": "Java opening.",
+          "relevant": false,
+          "reason": "Different language."
+        },
+        {
+          "id": "unknown",
+          "title": "Careers",
+          "snippet": "",
+          "relevant": false,
+          "reason": "No vacancy evidence."
+        },
+        {
+          "id": "frontend",
+          "title": "Frontend developer",
+          "snippet": "Open JavaScript position.",
+          "relevant": true,
+          "reason": "Compatible role alias."
+        },
+        {
+          "id": "guide",
+          "title": "Software engineer guide",
+          "snippet": "AWS Azure JavaScript study notes.",
+          "relevant": false,
+          "reason": "Editorial content."
+        },
+        {
+          "id": "aws-only",
+          "title": "Backend developer",
+          "snippet": "AWS services position.",
+          "relevant": true,
+          "reason": "Compatible opening."
+        },
+        {
+          "id": "product",
+          "title": "Product manager",
+          "snippet": "AWS JavaScript portfolio.",
+          "relevant": false,
+          "reason": "Different role."
+        },
+        {
+          "id": "unknown-role",
+          "title": "JavaScript developer opening",
+          "snippet": "Hiring for AWS services.",
+          "relevant": true,
+          "reason": "Compatible opening; title absent from role catalog."
+        },
+        {
+          "id": "course",
+          "title": "Software engineer course",
+          "snippet": "AWS JavaScript training.",
+          "relevant": false,
+          "reason": "Training, not a vacancy."
+        }
+      ]
+    }
+  ]
+}

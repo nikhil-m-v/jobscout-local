@@ -144,3 +144,5 @@ Each retry requires explicit confirmation again. Stop waiting discards late repl
 Synthetic API/privacy/rendering tests and Windows packaging pass. Browser/native interaction and a deliberate live-provider search remain unverified. See [the implementation contract](docs/architecture/0012-explicit-search-flow.md).
 
 Tavily supplies web discovery through its direct HTTP API. The search-provider interface is replaceable; local matching and optional future models do not depend on Tavily. A usage-only connection check was previously exercised successfully; it does not establish real-search quality or current account availability.
+
+Shortlist ranking can be evaluated locally with `npm run evaluate:shortlist`. The checked-in synthetic corpus exercises production analysis, validation, ordering and filters without a provider request. See [the quality baseline](docs/shortlist-evaluation.md) for labels, metrics, known failures and the next discovery-quality gate.

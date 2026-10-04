@@ -1,12 +1,14 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-04. This is project memory for contributors and future assistant sessions, not a store for user information.
+Last checkpoint: 2026-10-05. This is project memory for contributors and future assistant sessions, not a store for user information.
 
 Publication checkpoint: grounded skill-match evidence commit `d7f3121` is published to remote main with explicit user authorization. The earlier push-approval blocker is resolved. Continue milestone 17 with bounded broader discovery and shortlist-quality evaluation.
 
 Roadmap clarification: future local summary milestones now explicitly cover evidence-backed primary/adjacent roles and experience/seniority signals. Models may estimate ranges only from supported chronology and responsibilities; exact years, verified seniority and missing qualifications require evidence and user review. This is planned for milestones 29–30 after model/runtime and semantic evaluation, not current functionality.
 
 Latest continuation: milestone 17 now includes exact shared-category phrases from reviewed resume and job title/snippet in expandable result explanations (decision 0016). Analysis stays local and transient; ordering still counts categories once and preserves provider-order ties. No proficiency, verified-requirement or fit-score claim. Engine/frontend strict contracts require rebuilding/restarting together. Production frontend build/typecheck, 275 engine tests and 51 frontend tests pass. Production engine/Rust/NSIS packaging passes (22.09 MiB installer); interactive/live-provider checks remain unverified. Next concrete action: bounded broader fetching toward the 30–50-job shortlist with reviewed query/cost limits and ranking/coverage evaluation. Milestone 17 remains partial; saving/tracking follows this gate.
+
+Latest continuation (2026-10-05): added a dependency-free synthetic shortlist evaluation (`npm run evaluate:shortlist`) through production Python analysis, frontend source validation and result filtering. Three labeled ten-candidate pools expose guides/courses/wrong-role matches promoted by skill counts, broad cloud-alias ambiguity and relevant candidates lost by strict unknown filtering. Top-five relevance falls from 40% to 20% under resume ordering in two diagnostic pools; reviewed filters recover 60%, with no live-quality claim. See docs/shortlist-evaluation.md. All 275 engine and 51 frontend tests and production build/typecheck pass. No provider call, runtime behavior change or new dependency. Milestone 17 remains partial. Next concrete action: conservative evidence-backed local content classification with an unknown state, evaluated for noise reduction and relevant retention; then bounded reviewed broader discovery. This session is local only; no push authorized.
 
 ## Direction
 
