@@ -2,7 +2,7 @@
 
 Last checkpoint: 2026-10-05. This is project memory for contributors and future assistant sessions, not a store for user information.
 
-Publication checkpoint (2026-10-05): user authorized publishing all completed changes and documentation to the configured repository. Synthetic shortlist evaluation `4823481` and documentation update `39dfe83` are published to remote main; matching local/remote head was verified after the push. Prior README checkpoint `35f8371` is included in that history. Continue milestone 17 with evidence-backed content quality improvements, then bounded broader discovery.
+Publication checkpoint (2026-10-05, session close): all completed evaluation and documentation changes are published, including weighted suitability roadmap commit `39a2ec2`; local and remote main matched after the authorized push. Session-close documentation accompanies that published checkpoint. Resume milestone 17 with evidence-backed local content classification/noise reduction, then bounded broader fetching; do not begin optional AI before the core shortlist gate.
 
 Roadmap clarification: future local summary milestones now explicitly cover evidence-backed primary/adjacent roles and experience/seniority signals. Models may estimate ranges only from supported chronology and responsibilities; exact years, verified seniority and missing qualifications require evidence and user review. This is planned for milestones 29–30 after model/runtime and semantic evaluation, not current functionality.
 
@@ -33,7 +33,7 @@ The governing promise is in [docs/privacy.md](docs/privacy.md). Resumes, profile
 - Result links use conservative local canonicalization and tracking-variant deduplication; session results include source hostname, retrieval time and removed-duplicate count (decision 0014). Shared categories now include literal resume/title/snippet evidence (decision 0016). Verified job attributes and cross-source identity remain pending.
 - Two discovery entry paths now exist: reviewed resumes suggest controlled role/skill categories and open the query directly; skipping uses manual preferences/skills. Engine-owned category comparisons support shared-skill ordering and local Results mention filters (decision 0015). LLM summaries and nuanced qualifications remain optional future work; the provider pool is still at most ten.
 - No model inference, embeddings, RAG, verified live-provider discovery, or application tracking is enabled yet. Engine-owned public query validation/preview is implemented; the transport privacy gate remains pending.
-- Latest published roadmap clarification is `9b8a407`; publication was verified against remote main. Check Git status before new changes or publication.
+- Latest published roadmap expansion is `39a2ec2` (weighted suitability design); publication was verified against remote main. Evaluation `4823481` and prior documentation checkpoints are included. Check Git status before new changes or publication.
 
 ## Evidence and limitations
 
