@@ -51,6 +51,8 @@ IP masking, unlinkable credentials, provider retention guarantees, and anonymous
 
 ## Release evidence
 
+The local shortlist evaluation uses only checked-in synthetic profiles and candidate pools. It invokes local analysis and frontend validation/filtering without provider requests, credential access or profile persistence. Labels and results are diagnostic judgments, not verified vacancy or live-provider quality claims. See [the evaluation baseline](shortlist-evaluation.md).
+
 The isolated Tavily search adapter has captured synthetic request tests for controlled-query serialization, fixed authentication/options/endpoint, forbidden private fields, redirects, response bounds and malicious result text/URLs. It performs no result-page or embedded-resource fetch. Decision 0012 adds explicit dispatch and text results, with synthetic API confirmation and rendering checks. Interactive and live-provider release verification remain pending. See [decision 0011](architecture/0011-bounded-discovery-adapter.md).
 
 Before advertising private online discovery, inspect captured outgoing requests using synthetic profiles with distinctive identifying markers. Verify that those markers, resume contents, embeddings, and extra fields never reach providers. Exercise malformed criteria, provider errors, redirects, malicious job text, cancellation, and offline behavior. Check that installed model inference uses only the local runtime and that no unexpected outbound requests occur while working locally.
