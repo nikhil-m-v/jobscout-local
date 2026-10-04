@@ -12,6 +12,8 @@ Latest continuation (2026-10-05): added a dependency-free synthetic shortlist ev
 
 Roadmap addition (2026-10-05): user requested weighted vector suitability ranking as a second optional AI use after private resume interpretation. Decision 0017 and expanded milestones 25–26/29–30 specify section embeddings plus evidence-backed weighted factors, mandatory constraints, editable soft weights, unknown coverage and local explanations. Summaries remain local; only reviewed generic catalog categories reach search. No model or agent is implemented; current pool remains ten and milestone 17 stays first. Documentation validation only; next implementation action remains local content-quality improvement before broader fetching.
 
+Storage maintenance (2026-10-05): removed only verified ignored/inactive native build outputs: work/desktop-dev, apps/desktop/src-tauri/target/debug, work/release-20261004 and work/release-assisted-20261004. Enumerated logical project size fell from 20.613 GiB to 4.292 GiB; observed drive free space increased about 12.041 GiB. Retained work/release-evidence-20261004 and the standard target/release outputs, source/history, node_modules, .venv, sidecar and all .local data. Next native development build will rebuild Rust caches and take longer. Historical paths in earlier notes may refer to removed builds. No ACL change or personal-data deletion.
+
 ## Direction
 
 Build an open-source Windows job finder that keeps personal career information local. Think big, act small: one useful, reviewable improvement per session. The UI matters from the first increment: minimal Apple-inspired glass, responsive layouts, Light/Dark/System appearance, keyboard access, and smooth background work.
