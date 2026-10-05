@@ -37,7 +37,7 @@ def test_job_category_evidence_is_bounded_and_profile_specific():
                   {'title': 'Data analyst', 'snippet': 'Tableau hybrid Canada junior'}]
     result = analyze_review(review('Data analyst Python Tableau', candidates))
     first, second = result['matches']
-    assert first == {'index': 0, 'roles': ['software-engineer'], 'skills': ['python', 'sql'], 'shared_skills': ['python'],
+    assert first == {'index': 0, 'content': {'status': 'unknown', 'evidence': []}, 'roles': ['software-engineer'], 'skills': ['python', 'sql'], 'shared_skills': ['python'],
                      'shared_evidence': [{'skill': 'python', 'resume_phrase': 'Python', 'job_phrase': 'Python', 'job_source': 'snippet'}],
                      'regions': ['india'], 'arrangements': ['remote'], 'seniorities': ['senior']}
     assert second['skills'] == ['analytics'] and second['regions'] == ['canada']
@@ -76,7 +76,7 @@ def test_skill_aliases_have_bounded_literal_evidence():
     review('x' * 200001), review('x\x00'), review('\ud800'),
     review('x', [{'title': 'x', 'snippet': '', 'url': 'https://collector.example.com'}]),
     review('x', [{'title': 'x' * 513, 'snippet': ''}]),
-    review('x', [{'title': 'x', 'snippet': ''}] * 11)])
+    review('x', [{'title': 'x', 'snippet': ''}] * 51)])
 def test_local_assistance_rejects_unbounded_or_unreviewed_inputs(value):
     with pytest.raises((ValueError, UnicodeError)):
         analyze_review(value)
@@ -115,7 +115,30 @@ def test_authenticated_local_analysis_then_preview_dispatch_never_sends_private_
 
 def test_local_route_rejects_duplicate_keys_and_oversized_bodies_without_echo(tmp_path):
     with TestClient(app(tmp_path, MemorySecrets(), httpx.MockTransport(lambda request: pytest.fail('Unexpected provider call')))) as client:
-        for raw in [b'{"text":"PRIVATE_ONE","text":"PRIVATE_TWO","reviewed":true,"candidates":[]}', b'x' * 2_300_001]:
+        for raw in [b'{"text":"PRIVATE_ONE","text":"PRIVATE_TWO","reviewed":true,"candidates":[]}', b'x' * 3_000_001]:
             result = client.post('/api/v1/assistance', headers=HEADERS, content=raw)
             assert result.status_code == 422 and result.json() == {'error': 'invalid_local_review'}
             assert result.headers['cache-control'] == 'no-store'
+
+
+@pytest.mark.parametrize('title,snippet,status', [
+    ('Software engineer interview guide', 'Python SQL notes', 'resource'),
+    ('Python course', '', 'resource'),
+    ('Data analyst training', 'Lessons', 'resource'),
+    ('Software engineer', '', 'unknown'),
+    ('Careers', '', 'unknown'),
+    ('Software engineer', 'Training courses provided', 'unknown'),
+    ('Training coordinator', 'Hiring now', 'opening'),
+    ('Directory services engineer', 'Apply now', 'unknown'),
+    ('Course author', 'Hiring a developer', 'unknown'),
+    ('Software engineer', 'Open Python services position.', 'opening'),
+    ('Software engineer', 'We use guidebooks and coursework', 'unknown'),
+])
+def test_content_classification_is_conservative_and_grounded(title, snippet, status):
+    from jobscout_engine.domain.candidate_content import classify_content
+    content = classify_content(title, snippet)
+    assert content['status'] == status
+    assert len(content['evidence']) <= 4
+    for signal in content['evidence']:
+        assert signal['phrase'] in {'title': title, 'snippet': snippet}[signal['source']]
+    assert analyze_review(review('', [{'title': title, 'snippet': snippet}]))['matches'][0]['content'] == content

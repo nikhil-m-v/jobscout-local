@@ -102,6 +102,22 @@ async fn search_preview(
 }
 
 #[tauri::command]
+async fn search_plan(
+    state: tauri::State<'_, Arc<EngineState>>, criteria: serde_json::Value,
+) -> Result<serde_json::Value, String> {
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
+        .clone().ok_or("Workspace is starting")?;
+    let body = serde_json::to_vec(&criteria).map_err(|_| "Invalid search criteria")?;
+    if body.len() > 4096 { return Err("Invalid search criteria".into()); }
+    state.client.post(format!("{endpoint}/api/v1/search/plan"))
+        .header("Content-Type", "application/json").body(body)
+        .timeout(Duration::from_secs(10)).bearer_auth(&state.token)
+        .send().await.map_err(|_| "Workspace connection unavailable")?
+        .error_for_status().map_err(|_| "Preview could not be prepared")?
+        .json().await.map_err(|_| "Preview response could not be read".into())
+}
+
+#[tauri::command]
 async fn search_provider(
     state: tauri::State<'_, Arc<EngineState>>, action: String, key: Option<String>,
 ) -> Result<serde_json::Value, String> {
@@ -148,9 +164,24 @@ async fn job_search(
     if body.len() > 6144 { return Err("Invalid confirmation".into()); }
     state.client.post(format!("{endpoint}/api/v1/search"))
         .header("Content-Type", "application/json").body(body)
-        .timeout(Duration::from_secs(30)).bearer_auth(&state.token)
+        .timeout(Duration::from_secs(85)).bearer_auth(&state.token)
         .send().await.map_err(|_| "Search could not be confirmed")?
         .json().await.map_err(|_| "Search response could not be read".into())
+}
+
+#[tauri::command]
+async fn search_control(
+    state: tauri::State<'_, Arc<EngineState>>, run_id: String, cancel: bool,
+) -> Result<serde_json::Value, String> {
+    let id = uuid::Uuid::parse_str(&run_id).map_err(|_| "Invalid search id")?;
+    if id.to_string() != run_id { return Err("Invalid search id".into()); }
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
+        .clone().ok_or("Workspace is starting")?;
+    let url = format!("{endpoint}/api/v1/search/{run_id}{}", if cancel { "/cancel" } else { "" });
+    let request = if cancel { state.client.post(url) } else { state.client.get(url) };
+    request.timeout(Duration::from_secs(5)).bearer_auth(&state.token)
+        .send().await.map_err(|_| "Search status unavailable")?
+        .json().await.map_err(|_| "Search status could not be read".into())
 }
 
 #[tauri::command]
@@ -160,7 +191,7 @@ async fn local_assistance(
     let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
         .clone().ok_or("Workspace is starting")?;
     let body = serde_json::to_vec(&review).map_err(|_| "Invalid local review")?;
-    if body.len() > 2_300_000 { return Err("Invalid local review".into()); }
+    if body.len() > 3_000_000 { return Err("Invalid local review".into()); }
     state.client.post(format!("{endpoint}/api/v1/assistance"))
         .header("Content-Type", "application/json").body(body)
         .timeout(Duration::from_secs(15)).bearer_auth(&state.token)
@@ -181,7 +212,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .manage(state)
-        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, search_preview, search_provider, provider_connection, job_search, local_assistance])
+        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, search_preview, search_plan, search_control, search_provider, provider_connection, job_search, local_assistance])
         .setup(|app| {
             let state = app.state::<Arc<EngineState>>().inner().clone();
             let directory = app.path().app_data_dir()?;

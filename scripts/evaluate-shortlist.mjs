@@ -12,7 +12,7 @@ assert.equal(fixture.version, 1);
 assert.ok(fixture.cases.length > 0);
 assert.equal(new Set(fixture.cases.map(item => item.id)).size, fixture.cases.length);
 for (const item of fixture.cases) {
-  assert.ok(item.candidates.length > 0 && item.candidates.length <= 10);
+  assert.ok(item.candidates.length > 0 && item.candidates.length <= 50);
   assert.equal(new Set(item.candidates.map(candidate => candidate.id)).size, item.candidates.length);
   assert.ok(item.candidates.some(candidate => candidate.relevant));
   for (const candidate of item.candidates) {
@@ -41,8 +41,15 @@ for (const [position, item] of fixture.cases.entries()) {
   const candidates = item.candidates.map(candidate => ({ title: candidate.title, snippet: candidate.snippet, url: `https://jobs.example.com/${candidate.id}` }));
   const evidence = validateAssistance(results[position], candidates.length, item.review, candidates).matches;
   const relevantTotal = item.candidates.filter(candidate => candidate.relevant).length;
+  const cleaned = filterCandidates(candidates, evidence, true, initialResultFilters);
+  assert.equal(cleaned.filter(row => item.candidates[row.index].relevant).length, relevantTotal, `${item.id}: content filtering lost a labeled relevant candidate`);
+  const baseline = filterCandidates(candidates, evidence, true, { ...initialResultFilters, showResources: true });
+  const relevantAtFive = rows => rows.slice(0, 5).filter(row => item.candidates[row.index].relevant).length;
+  assert.ok(relevantAtFive(cleaned) >= relevantAtFive(baseline), `${item.id}: content filtering degraded top-five relevance`);
+
   for (const [mode, ranked, filters] of [
-    ['Provider order', false, initialResultFilters],
+    ['Provider order', false, { ...initialResultFilters, showResources: true }],
+    ['Resume baseline', true, { ...initialResultFilters, showResources: true }],
     ['Resume ordering', true, initialResultFilters],
     ['Reviewed filters', true, { ...initialResultFilters, ...item.filters }],
     ['Strict known filters', true, { ...initialResultFilters, ...item.filters, keepUnknown: false }],
@@ -58,4 +65,4 @@ for (const [position, item] of fixture.cases.entries()) {
   }
 }
 console.log('\nPrecision divides by actual displayed count up to k. Retention divides by all relevant fixture candidates. Empty results have n/a precision.');
-console.log('This evaluates the existing ten-result boundary; it does not establish 30-50-job coverage, freshness, provider cost or latency.');
+console.log('This evaluates local pools of up to 50 candidates; it does not establish live 30-50-job coverage, freshness, provider cost or latency.');

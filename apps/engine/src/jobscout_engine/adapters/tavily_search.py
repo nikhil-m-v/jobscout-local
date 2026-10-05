@@ -7,6 +7,7 @@ from jobscout_engine.domain.discovery import DiscoveryFailure, DiscoveryResult, 
 from jobscout_engine.domain.result_urls import public_result_url
 from jobscout_engine.domain.providers import validate_tavily_key
 from jobscout_engine.domain.search import construct_public_query, reject_duplicate_keys
+from jobscout_engine.domain.search_plan import construct_search_plan
 
 SEARCH_ENDPOINT = "https://api.tavily.com/search"
 MAX_RESULTS = 10
@@ -56,6 +57,24 @@ class TavilySearch:
             validate_tavily_key({'key': key})
         except ValueError:
             raise DiscoveryFailure('invalid_provider_key') from None
+        try:
+            return await asyncio.wait_for(self._search(key, query), timeout=SEARCH_TIMEOUT_SECONDS)
+        except (asyncio.TimeoutError, httpx.TimeoutException):
+            raise DiscoveryFailure('provider_timeout') from None
+        except httpx.RequestError:
+            raise DiscoveryFailure('provider_unavailable') from None
+
+    async def search_variant(self, criteria: object, *, key: str, reviewed_query: str, variant: int) -> DiscoveryResult:
+        try:
+            plan = construct_search_plan(criteria)
+            if type(variant) is not int or not 0 <= variant < len(plan['queries']):
+                raise ValueError()
+            query = plan['queries'][variant]
+            if type(reviewed_query) is not str or reviewed_query != query:
+                raise ValueError()
+            validate_tavily_key({'key': key})
+        except ValueError:
+            raise DiscoveryFailure('search_review_required') from None
         try:
             return await asyncio.wait_for(self._search(key, query), timeout=SEARCH_TIMEOUT_SECONDS)
         except (asyncio.TimeoutError, httpx.TimeoutException):

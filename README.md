@@ -66,7 +66,7 @@ With the default target directory, the build creates a Windows NSIS installer un
 
 The guided installer/onboarding design is in [installation.md](docs/design/installation.md). In-app Tavily key setup is implemented; the complete guided first-run wizard, model selection, custom model storage and download recovery remain planned. The initial installer is configured for the current Windows user.
 
-Production engine packaging, Rust compilation and NSIS generation pass for the current code (latest installer approximately 22.09 MiB). This verifies packaging, not installer execution or current native interactions. Clean install, upgrade, uninstall, accessibility, themes and narrow-window behavior remain release checks.
+Production engine packaging, Rust compilation and NSIS generation pass for the current code (latest installer approximately 22.11 MiB). This verifies packaging, not installer execution or current native interactions. Clean install, upgrade, uninstall, accessibility, themes and narrow-window behavior remain release checks.
 
 ## Structure
 
@@ -101,7 +101,7 @@ node --experimental-strip-types --test apps/desktop/tests/*.test.mjs
 
 Use Node 24 for the full frontend suite above (it uses TypeScript stripping). Exercise both resume and manual flows: review/correction → query preparation → explicit send → Results/filter/back/revise. Check provider setup, cancellation/retry, disconnected behavior, keyboard navigation, both themes, narrow windows and reduced motion using synthetic data. If pytest cannot use the system temp directory in a restricted environment, run it with `-p no:cacheprovider --basetemp=.local/pytest` instead. For native changes, also run `npm run desktop:build` on a prepared Windows machine.
 
-Latest implementation validation: 275 engine tests, 51 frontend tests, production frontend build/typecheck and Windows packaging pass. Synthetic captured-request tests check that private fixture markers never enter provider requests. Current native interaction and deliberate live-search relevance evaluation remain pending; automated checks do not establish search quality or verified vacancies.
+Latest implementation validation: 303 engine tests, 61 frontend tests, production frontend build/typecheck and Windows packaging pass. Synthetic captured-request tests check that private fixture markers never enter provider requests. Current native interaction and deliberate live-search relevance evaluation remain pending; automated checks do not establish search quality or verified vacancies.
 
 ## Privacy and local connections
 
@@ -146,3 +146,7 @@ Synthetic API/privacy/rendering tests and Windows packaging pass. Browser/native
 Tavily supplies web discovery through its direct HTTP API. The search-provider interface is replaceable; local matching and optional future models do not depend on Tavily. A usage-only connection check was previously exercised successfully; it does not establish real-search quality or current account availability.
 
 Shortlist ranking can be evaluated locally with `npm run evaluate:shortlist`. The checked-in synthetic corpus exercises production analysis, validation, ordering and filters without a provider request. See [the quality baseline](docs/shortlist-evaluation.md) for labels, metrics, known failures and the next discovery-quality gate.
+
+### Bounded broader discovery
+
+The reviewed query now offers Broader discovery: five exact controlled variations, up to five basic requests, up to 50 raw candidates, a 75-second wait limit and an estimated five-credit ceiling. Uncheck it for the existing single search. Stop discovery retains completed results and requests cancellation of unsent work; sent requests may consume credits. Results explain partial coverage, duplicate removal and shortfalls. No result websites or personal data are sent/fetched by this flow. Rebuild/restart the engine and frontend together for the new plan/control commands. See [decision 0019](docs/architecture/0019-bounded-broader-discovery.md). Interactive/live-provider release checks remain pending.

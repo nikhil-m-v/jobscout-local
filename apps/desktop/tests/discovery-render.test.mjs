@@ -82,7 +82,7 @@ test('query action sends the displayed snapshot only after a click, with exact c
   const button = queryAction(searchPreview, discovery);
   assert.equal(calls.length, 0);
   button.props.onClick();
-  assert.deepEqual(calls, [[criteria.initialCriteria, preview, true], 'consume']);
+  assert.deepEqual(calls, [[criteria.initialCriteria, preview, true, true], 'consume']);
 });
 test('query action cannot send missing, disabled, disconnected or busy previews', () => {
   for (const snapshot of [null, { ...preview, provider: null }, { ...preview, dispatch_available: false }]) {
@@ -93,4 +93,31 @@ test('query action cannot send missing, disabled, disconnected or busy previews'
     const button = queryAction({ preview, connected, busy: preparing }, { busy: searching, send: () => assert.fail('must not send') });
     assert.equal(button.props.disabled, true); button.props.onClick();
   }
+});
+
+test('manual results disclose content uncertainty and reversible resource filtering', () => {
+  const markup = render(true, false, true, false, { analysis: { busy: false, error: '', result: { matches: [{ index: 0, content: { status: 'unknown', evidence: [{ kind: 'opening', source: 'snippet', phrase: '<img' }] }, skills: [], shared_skills: [], shared_evidence: [], roles: [], regions: [], arrangements: [], seniorities: [] }] } } });
+  assert.ok(markup.includes('Content type unclear'));
+  assert.ok(markup.includes('Show likely guides, courses and directories'));
+  assert.ok(markup.includes('Unclear content stays visible'));
+  assert.ok(markup.includes('<q>&lt;img</q>'));
+  assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
+});
+
+test('broader preview discloses every query, ceiling and stopping progress', () => {
+  const plan = { version: 1, queries: ['jobs', 'job openings', 'vacancies', 'hiring', 'careers'].map(term => `Software engineer ${term}`), max_requests: 5, max_candidates: 50, estimated_max_credits: 5, timeout_seconds: 75 };
+  const markup = render(true, false, false, false, { searchPreview: { preview: { ...preview, plan }, busy: false, connected: true, error: '' } });
+  for (const query of plan.queries) assert.ok(markup.includes(query));
+  assert.ok(markup.includes('estimated maximum of five API credits'));
+  assert.ok(markup.includes('up to 50 candidates'));
+  const progress = render(true, true, false, false, { searchPreview: { preview: { ...preview, plan }, busy: false, connected: true, error: '' }, discovery: { busy: true, progress: { completed: 2, attempted: 3, max_requests: 5 }, stop: noop } });
+  assert.ok(progress.includes('2 of 5 searches completed; 3 started'));
+  assert.ok(progress.includes('Stop discovery'));
+});
+test('partial discovery displays retained results and honest shortfall guidance', () => {
+  const markup = render(true, false, true, false, { discovery: { invalidate: noop, result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-05T03:00:00Z', duplicates_removed: 0, candidates: [{ title: 'Synthetic role', snippet: '', url: 'https://jobs.example.com/role' }], coverage: { attempted: 2, completed: 1, max_requests: 5, stop_reason: 'provider_failure', failures: [{ request: 2, code: 'provider_rate_limited' }] } } } });
+  assert.ok(markup.includes('completed results are retained'));
+  assert.ok(markup.includes('Fewer than 30 candidates remain'));
+  assert.ok(markup.includes('Tavily is limiting requests'));
+  assert.ok(markup.includes('Synthetic role'));
 });

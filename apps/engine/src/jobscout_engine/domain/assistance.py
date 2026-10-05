@@ -1,5 +1,6 @@
 """Bounded local category suggestions and snippet matching; no network or storage."""
 import re
+from jobscout_engine.domain.candidate_content import classify_content
 from jobscout_engine.domain.documents import MAX_TEXT_CHARACTERS
 from jobscout_engine.domain.search import SKILLS, REGIONS
 
@@ -43,7 +44,7 @@ def analyze_review(value: object) -> dict:
     if (type(value) is not dict or set(value) != {'text', 'reviewed', 'candidates'}
             or value['reviewed'] is not True or type(value['text']) is not str
             or len(value['text']) > MAX_TEXT_CHARACTERS or '\x00' in value['text']
-            or type(value['candidates']) is not list or len(value['candidates']) > 10):
+            or type(value['candidates']) is not list or len(value['candidates']) > 50):
         raise ValueError()
     value['text'].encode('utf-8')
     text = value['text']
@@ -61,7 +62,7 @@ def analyze_review(value: object) -> dict:
         title_phrases = mention_phrases(candidate['title'], SKILL_ALIASES)
         snippet_phrases = mention_phrases(candidate['snippet'], SKILL_ALIASES)
         shared = [skill for skill in job_skills if skill in skills]
-        matches.append({'index': index, 'skills': job_skills,
+        matches.append({'index': index, 'content': classify_content(candidate['title'], candidate['snippet']), 'skills': job_skills,
                         'shared_skills': shared,
                         'shared_evidence': [{'skill': skill, 'resume_phrase': resume_phrases[skill],
                                              'job_phrase': title_phrases.get(skill, snippet_phrases.get(skill)),

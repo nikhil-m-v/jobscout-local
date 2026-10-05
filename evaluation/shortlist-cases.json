@@ -239,6 +239,442 @@
           "reason": "Training, not a vacancy."
         }
       ]
+    },
+    {
+      "id": "content-ambiguity",
+      "review": "Software engineer Python SQL",
+      "filters": {},
+      "candidates": [
+        {
+          "id": "sparse",
+          "title": "Software engineer",
+          "snippet": "",
+          "relevant": true,
+          "reason": "Sparse role title retained without hiring language."
+        },
+        {
+          "id": "training-benefit",
+          "title": "Software engineer",
+          "snippet": "Python role with training courses and mentoring.",
+          "relevant": true,
+          "reason": "Training in benefits does not establish a resource page."
+        },
+        {
+          "id": "course-author",
+          "title": "Course author \u2014 software engineer",
+          "snippet": "Hiring Python developers to write tutorials.",
+          "relevant": true,
+          "reason": "Resource title plus opening evidence is ambiguous, retained."
+        },
+        {
+          "id": "directory-engineer",
+          "title": "Directory services software engineer",
+          "snippet": "Apply now. Python services.",
+          "relevant": true,
+          "reason": "Directory can describe engineering work; opening conflict retained."
+        },
+        {
+          "id": "tutorial",
+          "title": "Python tutorial",
+          "snippet": "Build SQL services step by step.",
+          "relevant": false,
+          "reason": "Explicit learning resource title."
+        },
+        {
+          "id": "bootcamp",
+          "title": "Software engineer bootcamp",
+          "snippet": "Python SQL lessons.",
+          "relevant": false,
+          "reason": "Explicit bootcamp resource title."
+        },
+        {
+          "id": "training-role",
+          "title": "Training coordinator",
+          "snippet": "Hiring for Python education programs.",
+          "relevant": false,
+          "reason": "An opening for a different role; content classification alone cannot establish fit."
+        },
+        {
+          "id": "opaque",
+          "title": "Engineering team",
+          "snippet": "Python SQL",
+          "relevant": true,
+          "reason": "Plausible sparse opening retained for review."
+        },
+        {
+          "id": "mixed-guide",
+          "title": "Software engineer guide",
+          "snippet": "Apply now for an opening; career advice included.",
+          "relevant": false,
+          "reason": "Mixed editorial/opening evidence remains uncertain rather than confidently hidden."
+        },
+        {
+          "id": "navigation",
+          "title": "Careers",
+          "snippet": "",
+          "relevant": false,
+          "reason": "Generic navigation stays unknown rather than being asserted to be a resource."
+        }
+      ]
+    },
+    {
+      "id": "bounded-50",
+      "review": "Software engineer Python SQL AWS pytest",
+      "filters": {
+        "role": "software-engineer"
+      },
+      "candidates": [
+        {
+          "id": "bounded-1",
+          "title": "Software engineer interview guide",
+          "snippet": "Python SQL AWS pytest notes.",
+          "relevant": false,
+          "reason": "Editorial resource, not a vacancy."
+        },
+        {
+          "id": "bounded-2",
+          "title": "Data analyst",
+          "snippet": "Hiring Python SQL AWS specialists.",
+          "relevant": false,
+          "reason": "Explicit different role."
+        },
+        {
+          "id": "bounded-3",
+          "title": "Backend developer",
+          "snippet": "Hiring Python SQL developers.",
+          "relevant": true,
+          "reason": "Compatible opening with exact skill mentions."
+        },
+        {
+          "id": "bounded-4",
+          "title": "Software engineer",
+          "snippet": "",
+          "relevant": true,
+          "reason": "Sparse compatible title retained for review."
+        },
+        {
+          "id": "bounded-5",
+          "title": "Software developer",
+          "snippet": "Open Python SQL services position.",
+          "relevant": true,
+          "reason": "Compatible role alias and opening evidence."
+        },
+        {
+          "id": "bounded-6",
+          "title": "Software engineer interview guide",
+          "snippet": "Python SQL AWS pytest notes.",
+          "relevant": false,
+          "reason": "Editorial resource, not a vacancy."
+        },
+        {
+          "id": "bounded-7",
+          "title": "Data analyst",
+          "snippet": "Hiring Python SQL AWS specialists.",
+          "relevant": false,
+          "reason": "Explicit different role."
+        },
+        {
+          "id": "bounded-8",
+          "title": "Backend developer",
+          "snippet": "Hiring Python SQL developers.",
+          "relevant": true,
+          "reason": "Compatible opening with exact skill mentions."
+        },
+        {
+          "id": "bounded-9",
+          "title": "Software engineer",
+          "snippet": "",
+          "relevant": true,
+          "reason": "Sparse compatible title retained for review."
+        },
+        {
+          "id": "bounded-10",
+          "title": "Software developer",
+          "snippet": "Open Python SQL services position.",
+          "relevant": true,
+          "reason": "Compatible role alias and opening evidence."
+        },
+        {
+          "id": "bounded-11",
+          "title": "Software engineer interview guide",
+          "snippet": "Python SQL AWS pytest notes.",
+          "relevant": false,
+          "reason": "Editorial resource, not a vacancy."
+        },
+        {
+          "id": "bounded-12",
+          "title": "Data analyst",
+          "snippet": "Hiring Python SQL AWS specialists.",
+          "relevant": false,
+          "reason": "Explicit different role."
+        },
+        {
+          "id": "bounded-13",
+          "title": "Backend developer",
+          "snippet": "Hiring Python SQL developers.",
+          "relevant": true,
+          "reason": "Compatible opening with exact skill mentions."
+        },
+        {
+          "id": "bounded-14",
+          "title": "Software engineer",
+          "snippet": "",
+          "relevant": true,
+          "reason": "Sparse compatible title retained for review."
+        },
+        {
+          "id": "bounded-15",
+          "title": "Software developer",
+          "snippet": "Open Python SQL services position.",
+          "relevant": true,
+          "reason": "Compatible role alias and opening evidence."
+        },
+        {
+          "id": "bounded-16",
+          "title": "Software engineer interview guide",
+          "snippet": "Python SQL AWS pytest notes.",
+          "relevant": false,
+          "reason": "Editorial resource, not a vacancy."
+        },
+        {
+          "id": "bounded-17",
+          "title": "Data analyst",
+          "snippet": "Hiring Python SQL AWS specialists.",
+          "relevant": false,
+          "reason": "Explicit different role."
+        },
+        {
+          "id": "bounded-18",
+          "title": "Backend developer",
+          "snippet": "Hiring Python SQL developers.",
+          "relevant": true,
+          "reason": "Compatible opening with exact skill mentions."
+        },
+        {
+          "id": "bounded-19",
+          "title": "Software engineer",
+          "snippet": "",
+          "relevant": true,
+          "reason": "Sparse compatible title retained for review."
+        },
+        {
+          "id": "bounded-20",
+          "title": "Software developer",
+          "snippet": "Open Python SQL services position.",
+          "relevant": true,
+          "reason": "Compatible role alias and opening evidence."
+        },
+        {
+          "id": "bounded-21",
+          "title": "Software engineer interview guide",
+          "snippet": "Python SQL AWS pytest notes.",
+          "relevant": false,
+          "reason": "Editorial resource, not a vacancy."
+        },
+        {
+          "id": "bounded-22",
+          "title": "Data analyst",
+          "snippet": "Hiring Python SQL AWS specialists.",
+          "relevant": false,
+          "reason": "Explicit different role."
+        },
+        {
+          "id": "bounded-23",
+          "title": "Backend developer",
+          "snippet": "Hiring Python SQL developers.",
+          "relevant": true,
+          "reason": "Compatible opening with exact skill mentions."
+        },
+        {
+          "id": "bounded-24",
+          "title": "Software engineer",
+          "snippet": "",
+          "relevant": true,
+          "reason": "Sparse compatible title retained for review."
+        },
+        {
+          "id": "bounded-25",
+          "title": "Software developer",
+          "snippet": "Open Python SQL services position.",
+          "relevant": true,
+          "reason": "Compatible role alias and opening evidence."
+        },
+        {
+          "id": "bounded-26",
+          "title": "Software engineer interview guide",
+          "snippet": "Python SQL AWS pytest notes.",
+          "relevant": false,
+          "reason": "Editorial resource, not a vacancy."
+        },
+        {
+          "id": "bounded-27",
+          "title": "Data analyst",
+          "snippet": "Hiring Python SQL AWS specialists.",
+          "relevant": false,
+          "reason": "Explicit different role."
+        },
+        {
+          "id": "bounded-28",
+          "title": "Backend developer",
+          "snippet": "Hiring Python SQL developers.",
+          "relevant": true,
+          "reason": "Compatible opening with exact skill mentions."
+        },
+        {
+          "id": "bounded-29",
+          "title": "Software engineer",
+          "snippet": "",
+          "relevant": true,
+          "reason": "Sparse compatible title retained for review."
+        },
+        {
+          "id": "bounded-30",
+          "title": "Software developer",
+          "snippet": "Open Python SQL services position.",
+          "relevant": true,
+          "reason": "Compatible role alias and opening evidence."
+        },
+        {
+          "id": "bounded-31",
+          "title": "Software engineer interview guide",
+          "snippet": "Python SQL AWS pytest notes.",
+          "relevant": false,
+          "reason": "Editorial resource, not a vacancy."
+        },
+        {
+          "id": "bounded-32",
+          "title": "Data analyst",
+          "snippet": "Hiring Python SQL AWS specialists.",
+          "relevant": false,
+          "reason": "Explicit different role."
+        },
+        {
+          "id": "bounded-33",
+          "title": "Backend developer",
+          "snippet": "Hiring Python SQL developers.",
+          "relevant": true,
+          "reason": "Compatible opening with exact skill mentions."
+        },
+        {
+          "id": "bounded-34",
+          "title": "Software engineer",
+          "snippet": "",
+          "relevant": true,
+          "reason": "Sparse compatible title retained for review."
+        },
+        {
+          "id": "bounded-35",
+          "title": "Software developer",
+          "snippet": "Open Python SQL services position.",
+          "relevant": true,
+          "reason": "Compatible role alias and opening evidence."
+        },
+        {
+          "id": "bounded-36",
+          "title": "Software engineer interview guide",
+          "snippet": "Python SQL AWS pytest notes.",
+          "relevant": false,
+          "reason": "Editorial resource, not a vacancy."
+        },
+        {
+          "id": "bounded-37",
+          "title": "Data analyst",
+          "snippet": "Hiring Python SQL AWS specialists.",
+          "relevant": false,
+          "reason": "Explicit different role."
+        },
+        {
+          "id": "bounded-38",
+          "title": "Backend developer",
+          "snippet": "Hiring Python SQL developers.",
+          "relevant": true,
+          "reason": "Compatible opening with exact skill mentions."
+        },
+        {
+          "id": "bounded-39",
+          "title": "Software engineer",
+          "snippet": "",
+          "relevant": true,
+          "reason": "Sparse compatible title retained for review."
+        },
+        {
+          "id": "bounded-40",
+          "title": "Software developer",
+          "snippet": "Open Python SQL services position.",
+          "relevant": true,
+          "reason": "Compatible role alias and opening evidence."
+        },
+        {
+          "id": "bounded-41",
+          "title": "Software engineer interview guide",
+          "snippet": "Python SQL AWS pytest notes.",
+          "relevant": false,
+          "reason": "Editorial resource, not a vacancy."
+        },
+        {
+          "id": "bounded-42",
+          "title": "Data analyst",
+          "snippet": "Hiring Python SQL AWS specialists.",
+          "relevant": false,
+          "reason": "Explicit different role."
+        },
+        {
+          "id": "bounded-43",
+          "title": "Backend developer",
+          "snippet": "Hiring Python SQL developers.",
+          "relevant": true,
+          "reason": "Compatible opening with exact skill mentions."
+        },
+        {
+          "id": "bounded-44",
+          "title": "Software engineer",
+          "snippet": "",
+          "relevant": true,
+          "reason": "Sparse compatible title retained for review."
+        },
+        {
+          "id": "bounded-45",
+          "title": "Software developer",
+          "snippet": "Open Python SQL services position.",
+          "relevant": true,
+          "reason": "Compatible role alias and opening evidence."
+        },
+        {
+          "id": "bounded-46",
+          "title": "Software engineer interview guide",
+          "snippet": "Python SQL AWS pytest notes.",
+          "relevant": false,
+          "reason": "Editorial resource, not a vacancy."
+        },
+        {
+          "id": "bounded-47",
+          "title": "Data analyst",
+          "snippet": "Hiring Python SQL AWS specialists.",
+          "relevant": false,
+          "reason": "Explicit different role."
+        },
+        {
+          "id": "bounded-48",
+          "title": "Backend developer",
+          "snippet": "Hiring Python SQL developers.",
+          "relevant": true,
+          "reason": "Compatible opening with exact skill mentions."
+        },
+        {
+          "id": "bounded-49",
+          "title": "Software engineer",
+          "snippet": "",
+          "relevant": true,
+          "reason": "Sparse compatible title retained for review."
+        },
+        {
+          "id": "bounded-50",
+          "title": "Software developer",
+          "snippet": "Open Python SQL services position.",
+          "relevant": true,
+          "reason": "Compatible role alias and opening evidence."
+        }
+      ]
     }
   ]
 }

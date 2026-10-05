@@ -7,5 +7,5 @@ export function useDiscovery(connected: boolean) {
   useEffect(() => { if (!connected) store.invalidate(); }, [connected, store]);
   useEffect(() => () => store.invalidate(), [store]);
   return { ...state, busy: connected && state.busy, result: connected ? state.result : null,
-    invalidate: store.invalidate, send: store.send };
+    invalidate: store.invalidate, stop: store.stop, send: store.send };
 }

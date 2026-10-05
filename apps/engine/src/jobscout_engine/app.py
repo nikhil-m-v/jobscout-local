@@ -18,6 +18,8 @@ from jobscout_engine.adapters.tavily import TavilyConnection, ProviderCheckFailu
 from jobscout_engine.adapters.tavily_search import TavilySearch
 from jobscout_engine.domain.discovery import SearchProvider, DiscoveryFailure
 from jobscout_engine.domain.assistance import analyze_review
+from jobscout_engine.domain.search_plan import construct_search_plan
+from jobscout_engine.broader_discovery import BroaderDiscovery
 from jobscout_engine.domain.providers import MAX_PROVIDER_BODY_BYTES, validate_tavily_key, provider_status
 from jobscout_engine.config import Settings
 from jobscout_engine.domain.contracts import EngineHealth, ModelProvider
@@ -45,6 +47,7 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
     connection_lock = asyncio.Lock()
     discovery = search_provider if search_provider is not None else TavilySearch()
     search_lock = asyncio.Lock()
+    broader = BroaderDiscovery(discovery)
 
     @asynccontextmanager
     async def lifespan(_: FastAPI):
@@ -52,6 +55,8 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
         yield
         if imports.task:
             imports.cancel(imports.task.id)
+        if broader.current_id:
+            broader.cancel(broader.current_id)
 
     application = FastAPI(
         title="JobScout local engine", version=__version__, lifespan=lifespan,
@@ -164,7 +169,7 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
         async def read_review():
             body = bytearray()
             async for chunk in request.stream():
-                if len(body) + len(chunk) > 2_300_000:
+                if len(body) + len(chunk) > 3_000_000:
                     raise ValueError()
                 body.extend(chunk)
             return json.loads(body, object_pairs_hook=reject_duplicate_keys)
@@ -176,6 +181,7 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
         except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
             return profile_response({'error': 'invalid_local_review'}, 422)
 
+    @application.post("/api/v1/search/plan", dependencies=[Depends(require_session)])
     @application.post("/api/v1/search/preview", dependencies=[Depends(require_session)])
     async def preview_search(request: Request):
         # Local construction only. Never echo invalid input or retain query history.
@@ -203,7 +209,8 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
         except SecretStoreUnavailable:
             pass  # Local query construction remains usable without vault access.
         return profile_response({"query": query, "query_version": QUERY_VERSION,
-                                 "provider": configured_provider, "dispatch_available": configured_provider is not None})
+                                 "provider": configured_provider, "dispatch_available": configured_provider is not None,
+                                 **({"plan": construct_search_plan(value)} if request.url.path.endswith("/plan") else {})})
 
     @application.post("/api/v1/search", dependencies=[Depends(require_session)])
     async def search_jobs(request: Request):
@@ -218,13 +225,19 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
                     body.extend(chunk)
                 return json.loads(body, object_pairs_hook=reject_duplicate_keys)
             value = await asyncio.wait_for(read_confirmation(), timeout=5)
-            if (type(value) is not dict or set(value) != {'criteria', 'provider', 'query_version', 'reviewed_query', 'confirmed'}
+            fields = {'criteria', 'provider', 'query_version', 'reviewed_query', 'confirmed'}
+            is_broader = type(value) is dict and set(value) == fields | {'reviewed_plan', 'run_id'}
+            if (type(value) is not dict or (set(value) != fields and not is_broader)
                     or value['provider'] != 'tavily' or type(value['query_version']) is not int
                     or value['query_version'] != QUERY_VERSION or value['confirmed'] is not True):
                 raise ValueError()
             query = construct_public_query(value['criteria'])
             if type(value['reviewed_query']) is not str or value['reviewed_query'] != query:
                 raise ValueError()
+            if is_broader:
+                if (type(value['run_id']) is not str or str(UUID(value['run_id'])) != value['run_id']
+                        or json.dumps(value['reviewed_plan'], sort_keys=True) != json.dumps(construct_search_plan(value['criteria']), sort_keys=True)):
+                    raise ValueError()
         except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
             return profile_response({'error': 'search_confirmation_required'}, 422)
         if search_lock.locked():
@@ -235,12 +248,25 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
                     key = await run_in_threadpool(provider_secrets.read)
                 if key is None:
                     return profile_response({'error': 'provider_key_missing'}, 409)
+                if is_broader:
+                    return profile_response(await broader.run(value['criteria'], key, value['run_id']))
                 result = await discovery.search(value['criteria'], key=key, reviewed_query=query)
                 return profile_response(asdict(result))
         except SecretStoreUnavailable:
             return profile_response({'error': 'secret_store_unavailable'}, 503)
         except DiscoveryFailure as error:
             return profile_response({'error': error.code}, 503)
+
+    @application.get('/api/v1/search/{run_id}', dependencies=[Depends(require_session)])
+    async def search_progress(run_id: UUID):
+        if str(run_id) != broader.current_id or broader.progress is None:
+            return profile_response({'error': 'search_not_found'}, 404)
+        return profile_response(broader.progress.copy())
+
+    @application.post('/api/v1/search/{run_id}/cancel', dependencies=[Depends(require_session)])
+    async def cancel_search(run_id: UUID):
+        broader.cancel(str(run_id))
+        return profile_response({'cancelled': True})
 
     @application.get("/api/v1/profile", dependencies=[Depends(require_session)])
     async def load_profile():

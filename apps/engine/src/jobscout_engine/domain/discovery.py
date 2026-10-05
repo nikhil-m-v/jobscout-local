@@ -28,3 +28,6 @@ class DiscoveryFailure(Exception):
 class SearchProvider(Protocol):
     async def search(self, criteria: object, *, key: str,
                      reviewed_query: str) -> DiscoveryResult: ...
+
+    async def search_variant(self, criteria: object, *, key: str,
+                             reviewed_query: str, variant: int) -> DiscoveryResult: ...
