@@ -37,7 +37,7 @@ def test_job_category_evidence_is_bounded_and_profile_specific():
                   {'title': 'Data analyst', 'snippet': 'Tableau hybrid Canada junior'}]
     result = analyze_review(review('Data analyst Python Tableau', candidates))
     first, second = result['matches']
-    assert first == {'index': 0, 'content': {'status': 'unknown', 'evidence': []}, 'roles': ['software-engineer'], 'skills': ['python', 'sql'], 'shared_skills': ['python'],
+    assert {k: v for k, v in first.items() if k != 'shortlist'} == {'index': 0, 'content': {'status': 'unknown', 'evidence': []}, 'roles': ['software-engineer'], 'skills': ['python', 'sql'], 'shared_skills': ['python'],
                      'shared_evidence': [{'skill': 'python', 'resume_phrase': 'Python', 'job_phrase': 'Python', 'job_source': 'snippet'}],
                      'regions': ['india'], 'arrangements': ['remote'], 'seniorities': ['senior']}
     assert second['skills'] == ['analytics'] and second['regions'] == ['canada']

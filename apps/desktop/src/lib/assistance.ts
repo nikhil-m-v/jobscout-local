@@ -3,8 +3,9 @@ import { arrangements, regions, roles, seniorities, skills, validatePublicSearch
 import type { Candidate } from './discovery-state.ts';
 
 export type SkillEvidence = Readonly<{ skill: keyof typeof skills; resume_phrase: string; job_phrase: string; job_source: 'title' | 'snippet' }>;
-export type ContentAssessment = Readonly<{ status: 'resource' | 'opening' | 'unknown'; evidence: readonly Readonly<{ kind: 'resource' | 'opening'; source: 'title' | 'snippet'; phrase: string }>[] }>;
-export type Mentions = Readonly<{ index: number; content: ContentAssessment; skills: readonly (keyof typeof skills)[]; shared_skills: readonly (keyof typeof skills)[]; shared_evidence: readonly SkillEvidence[]; roles: readonly (keyof typeof roles)[]; regions: readonly (keyof typeof regions)[]; arrangements: readonly (keyof typeof arrangements)[]; seniorities: readonly (keyof typeof seniorities)[] }>;
+export type ContentAssessment = Readonly<{ status: 'resource' | 'opening' | 'unknown' | 'collection'; evidence: readonly Readonly<{ kind: 'resource' | 'opening' | 'collection'; source: 'title' | 'snippet'; phrase: string }>[] }>;
+export type ShortlistEvidence = Readonly<{ roles: readonly Readonly<{ role: keyof typeof roles; source: 'title' | 'snippet'; phrase: string }>[]; exact_tools: readonly SkillEvidence[]; exclusions: readonly Readonly<{ skill: keyof typeof skills; source: 'title' | 'snippet'; phrase: string }>[] }>;
+export type Mentions = Readonly<{ index: number; shortlist: ShortlistEvidence; content: ContentAssessment; skills: readonly (keyof typeof skills)[]; shared_skills: readonly (keyof typeof skills)[]; shared_evidence: readonly SkillEvidence[]; roles: readonly (keyof typeof roles)[]; regions: readonly (keyof typeof regions)[]; arrangements: readonly (keyof typeof arrangements)[]; seniorities: readonly (keyof typeof seniorities)[] }>;
 export type Assistance = Readonly<{ criteria: PublicSearchCriteria | null; roles: readonly (keyof typeof roles)[]; skills: readonly (keyof typeof skills)[]; matches: readonly Mentions[] }>;
 export const ASSISTANCE_ERROR = 'Local analysis could not finish. Retry or use manual preferences. Nothing was sent to a search provider.';
 function categoryList<T extends Record<string, string>>(value: unknown, catalog: T): readonly (keyof T)[] {
@@ -21,18 +22,18 @@ export function validateAssistance(value: unknown, count: number, text = '', can
   const matches = data.matches.map((item, index) => {
     if (!item || typeof item !== 'object' || Array.isArray(item)) throw new Error(ASSISTANCE_ERROR);
     const record = item as Record<string, unknown>;
-    if (Object.keys(record).sort().join(',') !== 'arrangements,content,index,regions,roles,seniorities,shared_evidence,shared_skills,skills' || record.index !== index) throw new Error(ASSISTANCE_ERROR);
+    if (Object.keys(record).sort().join(',') !== 'arrangements,content,index,regions,roles,seniorities,shared_evidence,shared_skills,shortlist,skills' || record.index !== index) throw new Error(ASSISTANCE_ERROR);
     const raw = record.content as Record<string, unknown> | null;
-    if (!raw || Array.isArray(raw) || Object.keys(raw).sort().join(',') !== 'evidence,status' || !['resource', 'opening', 'unknown'].includes(raw.status as string) || !Array.isArray(raw.evidence) || raw.evidence.length > 4) throw new Error(ASSISTANCE_ERROR);
+    if (!raw || Array.isArray(raw) || Object.keys(raw).sort().join(',') !== 'evidence,status' || !['resource', 'opening', 'unknown', 'collection'].includes(raw.status as string) || !Array.isArray(raw.evidence) || raw.evidence.length > 5) throw new Error(ASSISTANCE_ERROR);
     const contentEvidence = raw.evidence.map((signal: unknown) => {
       if (!signal || typeof signal !== 'object' || Array.isArray(signal)) throw new Error(ASSISTANCE_ERROR);
       const entry = signal as Record<string, unknown>;
-      if (Object.keys(entry).sort().join(',') !== 'kind,phrase,source' || !['resource', 'opening'].includes(entry.kind as string) || (entry.source !== 'title' && entry.source !== 'snippet') || typeof entry.phrase !== 'string' || !entry.phrase || entry.phrase.length > 80 || /[\x00-\x1f\x7f]/.test(entry.phrase) || !candidates[index]?.[entry.source].includes(entry.phrase)) throw new Error(ASSISTANCE_ERROR);
-      return Object.freeze({ kind: entry.kind as 'resource' | 'opening', source: entry.source, phrase: entry.phrase });
+      if (Object.keys(entry).sort().join(',') !== 'kind,phrase,source' || !['resource', 'opening', 'collection'].includes(entry.kind as string) || (entry.source !== 'title' && entry.source !== 'snippet') || (entry.kind === 'collection' && entry.source !== 'title') || typeof entry.phrase !== 'string' || !entry.phrase || entry.phrase.length > 100 || /[\x00-\x1f\x7f]/.test(entry.phrase) || !candidates[index]?.[entry.source].includes(entry.phrase)) throw new Error(ASSISTANCE_ERROR);
+      return Object.freeze({ kind: entry.kind as 'resource' | 'opening' | 'collection', source: entry.source, phrase: entry.phrase });
     });
     if (new Set(contentEvidence.map(e => `${e.kind}:${e.source}`)).size !== contentEvidence.length) throw new Error(ASSISTANCE_ERROR);
     const hasOpening = contentEvidence.some(e => e.kind === 'opening'), hasResource = contentEvidence.some(e => e.kind === 'resource');
-    const expected = contentEvidence.some(e => e.kind === 'resource' && e.source === 'title') && !hasOpening ? 'resource' : hasOpening && !hasResource ? 'opening' : 'unknown';
+    const expected = contentEvidence.some(e => e.kind === 'collection' && e.source === 'title') ? 'collection' : contentEvidence.some(e => e.kind === 'resource' && e.source === 'title') && !hasOpening ? 'resource' : hasOpening && !hasResource ? 'opening' : 'unknown';
     if (raw.status !== expected) throw new Error(ASSISTANCE_ERROR);
     const content: ContentAssessment = Object.freeze({ status: expected, evidence: Object.freeze(contentEvidence) });
     const jobSkills = categoryList(record.skills, skills), sharedSkills = categoryList(record.shared_skills, skills);
@@ -47,7 +48,25 @@ export function validateAssistance(value: unknown, count: number, text = '', can
       }
       return Object.freeze({ skill: sharedSkills[position], resume_phrase: item.resume_phrase as string, job_phrase: item.job_phrase as string, job_source: item.job_source });
     });
-    return Object.freeze({ index, content, roles: categoryList(record.roles, roles), skills: jobSkills, shared_skills: sharedSkills, shared_evidence: Object.freeze(evidence), regions: categoryList(record.regions, regions), arrangements: categoryList(record.arrangements, arrangements), seniorities: categoryList(record.seniorities, seniorities) });
+    const roleIds = categoryList(record.roles, roles);
+    const rawShortlist = record.shortlist as ShortlistEvidence;
+    const literal = (phrase: unknown, source: string | undefined, max = 80) => typeof phrase === 'string' && phrase.length > 0 && phrase.length <= max && !/[\x00-\x1f\x7f]/.test(phrase) && !!source?.includes(phrase);
+    if (!rawShortlist || Object.keys(rawShortlist).sort().join(',') !== 'exact_tools,exclusions,roles' || !Array.isArray(rawShortlist.roles) || rawShortlist.roles.length > 16 || !Array.isArray(rawShortlist.exact_tools) || rawShortlist.exact_tools.length > 12 || !Array.isArray(rawShortlist.exclusions) || rawShortlist.exclusions.length > 24) throw new Error(ASSISTANCE_ERROR);
+    const roleEvidence = rawShortlist.roles.map((entry: ShortlistEvidence['roles'][number]) => {
+      if (!entry || Object.keys(entry).sort().join(',') !== 'phrase,role,source' || !roleIds.includes(entry.role) || !['title', 'snippet'].includes(entry.source) || !literal(entry.phrase, candidates[index]?.[entry.source])) throw new Error(ASSISTANCE_ERROR);
+      return Object.freeze({ ...entry });
+    });
+    const exactTools = rawShortlist.exact_tools.map((entry: SkillEvidence) => {
+      if (!entry || Object.keys(entry).sort().join(',') !== 'job_phrase,job_source,resume_phrase,skill' || !sharedSkills.includes(entry.skill) || !['title', 'snippet'].includes(entry.job_source) || !literal(entry.resume_phrase, text, 32) || !literal(entry.job_phrase, candidates[index]?.[entry.job_source], 32) || entry.resume_phrase.toLowerCase() !== entry.job_phrase.toLowerCase()) throw new Error(ASSISTANCE_ERROR);
+      return Object.freeze({ ...entry });
+    });
+    const exclusions = rawShortlist.exclusions.map((entry: ShortlistEvidence['exclusions'][number]) => {
+      if (!entry || Object.keys(entry).sort().join(',') !== 'phrase,skill,source' || !jobSkills.includes(entry.skill) || !['title', 'snippet'].includes(entry.source) || !literal(entry.phrase, candidates[index]?.[entry.source])) throw new Error(ASSISTANCE_ERROR);
+      return Object.freeze({ ...entry });
+    });
+    if (new Set(roleEvidence.map(entry => `${entry.role}:${entry.source}`)).size !== roleEvidence.length || new Set(exactTools.map(entry => entry.skill)).size !== exactTools.length || new Set(exclusions.map(entry => `${entry.skill}:${entry.source}:${entry.phrase}`)).size !== exclusions.length) throw new Error(ASSISTANCE_ERROR);
+    const shortlist = Object.freeze({ roles: Object.freeze(roleEvidence), exact_tools: Object.freeze(exactTools), exclusions: Object.freeze(exclusions) });
+    return Object.freeze({ index, shortlist, content, roles: roleIds, skills: jobSkills, shared_skills: sharedSkills, shared_evidence: Object.freeze(evidence), regions: categoryList(record.regions, regions), arrangements: categoryList(record.arrangements, arrangements), seniorities: categoryList(record.seniorities, seniorities) });
   });
   return Object.freeze({ criteria, roles: detectedRoles, skills: detectedSkills, matches: Object.freeze(matches) });
 }

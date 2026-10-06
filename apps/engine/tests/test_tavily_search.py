@@ -55,6 +55,7 @@ def test_outgoing_request_contains_only_controlled_query_options_and_auth(monkey
     assert len(result.candidates) == 1
     assert result.candidates[0].url == 'https://jobs.example.com/role'
     assert result.candidates[0].snippet == ITEM['content']  # Text cannot trigger actions.
+    assert result.candidates[0].source_index is None
     assert not hasattr(result, 'answer') and not hasattr(result, 'images')
 
 
@@ -119,8 +120,9 @@ def test_unsafe_result_destinations_are_rejected_without_fetching(url):
     def handler(request):
         calls.append(request)
         return response({'results': [{**ITEM, 'url': url}]})
-    with pytest.raises(DiscoveryFailure, match='^provider_invalid_response$'):
-        run(TavilySearch(transport=httpx.MockTransport(handler)))
+    result = run(TavilySearch(transport=httpx.MockTransport(handler)))
+    assert result.candidates == () and result.discarded_results == 1
+    assert result.duplicates_removed == 0
     assert len(calls) == 1 and str(calls[0].url) == SEARCH_ENDPOINT
 
 
@@ -178,6 +180,32 @@ def test_tracking_variants_merge_but_distinct_job_ids_and_paths_remain():
         'https://jobs.example.com/role?job=42', 'https://jobs.example.com/role?job=43',
         'https://jobs.example.com/Role?job=42']
     assert result.candidates[0].title == ITEM['title']
+
+
+def test_mixed_batch_retains_valid_links_and_separates_discards_from_duplicates():
+    data = {'results': [ITEM, {**ITEM, 'url': 'https://localhost/private'},
+                        {**ITEM, 'url': 'https://jobs.example.com/role#duplicate'},
+                        *[{**ITEM, 'url': f'https://jobs.example.com/job-{i}'} for i in range(7)]]}
+    result = run(TavilySearch(transport=httpx.MockTransport(lambda request: response(data))))
+    assert len(result.candidates) == 8
+    assert result.discarded_results == 1 and result.duplicates_removed == 1
+    assert 'localhost' not in repr(result)
+
+
+def test_rejected_destination_cannot_hide_credential_echo():
+    data = {'results': [ITEM, {**ITEM, 'url': f'http://localhost/{KEY}'}]}
+    with pytest.raises(DiscoveryFailure, match='^provider_invalid_response$'):
+        run(TavilySearch(transport=httpx.MockTransport(lambda request: response(data))))
+
+
+def test_source_provenance_is_owned_by_reviewed_plan_not_provider_metadata():
+    adapter = TavilySearch(transport=httpx.MockTransport(lambda request: response({
+        'results': [{**ITEM, 'source_index': 4, 'source': 'Private provider marker'}],
+    })))
+    result = asyncio.run(adapter.search_variant(CRITERIA, key=KEY, reviewed_query=construct_public_query(CRITERIA), variant=1))
+    assert result.candidates[0].source_index == 1
+    assert 'Private provider marker' not in repr(result)
+    assert run(adapter).candidates[0].source_index is None
 
 
 @pytest.mark.parametrize('field', ['title', 'content', 'url'])

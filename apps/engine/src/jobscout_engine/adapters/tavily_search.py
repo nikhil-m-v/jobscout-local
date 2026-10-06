@@ -1,6 +1,7 @@
 """Bounded search boundary. No profile, database, vault, SDK or model access."""
 import asyncio
 import json
+from dataclasses import replace
 from datetime import datetime, timezone
 import httpx
 from jobscout_engine.domain.discovery import DiscoveryFailure, DiscoveryResult, SearchCandidate
@@ -15,11 +16,12 @@ MAX_RESPONSE_BYTES = 262_144
 SEARCH_TIMEOUT_SECONDS = 20
 
 
-def parse_candidates(data: object, *, credential: str = '') -> tuple[SearchCandidate, ...]:
+def parse_candidate_batch(data: object, *, credential: str = '') -> tuple[tuple[SearchCandidate, ...], int, int]:
     if type(data) is not dict or type(data.get('results')) is not list or len(data['results']) > MAX_RESULTS:
         raise ValueError()
     candidates = []
     seen = set()
+    duplicates, discarded = 0, 0
     for item in data['results']:
         if type(item) is not dict:
             raise ValueError()
@@ -33,11 +35,23 @@ def parse_candidates(data: object, *, credential: str = '') -> tuple[SearchCandi
         # Check before canonicalization/deduplication so neither can hide a key echo.
         if credential and any(credential in field for field in (title, content, raw_url) if type(field) is str):
             raise ValueError()
-        url = public_result_url(raw_url)
+        try:
+            url = public_result_url(raw_url)
+        except ValueError:
+            # Do not repair, expose or fetch unsupported destinations. Preserve
+            # independently valid candidates, without calling discards duplicates.
+            discarded += 1
+            continue
         if url not in seen:
             candidates.append(SearchCandidate(title.strip(), url, content.strip()))
             seen.add(url)
-    return tuple(candidates)
+        else:
+            duplicates += 1
+    return tuple(candidates), duplicates, discarded
+
+
+def parse_candidates(data: object, *, credential: str = '') -> tuple[SearchCandidate, ...]:
+    return parse_candidate_batch(data, credential=credential)[0]
 
 
 class TavilySearch:
@@ -76,17 +90,21 @@ class TavilySearch:
         except ValueError:
             raise DiscoveryFailure('search_review_required') from None
         try:
-            return await asyncio.wait_for(self._search(key, query), timeout=SEARCH_TIMEOUT_SECONDS)
+            result = await asyncio.wait_for(self._search(key, query, domains=tuple(plan['sources'][variant]['domains'])), timeout=SEARCH_TIMEOUT_SECONDS)
+            # Provenance comes from the reviewed local plan, never provider metadata.
+            return replace(result, candidates=tuple(replace(candidate, source_index=variant) for candidate in result.candidates))
         except (asyncio.TimeoutError, httpx.TimeoutException):
             raise DiscoveryFailure('provider_timeout') from None
         except httpx.RequestError:
             raise DiscoveryFailure('provider_unavailable') from None
 
-    async def _search(self, key: str, query: str) -> DiscoveryResult:
+    async def _search(self, key: str, query: str, *, domains: tuple[str, ...] | None = None) -> DiscoveryResult:
         body = {'query': query, 'search_depth': 'basic', 'topic': 'general',
                 'max_results': MAX_RESULTS, 'auto_parameters': False,
                 'include_answer': False, 'include_raw_content': False,
                 'include_images': False, 'include_favicon': False}
+        if domains is not None:
+            body.update({'include_domains': list(domains), 'include_domains_mode': 'restrict'})
         async with httpx.AsyncClient(
             transport=self._transport, trust_env=False, follow_redirects=False,
             verify=True, timeout=httpx.Timeout(10),
@@ -115,10 +133,10 @@ class TavilySearch:
                     raw.extend(chunk)
                 try:
                     data = json.loads(raw, object_pairs_hook=reject_duplicate_keys)
-                    candidates = parse_candidates(data, credential=key)
+                    candidates, duplicates, discarded = parse_candidate_batch(data, credential=key)
                 except (ValueError, UnicodeError, RecursionError):
                     raise DiscoveryFailure('provider_invalid_response') from None
                 # Drop provider answers, scores, images, raw HTML, metadata and echoed query.
                 return DiscoveryResult(query, 'tavily', candidates,
                                        datetime.now(timezone.utc).isoformat(timespec='seconds').replace('+00:00', 'Z'),
-                                       len(data['results']) - len(candidates))
+                                       duplicates, discarded)

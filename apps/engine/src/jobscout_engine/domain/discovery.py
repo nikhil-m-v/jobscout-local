@@ -8,6 +8,7 @@ class SearchCandidate:
     title: str
     url: str
     snippet: str
+    source_index: int | None = None
 
 
 @dataclass(frozen=True)
@@ -17,6 +18,7 @@ class DiscoveryResult:
     candidates: tuple[SearchCandidate, ...]
     retrieved_at: str
     duplicates_removed: int
+    discarded_results: int = 0
 
 
 class DiscoveryFailure(Exception):

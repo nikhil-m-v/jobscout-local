@@ -40,6 +40,6 @@ export function DiscoveryJourney({ step, navigate, optionsAvailable, resultsAvai
       </section>}
       {(!assisted || assistance?.result) && <SearchCriteria key={assisted ? 'assisted' : 'manual'} initialSide={assisted && assistance?.result?.criteria ? 'query' : 'preferences'} requireRoleChoice={assisted && assistance?.result?.criteria === null} assisted={assisted} criteria={criteria} searchPreview={searchPreview} discovery={discovery} onChange={onChange} />}
       {searchPreview.preview?.provider !== 'tavily' && <details className="inline-setup"><summary>Set up online search</summary><SearchProviderSettings connected={searchPreview.connected} /></details>}
-    </> : <SearchResults discovery={discovery} analysis={resultAnalysis} assisted={assisted} onRetryAnalysis={retryResultAnalysis} />}
+    </> : <SearchResults discovery={discovery} analysis={resultAnalysis} assisted={assisted} reviewedRole={criteria.role} onRetryAnalysis={retryResultAnalysis} />}
   </>;
 }

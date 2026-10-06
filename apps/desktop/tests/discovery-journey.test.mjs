@@ -46,7 +46,7 @@ test('job options permits returning to Resume while Results stays locked', () =>
   assert.ok(!markup.includes('Choose a resume'));
 });
 test('completed search unlocks all steps and displays only the result page', () => {
-  const markup = render('results', true, true, { query: 'Software engineer jobs', provider: 'tavily', retrieved_at: '2026-10-04T03:00:00Z', duplicates_removed: 0, candidates: [] });
+  const markup = render('results', true, true, { query: 'Software engineer jobs', provider: 'tavily', retrieved_at: '2026-10-04T03:00:00Z', duplicates_removed: 0, discarded_results: 0, candidates: [] });
   for (const label of ['Resume', 'Job options', 'Results']) assert.doesNotMatch(stepButton(markup, label), /disabled/);
   assert.ok(markup.includes('No candidates returned'));
   assert.ok(markup.includes('Software engineer jobs'));

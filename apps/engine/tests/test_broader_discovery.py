@@ -37,12 +37,15 @@ def test_preview_and_full_bounded_pool_privacy_and_analysis(tmp_path, caplog):
         value = confirmation(criteria)
         result = client.post(URL, headers=HEADERS, json=value)
         assert result.status_code == 200 and len(result.json()['candidates']) == 50
+        assert [candidate['source_index'] for candidate in result.json()['candidates']] == [index for index in range(5) for _ in range(10)]
         assert result.json()['coverage'] == {'attempted': 5, 'completed': 5, 'max_requests': 5, 'stop_reason': 'complete', 'failures': []}
         assert len(calls) == 5
-        for request, query in zip(calls, value['reviewed_plan']['queries']):
+        for request, query, source in zip(calls, value['reviewed_plan']['queries'], value['reviewed_plan']['sources']):
             body = json.loads(request.content)
             assert body['query'] == query and body['max_results'] == 10
             assert body['search_depth'] == 'basic' and body['auto_parameters'] is False
+            assert body['include_domains'] == source['domains'] and body['include_domains_mode'] == 'restrict'
+            assert set(body) == {'query', 'search_depth', 'topic', 'max_results', 'auto_parameters', 'include_answer', 'include_raw_content', 'include_images', 'include_favicon', 'include_domains', 'include_domains_mode'}
             assert body['include_raw_content'] is False and body['include_images'] is False
             assert str(request.url) == SEARCH_ENDPOINT
             assert 'PRIVATE_' not in request.content.decode() and KEY not in request.content.decode()
@@ -67,6 +70,7 @@ def test_cross_response_tracking_duplicates_and_first_occurrence(tmp_path):
         result = client.post(URL, headers=HEADERS, json=confirmation()).json()
         assert len(calls) == 5 and result['duplicates_removed'] == 4
         assert len(result['candidates']) == 1 and result['candidates'][0]['title'] == 'First 1'
+        assert result['candidates'][0]['source_index'] == 0
 
 
 @pytest.mark.parametrize('status,code', [(429, 'provider_rate_limited'), (432, 'provider_quota_exhausted'),
@@ -90,6 +94,8 @@ def test_altered_plan_and_private_fields_fail_before_key_read_or_dispatch(tmp_pa
     with TestClient(app(tmp_path, store, httpx.MockTransport(lambda request: pytest.fail('Invalid plan sent')))) as client:
         valid = confirmation()
         for plan in [{**valid['reviewed_plan'], 'max_requests': 6}, {**valid['reviewed_plan'], 'queries': ['PRIVATE_NAME'] * 5},
+                     {**valid['reviewed_plan'], 'version': 1}, {**valid['reviewed_plan'], 'sources': [{'name': 'PRIVATE_NAME', 'domains': ['collector.example.com']}] * 5},
+                     {**valid['reviewed_plan'], 'sources': list(reversed(valid['reviewed_plan']['sources']))},
                      {**valid['reviewed_plan'], 'estimated_max_credits': True}, {**valid['reviewed_plan'], 'endpoint': 'https://collector.example.com'}]:
             assert client.post(URL, headers=HEADERS, json={**valid, 'reviewed_plan': plan}).status_code == 422
         for value in [{**valid, 'run_id': '../private'}, {**valid, 'profile': 'PRIVATE_NAME'},
@@ -164,6 +170,29 @@ def test_empty_responses_have_honest_coverage(tmp_path):
         assert result['candidates'] == [] and result['coverage']['completed'] == 5
 
 
+def test_discarded_links_preserve_valid_results_and_bounded_source_completion(tmp_path):
+    calls = []
+    def handler(request):
+        calls.append(request)
+        return response({'results': [ITEM, {**ITEM, 'url': 'https://localhost/private'}]})
+    store = MemorySecrets(); store.save(KEY)
+    with TestClient(app(tmp_path, store, httpx.MockTransport(handler))) as client:
+        result = client.post(URL, headers=HEADERS, json=confirmation()).json()
+        assert len(calls) == 5 and len(result['candidates']) == 1
+        assert result['discarded_results'] == 5 and result['duplicates_removed'] == 4
+        assert result['coverage']['completed'] == 5 and result['coverage']['failures'] == []
+        assert 'localhost' not in json.dumps(result)
+
+
+def test_all_discarded_links_are_completed_responses_without_usable_candidates(tmp_path):
+    store = MemorySecrets(); store.save(KEY)
+    transport = httpx.MockTransport(lambda request: response({'results': [{**ITEM, 'url': 'http://jobs.example.com/role'}]}))
+    with TestClient(app(tmp_path, store, transport)) as client:
+        result = client.post(URL, headers=HEADERS, json=confirmation()).json()
+        assert result['candidates'] == [] and result['discarded_results'] == 5
+        assert result['duplicates_removed'] == 0 and result['coverage']['completed'] == 5
+
+
 @pytest.mark.parametrize('variant,query,criteria', [(-1, 'Software engineer jobs', CRITERIA),
     (5, 'Software engineer careers', CRITERIA), (True, 'Software engineer job openings', CRITERIA),
     (1, 'PRIVATE_NAME', CRITERIA), (1, 'Software engineer job openings', {**CRITERIA, 'notes': 'PRIVATE_NAME'})])
@@ -178,7 +207,7 @@ def test_malformed_later_response_stops_and_preserves_safe_results(tmp_path):
     calls = []
     def handler(request):
         calls.append(request)
-        return response({'results': [ITEM]}) if len(calls) == 1 else response({'results': [{**ITEM, 'url': 'https://localhost/private'}]})
+        return response({'results': [ITEM]}) if len(calls) == 1 else response({'results': [{**ITEM, 'content': '\x00'}]})
     store = MemorySecrets(); store.save(KEY)
     with TestClient(app(tmp_path, store, httpx.MockTransport(handler))) as client:
         result = client.post(URL, headers=HEADERS, json=confirmation()).json()

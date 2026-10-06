@@ -1,0 +1,36 @@
+import assert from 'node:assert/strict';
+import { groupCandidates, inspectCandidate } from '../apps/desktop/src/lib/candidate-pool.ts';
+import { filterCandidates, initialResultFilters } from '../apps/desktop/src/lib/result-filters.ts';
+
+// Synthetic analogue of the observed noise classes, never copied provider content.
+const candidates = [];
+const add = (url, title, source_index) => candidates.push({ url, title, snippet: `Synthetic evidence ${candidates.length}`, source_index });
+const uuid = i => `00000000-0000-4000-8000-${String(i).padStart(12, '0')}`;
+for (let i = 0; i < 9; i++) add(`https://job-boards.greenhouse.io/employer-${i}/jobs/${100 + i}`, `Senior Software Engineer ${i}`, 0);
+for (let i = 0; i < 9; i++) add(`https://jobs.lever.co/acme/${uuid(i)}/apply`, 'Acme - Senior Software Engineer (Remote, Latin America)', 1);
+add(`https://jobs.lever.co/other/${uuid(10)}`, 'Other - Senior Software Engineer', 1);
+for (let i = 0; i < 7; i++) add(`https://jobs.ashbyhq.com/employer-${i}/${uuid(i)}`, `Senior Software Engineer ${i}`, 2);
+for (let i = 0; i < 3; i++) add(`https://jobs.ashbyhq.com/board-${i}`, `Employer ${i} Jobs`, 2);
+for (let i = 0; i < 10; i++) add(`https://employer-${i}.wd1.myworkdayjobs.com/en-US/Careers/job/Remote/Software-Engineer_R${100 + i}`, 'Senior Software Engineer', 3);
+for (let i = 0; i < 8; i++) add(`https://jobs.smartrecruiters.com/Employer${i}/${100 + i}-software-engineer`, `Software Engineer ${i}`, 4);
+for (let i = 0; i < 2; i++) add(`https://careers.smartrecruiters.com/Employer${i}`, `Careers at Employer ${i}`, 4);
+assert.equal(candidates.length, 49);
+const links = candidates.map(inspectCandidate);
+assert.equal(links.filter(link => link.kind === 'posting').length, 44);
+assert.equal(links.filter(link => link.kind === 'board').length, 5);
+assert.equal(links.filter(link => link.scope === 'outside').length, 2);
+const rows = filterCandidates(candidates, [], false, initialResultFilters);
+const groups = groupCandidates(rows);
+assert.equal(groups.length, 41);
+assert.equal(groups.find(group => group.length > 1).length, 9);
+assert.deepEqual(groups.flat().map(row => row.index).sort((a, b) => a - b), rows.map(row => row.index));
+assert.equal(new Set(groups.flat().map(row => row.candidate.snippet)).size, 49);
+assert.equal(groupCandidates(rows, false).length, 49);
+const cleaned = filterCandidates(candidates, [], false, { ...initialResultFilters, showCollections: false });
+assert.equal(cleaned.length, 44);
+assert.equal(groupCandidates(cleaned).length, 36);
+assert.ok(cleaned.every(row => inspectCandidate(row.candidate).kind === 'posting'));
+assert.equal(filterCandidates(candidates, [], false, initialResultFilters).length, 49);
+console.log('\n17B synthetic clean-pool evaluation: 49 links → 41 expandable groups; all 49 links/snippets retained.');
+console.log('44 posting patterns, 5 reversible board pages, 2 source mismatches; hiding boards → 36 groups containing all 44 posting links.');
+console.log('These are candidate groups, not verified distinct jobs. No provider request or listing-page fetch.');

@@ -1,5 +1,15 @@
 # Synthetic shortlist quality baseline
 
+## Milestone 17B clean-pool evaluation — 2026-10-06
+
+`npm run evaluate:shortlist` now also runs the checked-in synthetic ATS pool in `scripts/evaluate-candidate-pool.mjs`. The 49-link fixture covers all five sources: 44 posting shapes, five boards, two outside-scope hosts and nine same-employer/full-title links with different IDs. Production pool helpers form 41 expandable groups while retaining every link/snippet. Reversibly hiding boards leaves 36 groups containing all 44 posting links; disabling grouping/restoring boards recovers all 49 individual rows. Unknown/query-selected/lookalike routes, different titles/tenants, placeholder titles, originating-scope validation, filtering before grouping and escaped alternatives have separate regression tests.
+
+Offline replay of the earlier public result yields the same counts, with historical source blocks explicitly reconstructed because the old response lacked provenance. No new provider request. These are candidate groups, not verified unique opportunities. Existing seven relevance pools and all 59 relevant labels remain unchanged; their retention and top-five/top-ten guards still pass. See [decision 0024](architecture/0024-clean-candidate-pool.md).
+
+Latest increment (2026-10-06): seven pools now contain 114 raw candidates and 59 labeled relevant candidates. [Decision 0021](architecture/0021-shortlist-evidence-and-coverage.md) adds literal tools, title-role priority, narrow exclusions and collection-page separation. Historical skill-count and reviewed-role rows remain explicit baselines; the new Evidence-led shortlist row uses current production behavior. New tool/title and collection cases improve top-five relevance 40→80% and 40→100% against prior reviewed-role ordering; retained sets are identical and all 59 relevant labels survive. First-five/first-ten non-degradation guards pass across the corpus. Labels remain diagnostic, including explicit fixture-specific cloud preferences; there is no general rule that Azure makes a software job irrelevant.
+
+A separately authorized live five-query trial completed in 12.636 seconds, producing 23 unique pages after 24 duplicate links were removed. All titles show collection signals; this is evidence of inadequate individual-opening coverage for those generic criteria, not 23 verified jobs. Public raw results remain local and are not part of this synthetic corpus. Billing/full desktop resources and UI interaction remain unverified. See today's progress note for next action.
+
 Run `npm run evaluate:shortlist` after the normal Node and `.venv` engine setup in README. The command always uses the checked-in synthetic corpus; it accepts no resume path, key, provider or arbitrary user input. No app server, credential store, database or search adapter is invoked. It calls production Python `analyze_review`, frontend `validateAssistance`, and `filterCandidates` rather than copying their logic. No new dependency or application behavior is introduced.
 
 ## Corpus and interpretation
@@ -46,3 +56,26 @@ Broader discovery now permits five reviewed basic searches of ten candidates eac
 A new constructed 50-candidate pool has 30 labeled relevant openings (including sparse titles), ten guides and ten wrong-role jobs. Provider top-five/top-ten relevance is 60%; skill-count order promotes noise to 0%. Hiding resources alone still gives 0% because wrong-role jobs share more categories. Reviewed role filtering yields 30 displayed candidates, 100% first-five/first-ten relevance, and 30/30 relevant retention. This intentionally simple repeated-pattern pool checks scale and retention, not representative ranking quality. Across all five cases, content filtering retains all 47 labeled relevant candidates. Results underline why broader coverage alone does not satisfy milestone 17; reviewed role compatibility and richer ranking evidence remain necessary.
 
 Synthetic captured-request tests independently verify five requests, 50 unique candidates and deduplication across responses. No live 30–50-job coverage, vacancy status, provider billing, latency or production resource claim follows from these fixtures. Next: interactively verify the full broader flow and cancellation, then run a deliberately reviewed live quality/resource/cost evaluation and fix the largest relevance issue.
+
+## Reviewed-role ordering — 2026-10-06
+
+Decision [0020](architecture/0020-reviewed-role-ordering.md) prioritizes the reviewed role's title/snippet mentions before unknown/other-role mentions in resume-assisted Results. The evaluation adds an explicit comparison row, retaining prior baselines. It asserts identical candidate sets and non-degraded top-five relevance across all five pools.
+
+Developer top-five relevance improves 60% to 80%; analyst 40% to 60%; aliases/unknowns and content ambiguity remain 60% and 80%. Constructed broader top-ten improves 0% to 100%, with all 40 non-resource candidates and 30/30 relevant retained. All 47 labeled relevant candidates remain across the corpus. These fixtures do not establish live quality. Negation, incomplete role aliases, adjacent roles, generic navigation, preferences and freshness still need evaluation. Interactive verification remains blocked by tool initialization; reviewed live-provider evaluation remains pending.
+## Reviewed source trial after link reliability fix — 2026-10-06
+
+An explicitly authorized fresh run used the exact generic query `Software engineer jobs India Remote Python SQL` with the five fixed source scopes. Five basic responses completed in 15.781 seconds, without retries or listing-page fetches. Provider billing and full desktop resource use were not measured.
+
+| Measure | Previous intent trial | Fixed-source trial after link fix |
+|---|---:|---:|
+| Raw results | 47 | 50 |
+| Accepted unique canonical links | 23 | 49 |
+| Canonical duplicates removed | 24 | 0 |
+| Unsupported URLs discarded | 0 | 1 |
+| Collection-title signals | 23 | 0 |
+| Individual-posting URL shapes | Not established | 44 |
+| Board URL shapes | Not assessed | 5 |
+
+These are different provider responses, not a controlled quality benchmark. URL shapes are a manual inspection of returned URLs, without page retrieval, and do not establish live vacancies. Three Ashby employer-root and two SmartRecruiters careers-root URLs account for the five board shapes. The local text classifier misses them (11 opening-language and 38 unknown statuses). Two careers-root URLs also fall outside the exact requested SmartRecruiters hosts. Nine Lever results repeat the same Latin America software-role title with different job IDs; unique URLs are not necessarily distinct suitable opportunities.
+
+Local title/snippet analysis with a synthetic reference finds 32 software-engineer title-category mentions, 14 India mentions, 27 remote mentions and 20 literal Python-plus-SQL overlaps. Only two candidates combine all four signals. These are mentions, not confirmed requirements, eligibility or fit. Keep unknowns available. Next evaluations should cover ATS board paths, source-scope adherence, repeated-title ambiguity, and location/work-mode evidence; do not claim milestone 17 completion from link volume.

@@ -1,3 +1,4 @@
+import { postingSources } from '../src/lib/search-plan.ts';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { validateSearchPlan, validateSearchProgress } from '../src/lib/search-plan.ts';
@@ -6,10 +7,10 @@ import { createDiscoveryState, validateSearchResult } from '../src/lib/discovery
 import { requestDiscovery, discoveryControl } from '../src/lib/discovery.ts';
 import { initialCriteria } from '../src/lib/public-search-criteria.ts';
 const query = 'Software engineer jobs';
-const plan = { version: 1, queries: ['jobs', 'job openings', 'vacancies', 'hiring', 'careers'].map(term => `Software engineer ${term}`), max_requests: 5, max_candidates: 50, estimated_max_credits: 5, timeout_seconds: 75 };
+const plan = { version: 2, sources: postingSources.map(source => ({ name: source.name, domains: [...source.domains] })), queries: postingSources.map(() => 'Software engineer jobs'), max_requests: 5, max_candidates: 50, estimated_max_credits: 5, timeout_seconds: 75 };
 const preview = { query, query_version: 1, provider: 'tavily', dispatch_available: true, plan };
-const candidate = { title: 'Software engineer', snippet: 'Hiring Python', url: 'https://jobs.example.com/role' };
-const result = { query, provider: 'tavily', retrieved_at: '2026-10-05T03:00:00Z', duplicates_removed: 0, candidates: [candidate], coverage: { attempted: 2, completed: 1, max_requests: 5, stop_reason: 'cancelled', failures: [] } };
+const candidate = { source_index: 0, title: 'Software engineer', snippet: 'Hiring Python', url: 'https://jobs.example.com/role' };
+const result = { query, provider: 'tavily', retrieved_at: '2026-10-05T03:00:00Z', duplicates_removed: 0, discarded_results: 0, candidates: [candidate], coverage: { attempted: 2, completed: 1, max_requests: 5, stop_reason: 'cancelled', failures: [] } };
 const runId = '00000000-0000-4000-8000-000000000001';
 globalThis.window = { isTauri: false };
 test('reviewed plan is immutable, exact and bounded with no arbitrary queries', () => {
@@ -17,6 +18,15 @@ test('reviewed plan is immutable, exact and bounded with no arbitrary queries', 
   for (const value of [{ ...plan, max_requests: 6 }, { ...plan, estimated_max_credits: true }, { ...plan, queries: ['PRIVATE_NAME'] }, { ...plan, timeout_seconds: 76 }, { ...plan, endpoint: 'https://collector.example.com' }]) assert.throws(() => validateSearchPlan(value, query));
   assert.throws(() => validateSearchPreview({ ...preview, plan: null }));
   for (const value of [{ attempted: 6, completed: 5, max_requests: 5, busy: true }, { attempted: 1, completed: 2, max_requests: 5, busy: true }]) assert.throws(() => validateSearchProgress(value));
+});
+
+test('fixed source scopes are deeply frozen and stale or modified plans fail closed', () => {
+  const validated = validateSearchPlan(plan, query);
+  assert.ok(Object.isFrozen(validated.sources));
+  assert.ok(Object.isFrozen(validated.sources[0].domains));
+  for (const value of [{ ...plan, version: 1 }, { ...plan, sources: [...plan.sources].reverse() }, { ...plan, sources: [{ name: 'Private employer', domains: ['collector.example.com'] }, ...plan.sources.slice(1)] }, { ...plan, sources: [{ ...plan.sources[0], profile: 'PRIVATE_NAME' }, ...plan.sources.slice(1)] }, { ...plan, sources: [] }]) assert.throws(() => validateSearchPlan(value, query));
+  // Backend JSON object ordering does not change the contract.
+  assert.deepEqual(validateSearchPlan({ ...plan, sources: plan.sources.map(source => ({ domains: source.domains, name: source.name })) }, query), validated);
 });
 test('stopping broader discovery retains completed results and progress rather than discarding the run', async () => {
   let finish, signal, confirmation;
@@ -43,6 +53,13 @@ test('50-candidate coverage validates bounds and rejects invented failure/progre
   for (const value of [{ ...complete, candidates: [...complete.candidates, { ...candidate, url: candidate.url + 'extra' }] }, { ...result, coverage: { ...result.coverage, completed: 0 } }, { ...result, coverage: { ...result.coverage, stop_reason: 'complete' } }, { ...result, coverage: { ...result.coverage, stop_reason: 'provider_failure', failures: [{ request: 2, code: 'PRIVATE_DIAGNOSTIC' }] } }]) assert.throws(() => validateSearchResult(value, query));
   const partial = validateSearchResult({ ...result, coverage: { ...result.coverage, stop_reason: 'provider_failure', failures: [{ request: 2, code: 'provider_rate_limited' }] } }, query);
   assert.ok(Object.isFrozen(partial.coverage.failures[0]));
+});
+
+test('broader accounting includes discarded links within completed request limits', () => {
+  assert.equal(validateSearchResult({ ...result, discarded_results: 9 }, query).discarded_results, 9);
+  assert.throws(() => validateSearchResult({ ...result, discarded_results: 10 }, query));
+  assert.throws(() => validateSearchResult({ ...result, discarded_results: 9, duplicates_removed: 1 }, query));
+  assert.equal(validateSearchResult({ ...result, candidates: [], discarded_results: 10 }, query).candidates.length, 0);
 });
 test('browser cancellation uses only the authenticated local run route and keeps the final request alive', async () => {
   const original = globalThis.fetch, calls = []; let finish;

@@ -32,7 +32,7 @@ class BroaderDiscovery:
         if run_id in self.cancelled:
             self.cancel_event.set()
         self.progress = {'attempted': 0, 'completed': 0, 'max_requests': 5, 'busy': True}
-        candidates, seen, duplicates, failures = [], set(), 0, []
+        candidates, seen, duplicates, discarded, failures = [], set(), 0, 0, []
         stop_reason = 'complete'
         deadline = asyncio.get_running_loop().time() + PLAN_SECONDS
         try:
@@ -63,13 +63,14 @@ class BroaderDiscovery:
                         break
                     self.progress['completed'] += 1
                     duplicates += result.duplicates_removed
+                    discarded += result.discarded_results
                     for candidate in result.candidates:
                         if candidate.url in seen:
                             duplicates += 1
                         else:
                             seen.add(candidate.url)
                             candidates.append({'title': candidate.title, 'url': candidate.url,
-                                               'snippet': candidate.snippet})
+                                               'snippet': candidate.snippet, 'source_index': index})
                 finally:
                     for task in (request, cancel):
                         if not task.done():
@@ -78,7 +79,7 @@ class BroaderDiscovery:
         finally:
             self.progress['busy'] = False
         return {'query': construct_public_query(criteria), 'provider': 'tavily',
-                'candidates': candidates, 'duplicates_removed': duplicates,
+                'candidates': candidates, 'duplicates_removed': duplicates, 'discarded_results': discarded,
                 'retrieved_at': datetime.now(timezone.utc).isoformat(timespec='seconds').replace('+00:00', 'Z'),
                 'coverage': {'attempted': self.progress['attempted'], 'completed': self.progress['completed'],
                              'max_requests': 5, 'stop_reason': stop_reason, 'failures': failures}}

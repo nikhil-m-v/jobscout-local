@@ -675,6 +675,192 @@
           "reason": "Compatible role alias and opening evidence."
         }
       ]
+    },
+    {
+      "id": "literal-tools-and-title",
+      "review": "Software engineer Python SQL AWS pytest",
+      "filters": {
+        "role": "software-engineer"
+      },
+      "candidates": [
+        {
+          "id": "team-role",
+          "title": "Data analyst",
+          "snippet": "Hiring; work with a Software engineer using Python SQL AWS pytest",
+          "relevant": false,
+          "reason": "Advertised role is analyst; teammate mention is not the role."
+        },
+        {
+          "id": "excluded",
+          "title": "Software engineer",
+          "snippet": "Java required; no Python positions. Azure.",
+          "relevant": false,
+          "reason": "Explicitly excludes Python openings."
+        },
+        {
+          "id": "vendor",
+          "title": "Software engineer",
+          "snippet": "Azure Python SQL hiring",
+          "relevant": false,
+          "reason": "Cloud vendor differs from fixture AWS preference."
+        },
+        {
+          "id": "exact",
+          "title": "Software engineer",
+          "snippet": "AWS Python SQL hiring",
+          "relevant": true,
+          "reason": "Literal tools and advertised role align."
+        },
+        {
+          "id": "later-alias",
+          "title": "Software developer",
+          "snippet": "Azure infrastructure; AWS Python SQL hiring",
+          "relevant": true,
+          "reason": "Matching AWS occurs after another cloud alias."
+        },
+        {
+          "id": "optional",
+          "title": "Software engineer",
+          "snippet": "No Python experience required. AWS SQL hiring",
+          "relevant": true,
+          "reason": "Experience optional is not exclusion; candidate can review."
+        },
+        {
+          "id": "sparse",
+          "title": "Backend developer",
+          "snippet": "Hiring Python",
+          "relevant": true,
+          "reason": "Compatible sparse opening."
+        },
+        {
+          "id": "positive",
+          "title": "Software engineer",
+          "snippet": "Python AWS hiring; no Python positions in another team",
+          "relevant": true,
+          "reason": "Positive opening evidence remains alongside team exclusion."
+        },
+        {
+          "id": "alias-title",
+          "title": "Frontend developer",
+          "snippet": "SQL AWS hiring",
+          "relevant": true,
+          "reason": "Supported adjacent software role; reviewable."
+        },
+        {
+          "id": "resource",
+          "title": "Python course",
+          "snippet": "AWS Python SQL pytest",
+          "relevant": false,
+          "reason": "Resource page."
+        },
+        {
+          "id": "unknown",
+          "title": "Careers",
+          "snippet": "Python SQL AWS pytest",
+          "relevant": false,
+          "reason": "No specific opening."
+        },
+        {
+          "id": "collection",
+          "title": "9,000 Software Engineer jobs in India",
+          "snippet": "Python SQL AWS pytest hiring",
+          "relevant": false,
+          "reason": "Collection is not an individual opportunity."
+        }
+      ]
+    },
+    {
+      "id": "collection-coverage",
+      "review": "Software engineer Python SQL",
+      "filters": {
+        "role": "software-engineer"
+      },
+      "candidates": [
+        {
+          "id": "board",
+          "title": "Python Job Board",
+          "snippet": "Python SQL software engineer hiring",
+          "relevant": false,
+          "reason": "Job board collection."
+        },
+        {
+          "id": "count",
+          "title": "5000+ Software Engineer jobs in India",
+          "snippet": "Python SQL hiring",
+          "relevant": false,
+          "reason": "Counted result collection."
+        },
+        {
+          "id": "remote-list",
+          "title": "Remote Software Engineer Jobs in India",
+          "snippet": "Python SQL hiring",
+          "relevant": false,
+          "reason": "Regional job collection."
+        },
+        {
+          "id": "role",
+          "title": "Software engineer",
+          "snippet": "Python hiring",
+          "relevant": true,
+          "reason": "Specific advertised role."
+        },
+        {
+          "id": "role-2",
+          "title": "Software developer",
+          "snippet": "SQL hiring",
+          "relevant": true,
+          "reason": "Specific role alias."
+        },
+        {
+          "id": "role-3",
+          "title": "Backend developer",
+          "snippet": "Python SQL apply now",
+          "relevant": true,
+          "reason": "Specific opening."
+        },
+        {
+          "id": "role-4",
+          "title": "Software engineer",
+          "snippet": "No snippet details",
+          "relevant": true,
+          "reason": "Sparse specific title retained."
+        },
+        {
+          "id": "role-5",
+          "title": "Software engineer",
+          "snippet": "Job board integration team; Python",
+          "relevant": true,
+          "reason": "Board reference in snippet is a team, not a collection title."
+        },
+        {
+          "id": "role-6",
+          "title": "Frontend developer",
+          "snippet": "Python SQL",
+          "relevant": true,
+          "reason": "Compatible title retained."
+        },
+        {
+          "id": "wrong",
+          "title": "Product manager",
+          "snippet": "Software engineer team Python SQL",
+          "relevant": false,
+          "reason": "Team role mention must not outrank advertised title."
+        },
+        {
+          "id": "guide",
+          "title": "Python tutorial",
+          "snippet": "Python SQL",
+          "relevant": false,
+          "reason": "Resource."
+        },
+        {
+          "id": "generic",
+          "title": "Careers",
+          "snippet": "",
+          "relevant": false,
+          "reason": "Unclear navigation."
+        }
+      ]
     }
   ]
 }

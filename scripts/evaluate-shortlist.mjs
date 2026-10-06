@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { filterCandidates, initialResultFilters } from '../apps/desktop/src/lib/result-filters.ts';
 import { validateAssistance } from '../apps/desktop/src/lib/assistance.ts';
+import './evaluate-candidate-pool.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const fixture = JSON.parse(readFileSync(resolve(root, 'evaluation/shortlist-cases.json'), 'utf8').replace(/^\uFEFF/, ''));
@@ -41,20 +42,31 @@ for (const [position, item] of fixture.cases.entries()) {
   const candidates = item.candidates.map(candidate => ({ title: candidate.title, snippet: candidate.snippet, url: `https://jobs.example.com/${candidate.id}` }));
   const evidence = validateAssistance(results[position], candidates.length, item.review, candidates).matches;
   const relevantTotal = item.candidates.filter(candidate => candidate.relevant).length;
-  const cleaned = filterCandidates(candidates, evidence, true, initialResultFilters);
+  const cleaned = filterCandidates(candidates, evidence, true, initialResultFilters, 'any', false);
   assert.equal(cleaned.filter(row => item.candidates[row.index].relevant).length, relevantTotal, `${item.id}: content filtering lost a labeled relevant candidate`);
-  const baseline = filterCandidates(candidates, evidence, true, { ...initialResultFilters, showResources: true });
+  const baseline = filterCandidates(candidates, evidence, true, { ...initialResultFilters, showResources: true }, 'any', false);
+  const reviewedRole = item.filters.role ?? results[position].criteria?.role ?? 'any';
+  const roleOrdered = filterCandidates(candidates, evidence, true, initialResultFilters, reviewedRole);
+  const priorRoleOrdered = filterCandidates(candidates, evidence, true, initialResultFilters, reviewedRole, false);
+  assert.deepEqual(roleOrdered.map(row => row.index).sort((a, b) => a - b), cleaned.map(row => row.index).sort((a, b) => a - b), `${item.id}: role ordering changed retention`);
   const relevantAtFive = rows => rows.slice(0, 5).filter(row => item.candidates[row.index].relevant).length;
   assert.ok(relevantAtFive(cleaned) >= relevantAtFive(baseline), `${item.id}: content filtering degraded top-five relevance`);
+  assert.ok(relevantAtFive(roleOrdered) >= relevantAtFive(cleaned), `${item.id}: role ordering degraded top-five relevance`);
+  const relevantAtTen = rows => rows.slice(0, 10).filter(row => item.candidates[row.index].relevant).length;
+  assert.ok(relevantAtTen(roleOrdered) >= relevantAtTen(cleaned), `${item.id}: role ordering degraded top-ten relevance`);
+  assert.ok(relevantAtFive(roleOrdered) >= relevantAtFive(priorRoleOrdered), `${item.id}: exact evidence degraded top-five relevance`);
+  assert.ok(relevantAtTen(roleOrdered) >= relevantAtTen(priorRoleOrdered), `${item.id}: exact evidence degraded top-ten relevance`);
 
   for (const [mode, ranked, filters] of [
     ['Provider order', false, { ...initialResultFilters, showResources: true }],
     ['Resume baseline', true, { ...initialResultFilters, showResources: true }],
     ['Resume ordering', true, initialResultFilters],
+    ['Reviewed-role ordering', true, initialResultFilters],
+    ['Evidence-led shortlist', true, initialResultFilters],
     ['Reviewed filters', true, { ...initialResultFilters, ...item.filters }],
     ['Strict known filters', true, { ...initialResultFilters, ...item.filters, keepUnknown: false }],
   ]) {
-    const shown = filterCandidates(candidates, evidence, ranked, filters);
+    const shown = filterCandidates(candidates, evidence, ranked, filters, ['Reviewed-role ordering', 'Evidence-led shortlist'].includes(mode) ? reviewedRole : 'any', mode === 'Evidence-led shortlist');
     const precision = limit => {
       const top = shown.slice(0, limit);
       return top.length ? percent(top.filter(row => item.candidates[row.index].relevant).length / top.length) : 'n/a';
