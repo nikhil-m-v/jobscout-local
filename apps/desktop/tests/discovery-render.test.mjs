@@ -35,6 +35,16 @@ test('candidate markup stays escaped text without scripts, images or navigable r
   assert.ok(markup.includes('dateTime="2026-10-04T03:00:00Z"'));
   assert.ok(markup.includes('not the listing date'));
 });
+
+test('manual Results exposes exact location and work-mode sources without analysis or external resources', () => {
+  const candidate = { title: 'Engineer (Remote)', snippet: 'Location: India. Not remote. <script>steal()</script>', url: 'https://jobs.example.com/1' };
+  const markup = render(true, false, true, false, { discovery: { result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-07T03:00:00Z', candidates: [candidate], duplicates_removed: 0, discarded_results: 0 } } });
+  assert.ok(markup.includes('Role, location &amp; work-mode evidence'));
+  assert.ok(markup.includes('<q>Location: India</q>'));
+  assert.ok(markup.includes('<q>Not remote</q>'));
+  assert.ok(markup.includes('worldwide remote availability'));
+  assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
+});
 test('job options and results render on separate pages', () => {
   assert.ok(!render(true).includes('Search candidates'));
   assert.ok(!render(true).includes('&lt;script&gt;'));

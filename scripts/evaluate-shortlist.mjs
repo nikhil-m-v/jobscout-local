@@ -9,6 +9,9 @@ import './evaluate-candidate-pool.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const fixture = JSON.parse(readFileSync(resolve(root, 'evaluation/shortlist-cases.json'), 'utf8').replace(/^\uFEFF/, ''));
+const relevanceFixture = JSON.parse(readFileSync(resolve(root, 'evaluation/relevance-cases.json'), 'utf8'));
+assert.equal(relevanceFixture.version, 1);
+fixture.cases.push(...relevanceFixture.cases);
 assert.equal(fixture.version, 1);
 assert.ok(fixture.cases.length > 0);
 assert.equal(new Set(fixture.cases.map(item => item.id)).size, fixture.cases.length);
@@ -64,14 +67,25 @@ for (const [position, item] of fixture.cases.entries()) {
     ['Reviewed-role ordering', true, initialResultFilters],
     ['Evidence-led shortlist', true, initialResultFilters],
     ['Reviewed filters', true, { ...initialResultFilters, ...item.filters }],
+    ['Source-linked filters', true, { ...initialResultFilters, ...item.filters }],
+    ['Strict source-linked filters', true, { ...initialResultFilters, ...item.filters, keepUnknown: false }],
     ['Strict known filters', true, { ...initialResultFilters, ...item.filters, keepUnknown: false }],
   ]) {
-    const shown = filterCandidates(candidates, evidence, ranked, filters, ['Reviewed-role ordering', 'Evidence-led shortlist'].includes(mode) ? reviewedRole : 'any', mode === 'Evidence-led shortlist');
+    const sourceLinked = ['Source-linked filters', 'Strict source-linked filters'].includes(mode);
+    const shown = filterCandidates(candidates, evidence, ranked, filters, sourceLinked || ['Reviewed-role ordering', 'Evidence-led shortlist'].includes(mode) ? reviewedRole : 'any', sourceLinked || mode === 'Evidence-led shortlist');
     const precision = limit => {
       const top = shown.slice(0, limit);
       return top.length ? percent(top.filter(row => item.candidates[row.index].relevant).length / top.length) : 'n/a';
     };
     const retained = shown.filter(row => item.candidates[row.index].relevant).length;
+    if (mode === 'Source-linked filters') {
+      assert.equal(retained, relevantTotal, `${item.id}: source-linked filtering lost a labeled reviewable candidate`);
+      if (item.id === 'explicit-location-work-mode') {
+        assert.equal(shown.length, 7);
+        assert.equal(relevantAtFive(shown), 5);
+        assert.equal(filterCandidates(candidates, evidence, true, { ...filters, keepUnknown: false }, reviewedRole).length, 4);
+      }
+    }
     const noise = shown.slice(0, 5).filter(row => !item.candidates[row.index].relevant).map(row => item.candidates[row.index].id).join(', ') || 'none';
     console.log(`| ${item.id} | ${mode} | ${shown.length} | ${precision(5)} | ${precision(10)} | ${retained}/${relevantTotal} | ${noise} |`);
   }

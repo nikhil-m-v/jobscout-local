@@ -63,6 +63,8 @@ Also verify deletion of all app-owned copies, derived text, indexes, caches, and
 
 ## Result normalization
 
+Role, region and work-mode relevance uses only existing returned titles/snippets and validated local role phrases. Exact sources distinguish advertised details, explicit contradictions, conflicts and unknowns; incidental mentions do not establish location or worldwide remote eligibility. Selected local filters hide contradictions reversibly and keep unknowns/conflicts by default. No request, extra provider field, page fetch or durable record is added. See [decision 0025](architecture/0025-source-linked-relevance.md).
+
 Local shortlist evidence now distinguishes exact tool phrases, advertised title roles, narrow explicit exclusions and likely collection pages. These assessments use only reviewed local text and already-returned titles/snippets; source phrases remain local. Collections stay reviewable and do not establish individual opportunities. The first explicitly authorized five-query generic provider trial sent no resume data and fetched no result pages; it does not verify vacancy freshness or representative relevance. See [decision 0021](architecture/0021-shortlist-evidence-and-coverage.md).
 
 Resume-assisted ordering prioritizes mentions of the controlled user-reviewed role, then missing role details, then other-role mentions before shared skill counts. This comparison uses existing local category analysis, hides no additional candidates and sends no data online. Role mentions do not verify suitability; manual discovery preserves provider order. See [decision 0020](architecture/0020-reviewed-role-ordering.md).

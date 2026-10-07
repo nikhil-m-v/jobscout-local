@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "cases": [{
+    "id": "explicit-location-work-mode",
+    "review": "Software engineer using Python and SQL.",
+    "filters": { "role": "software-engineer", "region": "india", "arrangement": "remote" },
+    "candidates": [
+      { "id": "canada", "title": "Software engineer", "snippet": "Location: Canada. Work mode: remote. Python SQL.", "relevant": false, "reason": "Explicit other region." },
+      { "id": "onsite", "title": "Software engineer", "snippet": "Location: India. Work mode: onsite. Python SQL.", "relevant": false, "reason": "Explicit other work arrangement." },
+      { "id": "excluded", "title": "Software engineer", "snippet": "Location: India. Not remote. Python SQL.", "relevant": false, "reason": "Explicit exclusion." },
+      { "id": "analyst", "title": "Data analyst", "snippet": "Work with a software engineer. Location: India. Work mode: remote. Python SQL.", "relevant": false, "reason": "Advertised other role despite snippet mention." },
+      { "id": "hybrid", "title": "Software engineer", "snippet": "Location: India. Work mode: hybrid. Python SQL.", "relevant": false, "reason": "Explicit other arrangement." },
+      { "id": "supported", "title": "Software engineer (Remote)", "snippet": "Location: India. Python SQL.", "relevant": true, "reason": "Supported role, region and arrangement." },
+      { "id": "multi-region", "title": "Software engineer", "snippet": "Location: India, Canada. Work mode: remote. Python SQL.", "relevant": true, "reason": "Selected region is an advertised alternative." },
+      { "id": "snippet-mode", "title": "Software engineer", "snippet": "Location: India. Fully remote. Python SQL.", "relevant": true, "reason": "Qualified remote language." },
+      { "id": "labelled", "title": "Software engineer", "snippet": "Job location: India. Work arrangement: remote. Python SQL.", "relevant": true, "reason": "Explicit labels." },
+      { "id": "incidental", "title": "Software engineer", "snippet": "Customers in Canada; remote team collaboration. Python SQL.", "relevant": true, "reason": "Unknown constraints should remain reviewable, not rejected from incidental mentions." },
+      { "id": "sparse", "title": "Software engineer", "snippet": "Python SQL.", "relevant": true, "reason": "Missing constraints remain reviewable." },
+      { "id": "conflicting", "title": "Software engineer (Remote)", "snippet": "Location: India. Not remote. Python SQL.", "relevant": true, "reason": "Conflicting returned text requires review rather than automatic exclusion." }
+    ]
+  }]
+}
