@@ -18,5 +18,19 @@
       { "id": "sparse", "title": "Software engineer", "snippet": "Python SQL.", "relevant": true, "reason": "Missing constraints remain reviewable." },
       { "id": "conflicting", "title": "Software engineer (Remote)", "snippet": "Location: India. Not remote. Python SQL.", "relevant": true, "reason": "Conflicting returned text requires review rather than automatic exclusion." }
     ]
+  }, {
+    "id": "ats-remote-area-metadata",
+    "review": "Software engineer using Python and SQL.",
+    "filters": { "role": "software-engineer", "region": "india", "arrangement": "remote" },
+    "candidates": [
+      { "id": "latin-area", "title": "Software engineer - Remote, Latin America", "snippet": "Python SQL.", "relevant": false, "reason": "Explicit remote area is disjoint from India." },
+      { "id": "emea-area", "title": "Software engineer (Remote – EMEA)", "snippet": "Python SQL.", "relevant": false, "reason": "Explicit remote area excludes India; Europe and UK remain uncertain." },
+      { "id": "india-line", "title": "Software engineer", "snippet": "Remote - India\n\nPython SQL.", "relevant": true, "reason": "Standalone country and remote metadata." },
+      { "id": "based-role", "title": "Software engineer", "snippet": "This is a remote opportunity based in India. Python SQL.", "relevant": true, "reason": "Role-specific remote phrase and explicit based-in country." },
+      { "id": "city-country", "title": "Software engineer (Remote)", "snippet": "locations: Example City, Example State, India. Python SQL.", "relevant": true, "reason": "Labelled location includes explicit country; no city inference." },
+      { "id": "client-geography", "title": "Software engineer", "snippet": "Clients in Latin America and India; remote team support. Python SQL.", "relevant": true, "reason": "Incidental mentions remain reviewable unknowns." },
+      { "id": "partial-remote", "title": "Software engineer", "snippet": "remote type: Partially Remote. locations: Example City. Python SQL.", "relevant": true, "reason": "Partial arrangement and unsupported city remain unknown." },
+      { "id": "area-conflict", "title": "Software engineer (Remote – EMEA)", "snippet": "Location: India. Python SQL.", "relevant": true, "reason": "Conflicting geography stays reviewable." }
+    ]
   }]
 }

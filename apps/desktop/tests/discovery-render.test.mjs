@@ -45,6 +45,15 @@ test('manual Results exposes exact location and work-mode sources without analys
   assert.ok(markup.includes('worldwide remote availability'));
   assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
 });
+
+test('remote area restrictions remain source-linked review evidence in manual Results', () => {
+  const candidate = { title: 'Software engineer (Remote – EMEA)', snippet: 'Location: India. <img src="https://tracker.example.com">', url: 'https://jobs.example.com/1' };
+  const markup = render(true, false, true, false, { discovery: { result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-07T03:00:00Z', candidates: [candidate], duplicates_removed: 0, discarded_results: 0 } } });
+  assert.ok(markup.includes('Region restriction; eligibility unverified in title:'));
+  assert.ok(markup.includes('<q>(Remote – EMEA</q>'));
+  assert.ok(markup.includes('<q>Location: India</q>'));
+  assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
+});
 test('job options and results render on separate pages', () => {
   assert.ok(!render(true).includes('Search candidates'));
   assert.ok(!render(true).includes('&lt;script&gt;'));

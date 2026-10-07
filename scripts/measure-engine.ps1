@@ -1,4 +1,4 @@
-param([int]$Runs = 3, [ValidateSet('docx', 'pdf')][string]$Format = 'docx')
+param([int]$Runs = 3, [ValidateSet('docx', 'pdf', 'shortlist')][string]$Format = 'docx')
 $ErrorActionPreference = 'Stop'
 if ($Runs -lt 1 -or $Runs -gt 10) { throw 'Runs must be between 1 and 10.' }
 $root = Split-Path $PSScriptRoot -Parent
@@ -58,6 +58,42 @@ for ($run = 1; $run -le $Runs; $run++) {
         }
         $idle = Get-TreeMemory
         $extracted = Get-Bytes $temp
+        if ($Format -eq 'shortlist') {
+            $fixture = Get-Content -LiteralPath (Join-Path $root 'evaluation/shortlist-cases.json') -Raw | ConvertFrom-Json
+            $case = $fixture.cases | Where-Object { $_.id -eq 'bounded-50' }
+            if (!$case -or $case.candidates.Count -ne 50) { throw 'Missing bounded synthetic shortlist fixture.' }
+            $review = @{ text = $case.review; reviewed = $true; candidates = @($case.candidates | ForEach-Object { @{ title = $_.title; snippet = $_.snippet } }) } | ConvertTo-Json -Depth 8 -Compress
+            $content = [System.Net.Http.StringContent]::new($review, [System.Text.Encoding]::UTF8, 'application/json')
+            $content.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::new('application/json')
+            $peak = $idle.working; $peakPrivate = $idle.private
+            $analysis = $client.PostAsync("$url/assistance", $content)
+            while (!$analysis.IsCompleted) {
+                $sample = Get-TreeMemory
+                $peak = [math]::Max($peak, $sample.working)
+                $peakPrivate = [math]::Max($peakPrivate, $sample.private)
+                Start-Sleep -Milliseconds 100
+            }
+            $analysisResponse = $analysis.GetAwaiter().GetResult()
+            $analysisResponse.EnsureSuccessStatusCode() | Out-Null
+            $body = $analysisResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult() | ConvertFrom-Json
+            if ($body.matches.Count -ne 50) { throw 'Synthetic shortlist analysis was incomplete.' }
+            $analysisResponse.Dispose(); $content.Dispose()
+            $latencies = @()
+            for ($sampleRun = 0; $sampleRun -lt 5; $sampleRun++) {
+                $content = [System.Net.Http.StringContent]::new($review, [System.Text.Encoding]::UTF8, 'application/json')
+                $content.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::new('application/json')
+                $requestTimer = [System.Diagnostics.Stopwatch]::StartNew()
+                $response = $client.PostAsync("$url/assistance", $content).GetAwaiter().GetResult()
+                $response.EnsureSuccessStatusCode() | Out-Null
+                $body = $response.Content.ReadAsStringAsync().GetAwaiter().GetResult() | ConvertFrom-Json
+                $requestTimer.Stop()
+                if ($body.matches.Count -ne 50) { throw 'Synthetic shortlist analysis was incomplete.' }
+                $latencies += [math]::Round($requestTimer.Elapsed.TotalMilliseconds, 2)
+                $response.Dispose(); $content.Dispose()
+            }
+            $results += [pscustomobject]@{ run = $run; format = $Format; candidates = 50; ready_seconds = $ready; idle_working_bytes = $idle.working; idle_private_bytes = $idle.private; sampled_analysis_working_bytes = $peak; sampled_analysis_private_bytes = $peakPrivate; warm_analysis_request_ms = $latencies; extracted_temp_bytes = $extracted; data_bytes = (Get-Bytes $directory) - (Get-Bytes $temp) }
+            continue
+        }
         # Generate synthetic documents; no user file is accepted by this benchmark.
         Add-Type -AssemblyName System.IO.Compression
         $stream = [System.IO.MemoryStream]::new()
@@ -78,13 +114,13 @@ for ($run = 1; $run -le $Runs; $run++) {
         $mime = 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
         if ($Format -eq 'pdf') {
             $content.Dispose()
-            # ASCII-only PDF with 20 pages, 40 synthetic lines per page and exact xref offsets.
+            # ASCII-only PDF at the supported 10-page limit, 40 lines per page.
             $objects = [System.Collections.Generic.List[string]]::new()
             $objects.Add('<< /Type /Catalog /Pages 2 0 R >>')
-            $kids = (0..19 | ForEach-Object { "$(4 + 2 * $_) 0 R" }) -join ' '
-            $objects.Add("<< /Type /Pages /Kids [$kids] /Count 20 >>")
+            $kids = (0..9 | ForEach-Object { "$(4 + 2 * $_) 0 R" }) -join ' '
+            $objects.Add("<< /Type /Pages /Kids [$kids] /Count 10 >>")
             $objects.Add('<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>')
-            foreach ($page in 0..19) {
+            foreach ($page in 0..9) {
                 $streamId = 5 + 2 * $page
                 $objects.Add("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Resources << /Font << /F1 3 0 R >> >> /Contents $streamId 0 R >>")
                 $drawing = "BT /F1 10 Tf 50 740 Td 14 TL`n" + ((1..40 | ForEach-Object { '(Synthetic engineer profile. Python SQL accessible software.) Tj T*' }) -join "`n") + "`nET`n"

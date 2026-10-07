@@ -42,3 +42,40 @@ For this fixture and comparable hardware, investigate a median health time above
 The largest measured additional disk cost is single-file engine extraction: 29.22 MiB alongside the 19.00 MiB executable. Benchmark a folder-based sidecar against this baseline before changing packaging; compare startup, installer/installed size, temp cleanup, worker isolation, cancellation, and update behavior. These measurements alone do not justify a packaging change.
 
 Installed application-file footprint was measured during the [installation checks](installation-checks.md); it excludes retained app data, runtime extraction and shared WebView2. Stable full desktop idle/peak RAM, reboot-cold startup and search memory remain unmeasured. Installation checks exposed an orphan engine and incomplete uninstall; fix shutdown and repeat lifecycle checks. No search or optional-AI milestone is marked complete.
+
+## Milestone 17 continuation — 2026-10-08
+
+Measured the paired production sidecar and rebuilt desktop containing decision 0026. Three fresh process launches per engine fixture (nine total) use empty isolated databases and synthetic inputs. Filesystem caches are warm; this is not reboot-cold startup. No provider request or page fetch. Analysis uses the checked-in bounded fifty-candidate pool. The PDF fixture is now ten pages with forty lines per page, respecting today's import limit; it differs from the historical twenty-page baseline.
+
+| Metric | Observed |
+|---|---:|
+| Final NSIS installer | 22.13 MiB |
+| Desktop / engine executables | 13.86 / 19.04 MiB |
+| Combined executable payload | 32.90 MiB |
+| Engine temporary extraction / empty database | 29.22 MiB / 12 KiB |
+| Engine authenticated readiness, all nine launches | 2.21–2.66 s |
+| Idle engine-tree working set / private commitment | 81.53–81.96 / 48.11–48.75 MiB |
+| DOCX sampled import working set / private commitment | 120.07–130.16 / 71.89–81.82 MiB |
+| Ten-page PDF sampled import working set / private commitment | 119.57–129.64 / 71.98–81.68 MiB |
+| Fifty-candidate analysis sampled working set / private commitment | 81.77–82.11 / 48.18–48.65 MiB |
+| Warm analysis request duration, fifteen requests | 32.33–45.35 ms; median 35.96 ms |
+| Historical 49-link frontend filter/group work | Five warm samples; median 3.18 ms |
+| Final native initial-UI tree working set / private commitment | 491.61–491.82 / 318.52–318.55 MiB |
+| Owned descendants after abrupt benchmark desktop exit | Zero; observed cleanup 0.66 s |
+
+Existing provisional installer/engine startup/idle/import investigation thresholds pass for these fixtures. Executable payload is not installed footprint: it excludes the uninstaller, app data, temporary extraction and shared WebView2. No current installer was executed; earlier installed-size evidence remains historical.
+
+Analysis polling includes CIM enumeration plus a 100 ms pause and can miss brief peaks. Five separate warm timed requests per launch avoid including memory enumeration in latency. Times cover packaged local API processing/response reading, not online discovery, Results rendering or interaction. Frontend work covers pure filtering/grouping in Node, not React/native rendering. Short snippets in the fifty-candidate fixture are synthetic diagnostics, not maximum-sized snippet stress tests.
+
+`scripts/measure-desktop.ps1` samples one final native warm-cache launch after fifteen seconds, five snapshots a second apart, ten processes including WebView2 and the packaged engine. A preliminary build's launch was also sampled (about 325 MiB private commitment); the table uses the final rebuilt binary. This is an initial-view measurement in the existing workspace with no UI input or record operation. No profile, credential, title, path, process command line or screenshot is exported. Summed working sets may double-count shared pages. It does not establish connected UI state, general idle budgets, Results/search/import peaks, normal close or cold startup.
+
+The native benchmark refuses to start if JobScout is running. It stops only its own desktop and uses process ID plus creation time to check descendants; the owner watcher cleaned them up. It does not install/uninstall, stop unrelated processes or delete data. Interactive controls failed to initialize; native keyboard/theme/window-size/Results acceptance remains pending in the [17D matrix](milestone17-acceptance.md).
+
+Additional reproduction:
+
+```powershell
+pwsh -NoProfile -File scripts/measure-engine.ps1 -Runs 3 -Format shortlist
+pwsh -NoProfile -File scripts/measure-desktop.ps1
+```
+
+Raw outputs remain ignored local artifacts. No measured regression justifies a worker, dependency, packaging or hosted-service change.

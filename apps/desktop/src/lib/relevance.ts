@@ -2,7 +2,7 @@ import type { Candidate } from './discovery-state.ts';
 import type { Mentions } from './assistance.ts';
 import { regions, arrangements } from './public-search-criteria.ts';
 
-export type Signal = Readonly<{ value: string; source: 'title' | 'snippet'; phrase: string; polarity: 'positive' | 'negative' }>;
+export type Signal = Readonly<{ value: string; source: 'title' | 'snippet'; phrase: string; polarity: 'positive' | 'negative' | 'restriction'; excludes?: readonly string[] }>;
 export type RelevanceStatus = 'supported' | 'contradiction' | 'conflict' | 'unknown';
 export type CandidateRelevance = Readonly<Record<'role' | 'region' | 'arrangement', readonly Signal[]>>;
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -18,6 +18,28 @@ export function candidateRelevance(candidate: Candidate, mentions?: Mentions): C
     for (const hit of negatives) role.push({ value: entry.role, source: entry.source, phrase: hit[0], polarity: 'negative' });
     if (entry.source === 'title' && [...text.matchAll(new RegExp(`\\b${escape(entry.phrase)}\\b`, 'gi'))].some(hit => !negatives.some(n => hit.index! >= n.index! && hit.index! < n.index! + n[0].length))) {
       role.push({ value: entry.role, source: 'title', phrase: entry.phrase, polarity: 'positive' });
+    }
+  }
+  for (const source of ['title', 'snippet'] as const) {
+    const text = candidate[source];
+    // Standalone ATS metadata or a delimited title suffix, not surrounding
+    // company prose. Restrictions do not assert eligibility in their area.
+    const metadata = source === 'title'
+      ? /(?:\(|[-–—]\s*)Remote\s*[-–—,/]\s*(India|Latin America|EMEA)(?=\s*(?:[)|]| @|$))/gi
+      : /^\s*Remote\s*[-–—,/]\s*(India|Latin America|EMEA)\s*[.!]?\s*$/gim;
+    for (const hit of text.matchAll(metadata)) {
+      const phrase = hit[0].trim();
+      arrangement.push({ value: 'remote', source, phrase, polarity: 'positive' });
+      if (hit[1].toLowerCase() === 'india') region.push({ value: 'india', source, phrase, polarity: 'positive' });
+      else region.push({ value: hit[1].toLowerCase(), source, phrase, polarity: 'restriction', excludes: Object.keys(regions).filter(value => value !== 'any' && (hit[1].toLowerCase() === 'emea' ? !['europe', 'united-kingdom'].includes(value) : value !== 'united-states')) });
+    }
+    for (const hit of text.matchAll(/\bthis is a remote (?:role|position|opportunity)\b/gi)) arrangement.push({ value: 'remote', source, phrase: hit[0], polarity: 'positive' });
+    // A labelled location may include cities before an explicit country.
+    // Do not geocode cities or scan unlabelled company/customer paragraphs.
+    for (const hit of text.matchAll(/\b(?:job locations?|locations?)\s*:\s*[^\n.;]{1,160}/gi)) {
+      for (const [value, label] of Object.entries(regions)) {
+        if (value !== 'any' && new RegExp(`\\b${escape(label)}\\b(?=\\s*(?:[,/]|$))`, 'i').test(hit[0]) && !/\b(?:no|not)\b/i.test(hit[0])) region.push({ value, source, phrase: hit[0], polarity: 'positive' });
+      }
     }
   }
   for (const [field, catalog, output, labels] of [
@@ -40,7 +62,7 @@ export function candidateRelevance(candidate: Candidate, mentions?: Mentions): C
           // In titles, accept only explicit suffix metadata, not "Remote team".
           const suffix = source === 'title' && /[|(,–—-]\s*$/.test(before) && /^\s*(?:[),|–—-]|$)/.test(text.slice(start + hit[0].length));
           const endsDetail = /^\s*(?:[.;,|/()\n]|$)/.test(text.slice(start + hit[0].length));
-          if (endsDetail && (context || qualified || suffix)) output.push({ value, source, phrase: (context?.[0] ?? qualified?.[0] ?? '') + hit[0], polarity: 'positive' });
+          if (endsDetail && (context || qualified || suffix) && !output.some(signal => signal.value === value && signal.source === source && signal.polarity === 'positive' && signal.phrase.includes(hit[0]))) output.push({ value, source, phrase: (context?.[0] ?? qualified?.[0] ?? '') + hit[0], polarity: 'positive' });
         }
       }
     }
@@ -52,7 +74,7 @@ export function relevanceStatus(signals: readonly Signal[], selected: string): R
   if (selected === 'any') return 'unknown';
   const positive = signals.filter(signal => signal.polarity === 'positive');
   const matches = positive.some(signal => signal.value === selected);
-  const denied = signals.some(signal => signal.value === selected && signal.polarity === 'negative');
+  const denied = signals.some(signal => signal.value === selected && signal.polarity === 'negative' || signal.polarity === 'restriction' && signal.excludes?.includes(selected));
   if (matches && denied) return 'conflict';
   if (matches) return 'supported';
   if (denied || positive.length > 0) return 'contradiction';
