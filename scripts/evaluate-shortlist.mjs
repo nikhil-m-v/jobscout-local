@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 import { filterCandidates, initialResultFilters } from '../apps/desktop/src/lib/result-filters.ts';
 import { validateAssistance } from '../apps/desktop/src/lib/assistance.ts';
+import { shortlistTarget } from '../apps/desktop/src/lib/shortlist-coverage.ts';
 import './evaluate-candidate-pool.mjs';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
@@ -91,4 +92,4 @@ for (const [position, item] of fixture.cases.entries()) {
   }
 }
 console.log('\nPrecision divides by actual displayed count up to k. Retention divides by all relevant fixture candidates. Empty results have n/a precision.');
-console.log('This evaluates local pools of up to 50 candidates; it does not establish live 30-50-job coverage, freshness, provider cost or latency.');
+console.log(`This evaluates local pools of up to 50 candidates; it does not establish live ${shortlistTarget.minimum}–${shortlistTarget.preferredMaximum}-job coverage, freshness, provider cost or latency.`);

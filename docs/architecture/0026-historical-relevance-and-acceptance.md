@@ -1,5 +1,6 @@
 # 0026 — Historical relevance review and acceptance evidence
 
+Target references amended 2026-10-10 to the current 10–20 suitable-job requirement. Recorded measurements and trial outcomes remain historical.
 Date: 2026-10-08 (continuation begun 2026-10-07)
 
 Status: historical review and resource measurements implemented; interactive/native acceptance and suitable opportunity coverage remain incomplete.
@@ -22,7 +23,7 @@ Unfiltered replay retains all 49 links in 41 groups. Hiding five boards and usin
 
 ## Acceptance consequences
 
-The historical pool does not establish 30–50 suitable opportunities. Thirty-one reviewable candidates, posting URL shapes, or one fully supported text comparison cannot satisfy that gate. No new live trial, billing check or page retrieval was authorized or performed. Preserve unknowns and report the shortfall rather than broadening criteria or spending additional credits.
+The historical pool does not establish 10–20 suitable opportunities. Thirty-one reviewable candidates, posting URL shapes, or one fully supported text comparison cannot satisfy that gate. No new live trial, billing check or page retrieval was authorized or performed. Preserve unknowns and report the shortfall rather than broadening criteria or spending additional credits.
 
 Nine synthetic pools now retain all 72 relevant/reviewable labels with default source-linked filtering. Regression cases include regional overlap, explicit metadata, client prose, partial remote uncertainty, conflicting country evidence, source spans and escaped rendering. All 88 frontend tests and 326 engine tests pass; production typecheck/build and paired Windows NSIS packaging pass (22.13 MiB).
 

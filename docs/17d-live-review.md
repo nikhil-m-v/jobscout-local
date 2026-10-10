@@ -1,6 +1,6 @@
-# Proposed 17D live quality trial — 2026-10-10
+# Approved 17D live quality trial — 2026-10-10
 
-Status: **prepared, awaiting fresh user review; not dispatched**. Continuing implementation does not authorize this paid/network trial. The historical trial's permission has ended.
+Status: **completed once on 2026-10-10; approval consumed**. The user explicitly approved the exact query, five ATS scopes, five basic requests, fifty raw candidates, seventy-five seconds and five-credit ceiling below. All five requests completed in 15.398 seconds, retaining 47 unique links. Offline filters leave 33 reviewable groups but zero with recognized joint role/India/remote support; 17D remains partial. See [results and limitations](17d-live-results-2026-10-10.md). Current shortlist quality target: ten to twenty suitable unique opportunities; request budgets are separate. This approval is independent of implementation/release planning and does not permit retries, extra queries, page retrieval, account-usage checks or credit purchases. Historical permissions are not reused.
 
 Use the same public criteria as the historical baseline to assess current coverage. They are test preferences, not inferred profile details: software engineer, India, remote, any seniority, Python and SQL. The production engine constructs exactly:
 
@@ -22,6 +22,6 @@ Tavily's [official credit documentation](https://docs.tavily.com/documentation/a
 
 Authentication uses an existing JobScout OS-vault credential; never export it. Tavily receives the generic query, search options/domain filters, credential and normal network/account metadata. No resume, profile, name/contact details, private history, match evidence, notes or local paths are sent. The runner must not load profile storage or call a model. Review criteria changes locally before any dispatch.
 
-Keep the bounded public candidate envelope in ignored local storage solely for offline review; commit only aggregate evidence. Evaluate canonical links/groups, boards/resources, exact role/region/remote support, contradictions, unknowns, and first-ten support using existing local rules. Report suitable-evidence shortfalls without padding. Retrieved snippets and URL shapes cannot establish current vacancy status, eligibility or freshness; no promise of thirty to fifty suitable jobs follows from fifty results.
+Keep the bounded public candidate envelope in ignored local storage solely for offline review; commit only aggregate evidence. Evaluate canonical links/groups, boards/resources, exact role/region/remote support, contradictions, unknowns, and first-ten support using existing local rules. Report suitable-evidence shortfalls without padding. Retrieved snippets and URL shapes cannot establish current vacancy status, eligibility or freshness; no promise of ten to twenty suitable jobs follows from fifty results.
 
-Approval applies to this one bounded run only. If the user changes query, scope or limits, prepare the replacement for review first.
+Approval applied to this completed bounded run only. Any further dispatch needs a new concrete review, even with unchanged query, scope or limits.

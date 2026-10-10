@@ -1,5 +1,6 @@
 # Two discovery paths with local assistance
 
+Target references amended 2026-10-10 to the current 10–20 suitable-job requirement. Recorded measurements and trial outcomes remain historical.
 Date: 2026-10-04. Amendment to the existing assisted-discovery design and roadmap increments 16–17; optional LLM extension stays in 27–30.
 
 Previously a resume affected extraction/review/storage only. Both entry paths used manual criteria and the same default query. Add a functional deterministic baseline without requiring a model download.
@@ -16,4 +17,4 @@ Analysis is asynchronous with cancel/retry/manual fallback. Generation guards ig
 
 Setup: no new credential, runtime, permission or model is required; deterministic assistance is the default. Drafts/analysis are session-only, saved text retains its existing explicit storage/deletion contract. Upgrade by rebuilding/restarting engine, frontend and native bridge together; no database migration. Older installed/running copies require reopening/updating. A future optional LLM must use a selected local model, licence/resource-reviewed setup, bounded generation, cancellation and deterministic recovery. It may summarise privately and suggest validated catalog IDs, never supply provider-query prose. That extension remains unimplemented until its existing roadmap prerequisites pass.
 
-Evidence: synthetic profiles demonstrate different controlled queries and different shared-skill ordering for the same returned pool. Captured end-to-end local-analysis/preview/search tests exclude distinctive private markers from provider requests and verify analysis touches no profile storage. Tests cover unsupported roles, input bounds, strict response catalogs, stale replies, filters/unknowns and separate query/manual page rendering. Native interaction, visual QA, live-provider relevance, richer evidence and the 30–50-job shortlist remain separate completion gates.
+Evidence: synthetic profiles demonstrate different controlled queries and different shared-skill ordering for the same returned pool. Captured end-to-end local-analysis/preview/search tests exclude distinctive private markers from provider requests and verify analysis touches no profile storage. Tests cover unsupported roles, input bounds, strict response catalogs, stale replies, filters/unknowns and separate query/manual page rendering. Native interaction, visual QA, live-provider relevance, richer evidence and the 10–20-job shortlist remain separate completion gates.

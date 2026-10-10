@@ -1,10 +1,11 @@
 # Decision 0021 — Literal shortlist evidence and honest page coverage
 
+Target references amended 2026-10-10 to the current 10–20 suitable-job requirement. Recorded measurements and trial outcomes remain historical.
 Date: 2026-10-06. Status: implemented locally; interactive/native verification pending.
 
 ## Evidence and problem
 
-The user authorized one exact five-query Tavily trial: Software engineer jobs India Remote Python SQL, replacing jobs with job openings, vacancies, hiring and careers. The production restricted adapter and bounded coordinator completed five requests in 12.636 seconds. It returned 23 unique public pages and removed 24 canonical-link duplicates (47 raw candidates). Title review found job-board collections rather than clearly individual openings; local collection signals identify all 23. No result pages were fetched. Five intent synonyms are not an evidenced route to 30–50 individual opportunities.
+The user authorized one exact five-query Tavily trial: Software engineer jobs India Remote Python SQL, replacing jobs with job openings, vacancies, hiring and careers. The production restricted adapter and bounded coordinator completed five requests in 12.636 seconds. It returned 23 unique public pages and removed 24 canonical-link duplicates (47 raw candidates). Title review found job-board collections rather than clearly individual openings; local collection signals identify all 23. No result pages were fetched. Five intent synonyms are not an evidenced route to 10–20 individual opportunities.
 
 Existing category counts also conflate AWS/Azure, promote a teammate's role mentioned in a snippet, and count explicit negative phrases as positive skill evidence.
 

@@ -1,5 +1,9 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { resolve } from 'node:path';
+import { validateAssistance } from '../src/lib/assistance.ts';
 import { candidateRelevance, relevanceStatus } from '../src/lib/relevance.ts';
 import { filterCandidates, initialResultFilters } from '../src/lib/result-filters.ts';
 const job = (title, snippet = '') => ({ title, snippet, url: 'https://jobs.example.com/1', source_index: null });
@@ -79,4 +83,65 @@ test('reversible filters keep unknowns/conflicts, reject title contradictions an
   assert.equal(filterCandidates(candidates, evidence, false, initialResultFilters).length, 4);
   const other = { ...mentions(true), shortlist: { ...mentions(true).shortlist, roles: [{ role: 'data-analyst', source: 'title', phrase: 'Data analyst' }, { role: 'software-engineer', source: 'snippet', phrase: 'software engineer' }] } };
   assert.equal(filterCandidates([job('Data analyst', 'Work with a software engineer.')], [other], false, { ...initialResultFilters, role: 'software-engineer' }).length, 0);
+});
+
+test('qualified ATS remote-area titles retain phrases, exclusions and conservative unknowns', () => {
+  const positive = job('Software engineer (100% Remote - India)');
+  const evidence = candidateRelevance(positive, mentions(true));
+  assert.equal(relevanceStatus(evidence.region, 'india'), 'supported');
+  assert.equal(relevanceStatus(evidence.arrangement, 'remote'), 'supported');
+  for (const signals of Object.values(evidence)) for (const signal of signals) assert.ok(positive[signal.source].includes(signal.phrase));
+  const restricted = candidateRelevance(job('Software engineer (100% Remote - EMEA)'));
+  assert.equal(relevanceStatus(restricted.region, 'india'), 'contradiction');
+  assert.equal(relevanceStatus(restricted.region, 'europe'), 'unknown');
+  assert.equal(relevanceStatus(candidateRelevance(job('Software engineer (50% Remote - India)')).arrangement, 'remote'), 'unknown');
+  for (const title of ['Software engineer (100% Remote - India team)', '100% Remote - India client support']) {
+    const unknown = candidateRelevance(job(title));
+    assert.equal(relevanceStatus(unknown.region, 'india'), 'unknown', title);
+    assert.equal(relevanceStatus(unknown.arrangement, 'remote'), 'unknown', title);
+  }
+});
+
+test('ATS India-at-employer suffix is metadata only within the application title format', () => {
+  for (const title of ['Job Application for Software engineer - India at Example', 'Job Application for Software engineer II – Full Stack – India at Example']) {
+    const candidate = job(title);
+    const evidence = candidateRelevance(candidate, mentions(true));
+    assert.equal(relevanceStatus(evidence.region, 'india'), 'supported');
+    assert.ok(evidence.region.every(signal => candidate[signal.source].includes(signal.phrase)));
+  }
+  for (const title of ['Job Application for Software engineer at Example India', 'Job Application for Software engineer - India team at Example', 'Job Application for Software engineer - Not India at Example', 'Support India at our company']) {
+    assert.equal(relevanceStatus(candidateRelevance(job(title)).region, 'india'), 'unknown', title);
+  }
+  const prose = candidateRelevance(job('Software engineer', 'Job Application for Software engineer - India at Example'));
+  assert.equal(relevanceStatus(prose.region, 'india'), 'unknown');
+  const collection = candidateRelevance(job('Job Application for Software engineer - India at Example'), { ...mentions(true), content: { status: 'collection' } });
+  assert.ok(Object.values(collection).every(signals => signals.length === 0));
+});
+
+test('engine alias and frontend ATS evidence change strict filtering without losing conflicts or reset links', () => {
+  const candidates = [
+    job('Software Development Engineer (100% Remote - India)'),
+    job('Job Application for Software Development Engineer II - Full Stack - India at Example', 'Fully remote.'),
+    job('Software engineer (100% Remote - India)'),
+    job('No Software Development Engineer positions', 'Location: India. Fully remote.'),
+    job('Job Application for Software Development Engineer at Example India', 'Fully remote.'),
+    job('Software Development Engineer (100% Remote - India)', 'Not remote.'),
+  ];
+  const root = fileURLToPath(new URL('../../../', import.meta.url));
+  const python = resolve(root, '.venv', process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python');
+  const review = 'Software Development Engineer Python SQL';
+  const analyzed = spawnSync(python, ['-c', 'import json,sys; from jobscout_engine.domain.assistance import analyze_review; print(json.dumps(analyze_review(json.load(sys.stdin))))'], {
+    cwd: root, input: JSON.stringify({ text: review, reviewed: true, candidates: candidates.map(({ title, snippet }) => ({ title, snippet })) }), encoding: 'utf8', timeout: 30000, windowsHide: true,
+  });
+  assert.equal(analyzed.status, 0, 'Synthetic offline engine analysis must finish');
+  const evidence = validateAssistance(JSON.parse(analyzed.stdout), candidates.length, review, candidates).matches;
+  const filters = { ...initialResultFilters, role: 'software-engineer', region: 'india', arrangement: 'remote' };
+  assert.deepEqual(filterCandidates(candidates, evidence, false, filters).map(row => row.index), [0, 1, 2, 4, 5]);
+  assert.deepEqual(filterCandidates(candidates, evidence, false, { ...filters, keepUnknown: false }).map(row => row.index), [0, 1, 2]);
+  assert.equal(relevanceStatus(candidateRelevance(candidates[5], evidence[5]).arrangement, 'remote'), 'conflict');
+  assert.deepEqual(filterCandidates(candidates, evidence, false, initialResultFilters).map(row => row.index), [0, 1, 2, 3, 4, 5]);
+  for (const candidate of candidates) {
+    const index = candidates.indexOf(candidate);
+    for (const signals of Object.values(candidateRelevance(candidate, evidence[index]))) for (const signal of signals) assert.ok(candidate[signal.source].includes(signal.phrase));
+  }
 });

@@ -1,5 +1,11 @@
 # Production engine baseline — 2026-09-30
 
+Latest artifact update — 2026-10-11: the [work-requirement disclosure](architecture/0030-work-requirement-review-notes.md) passes frontend typecheck/build and final production Rust/NSIS rebuild with the existing unchanged engine sidecar. Installer 23,190,869 bytes (22.12 MiB); version remains 0.1.0. No new installed footprint/startup/idle/peak measurement. The installed snapshots below remain specific to their earlier measured binary; browser mock disclosure evidence is not native resource evidence.
+
+Latest installed observations — 2026-10-11: [separate-identity release-mode installed acceptance](installed-acceptance.md) uses unchanged production UI/Rust/engine. Installed application files 34,568,859 bytes (32.97 MiB); normal package/artifact hashes preserved. Three ten-process snapshots: manual query 507.65 MiB summed working set / 365.45 MiB private commitment; reviewed synthetic profile 516.18 / 335.65; restarted saved-profile view 497.79 / 322.27. Each includes two frozen engine processes and six WebView processes. Shared pages can be counted multiple times; these are snapshots, not stable idle means, startup timing, workload peaks or hardware budgets. All three normal closes leave zero owned processes. No online provider/page request, model inference/download, import or search/Results peak measurement; production health polling retains the local Ollama status check. This supersedes the no-new-installed-observation statement immediately below only for this bounded separate-identity subset.
+
+Latest artifact update — 2026-10-11: bounded ATS title evidence (decision 0029) is included in the paired engine/frontend/Rust/NSIS rebuild, passing at 23,191,627 bytes (22.12 MiB). No new installed footprint, peak RAM, startup or native interaction measurement. Earlier installation/resource observations below apply to their measured binaries; current installed acceptance remains pending.
+
 Measured the existing Windows release sidecar from the profile-storage build (commit `840edfc`), with three fresh process launches, an isolated empty database, and no model. These are warm filesystem-cache launches, not reboot-cold measurements. No personal files were used.
 
 | Metric | Observed |
@@ -81,6 +87,10 @@ pwsh -NoProfile -File scripts/measure-desktop.ps1
 Raw outputs remain ignored local artifacts. No measured regression justifies a worker, dependency, packaging or hosted-service change.
 
 ## Synthetic discovery responsiveness — 2026-10-10
+
+Native development acceptance continuation: the isolated `acceptance:native` harness runs the production Rust/WebView shell with a frozen synthetic sidecar and fresh database. A forty-candidate Results snapshot measured ten owned processes, 628.07 MiB summed working set and 465.49 MiB private commitment. This debug-shell snapshot is not a peak, release-build or live-performance measurement; summed working sets can double-count shared pages. Normal Results close and active-search close left zero owned processes and launcher processes. A final complete run retained fifty candidates and its normal close removed the newly inventoried temporary database. No installed app, actual-provider latency, production search/import peak or cold-start claim follows. See [the bounded native evidence](milestone17-acceptance.md#native-development-acceptance--2026-10-10).
+
+Latest target-revision package: paired build passes at 22.12 MiB; scoped silent installer retest measures 34,565,020 bytes (32.96 MiB) installed. Existing profile database is unchanged; install/reinstall/uninstall pass. No new RAM/startup measurement; engine/transport unchanged.
 
 Current silent installation measures application files including the uninstaller at 34,562,914 bytes (32.96 MiB). This excludes personal data, sidecar temporary extraction and shared WebView2. Install/reinstall/uninstall and unchanged existing profile database checks pass; see [installation checks](installation-checks.md). No installed native window was opened during this measurement.
 

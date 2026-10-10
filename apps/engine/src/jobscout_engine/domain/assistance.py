@@ -6,7 +6,7 @@ from jobscout_engine.domain.documents import MAX_TEXT_CHARACTERS
 from jobscout_engine.domain.search import SKILLS, REGIONS
 
 ROLE_ALIASES = {
-    'software-engineer': ('software engineer', 'software developer', 'frontend developer', 'backend developer', 'full stack developer'),
+    'software-engineer': ('software engineer', 'software development engineer', 'software developer', 'frontend developer', 'backend developer', 'full stack developer'),
     'data-analyst': ('data analyst', 'business intelligence analyst'),
     'data-engineer': ('data engineer', 'analytics engineer'),
     'product-manager': ('product manager',),

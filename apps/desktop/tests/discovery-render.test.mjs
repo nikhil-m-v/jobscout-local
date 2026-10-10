@@ -54,6 +54,30 @@ test('remote area restrictions remain source-linked review evidence in manual Re
   assert.ok(markup.includes('<q>Location: India</q>'));
   assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
 });
+test('manual Results quote work requirements safely for each repeated-role alternative', () => {
+  const candidates = [
+    { title: 'Example - Senior Software Engineer', snippet: 'Must work with ET time zone overlap.', url: 'https://jobs.lever.co/example/00000000-0000-4000-8000-000000000001', source_index: 1 },
+    { title: 'Example - Senior Software Engineer', snippet: 'Visa sponsorship is not available <script>track()</script>.', url: 'https://jobs.lever.co/example/00000000-0000-4000-8000-000000000002', source_index: 1 },
+  ];
+  const markup = render(true, false, true, false, { discovery: { result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-11T03:00:00Z', candidates, duplicates_removed: 0, discarded_results: 0 } } });
+  assert.equal((markup.match(/<summary>Work requirements to review<\/summary>/g) ?? []).length, 2);
+  assert.ok(markup.includes('Working hours in snippet: <q>Must work with ET time zone overlap.</q>'));
+  assert.ok(markup.includes('Visa sponsorship in snippet: <q>Visa sponsorship is not available &lt;script&gt;track()&lt;/script&gt;.</q>'));
+  assert.ok(markup.includes('Showing 2 candidate links in 1 group.'));
+  assert.ok(markup.includes('Check whether they apply to you; the full posting has not been verified.'));
+  assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
+  for (const candidate of candidates) assert.ok(markup.includes(candidate.url));
+});
+
+test('board and incidental timezone text do not render individual work requirements', () => {
+  const candidates = [
+    { title: 'Example Careers', snippet: 'Visa sponsorship is not available.', url: 'https://jobs.lever.co/example', source_index: 1 },
+    { title: 'Software engineer', snippet: 'Our team spans multiple time zones.', url: 'https://jobs.example.com/1', source_index: null },
+  ];
+  const markup = render(true, false, true, false, { discovery: { result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-11T03:00:00Z', candidates, duplicates_removed: 0, discarded_results: 0 } } });
+  assert.ok(!markup.includes('Work requirements to review'));
+});
+
 test('job options and results render on separate pages', () => {
   assert.ok(!render(true).includes('Search candidates'));
   assert.ok(!render(true).includes('&lt;script&gt;'));
@@ -189,7 +213,18 @@ test('broader preview discloses every query, ceiling and stopping progress', () 
 test('partial discovery displays retained results and honest shortfall guidance', () => {
   const markup = render(true, false, true, false, { discovery: { invalidate: noop, result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-05T03:00:00Z', duplicates_removed: 0, discarded_results: 0, candidates: [{ title: 'Synthetic role', snippet: '', url: 'https://jobs.example.com/role' }], coverage: { attempted: 2, completed: 1, max_requests: 5, stop_reason: 'provider_failure', failures: [{ request: 2, code: 'provider_rate_limited' }] } } } });
   assert.ok(markup.includes('completed results are retained'));
-  assert.ok(markup.includes('Fewer than 30 candidates remain'));
+  assert.ok(markup.includes('Fewer than 10 candidate groups remain'));
   assert.ok(markup.includes('Tavily is limiting requests'));
   assert.ok(markup.includes('Synthetic role'));
+});
+
+test('results use the ten-group threshold and keep pools above twenty available', () => {
+  for (const count of [9, 10, 20, 21]) {
+    const candidates = Array.from({ length: count }, (_, index) => ({ title: `Synthetic role ${index}`, snippet: '', url: `https://boards.greenhouse.io/company${index}/jobs/1` }));
+    const markup = render(true, false, true, false, { discovery: { invalidate: noop, result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-10T03:00:00Z', duplicates_removed: 0, discarded_results: 0, candidates } } });
+    assert.ok(markup.includes('The goal is 10–20 suitable jobs'));
+    assert.equal(markup.includes('Fewer than 10 candidate groups remain'), count < 10);
+    for (const candidate of candidates) assert.ok(markup.includes(candidate.url));
+    assert.ok(markup.includes('does not establish suitability'));
+  }
 });

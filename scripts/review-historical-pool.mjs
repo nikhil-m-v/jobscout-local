@@ -9,6 +9,8 @@ import { validateAssistance } from '../apps/desktop/src/lib/assistance.ts';
 import { filterCandidates, initialResultFilters } from '../apps/desktop/src/lib/result-filters.ts';
 import { groupCandidates, inspectCandidate } from '../apps/desktop/src/lib/candidate-pool.ts';
 import { relevanceStatus } from '../apps/desktop/src/lib/relevance.ts';
+import { shortlistCoverage, shortlistTarget } from '../apps/desktop/src/lib/shortlist-coverage.ts';
+import { candidateRequirements, workRequirementLabels } from '../apps/desktop/src/lib/work-requirements.ts';
 
 const root = fileURLToPath(new URL('../', import.meta.url));
 const [input, countsArgument] = process.argv.slice(2);
@@ -40,12 +42,20 @@ const all = filterCandidates(result.candidates, evidence, true, { ...initialResu
 assert.equal(all.length, result.candidates.length);
 assert.equal(groupCandidates(all).flat().length, result.candidates.length);
 const tally = rows => Object.fromEntries(['role', 'region', 'arrangement'].map(field => [field, Object.fromEntries(['supported', 'contradiction', 'conflict', 'unknown'].map(status => [status, rows.filter(row => relevanceStatus(row.relevance[field], criteria[field]) === status).length]))]));
+const requirements = rows => {
+  const assessed = rows.map(row => ({ row, notes: candidateRequirements(row.candidate, row.evidence?.content?.status) }));
+  for (const { row, notes } of assessed) for (const note of notes) assert.ok(row.candidate[note.source].includes(note.phrase));
+  const flagged = assessed.filter(item => item.notes.length > 0).map(item => item.row);
+  return { links: flagged.length, groups: groupCandidates(flagged).length,
+    by_kind: Object.fromEntries(Object.keys(workRequirementLabels).map(kind => [kind, assessed.filter(item => item.notes.some(note => note.kind === kind)).length])),
+    scope: 'Explicit returned-text notes only; counts are review prompts, not eligibility decisions. Absence does not establish unrestricted work.' };
+};
 const report = {
   offline_historical_replay: true, provenance_reconstructed: reconstructed, synthetic_reference: true,
   criteria, links: all.length, groups: groupCandidates(all).length,
   posting_patterns: result.candidates.filter(candidate => inspectCandidate(candidate).kind === 'posting').length,
   boards: result.candidates.filter(candidate => inspectCandidate(candidate).kind === 'board').length,
-  evidence_counts: tally(all), modes: {},
+  evidence_counts: tally(all), work_requirements: requirements(all), modes: {},
   limits: 'Returned text only; unknowns/conflicts are reviewable, not suitable jobs. No freshness, live relevance, billing or eligibility verification. No network request.',
 };
 for (const [mode, filters, exact] of [
@@ -54,7 +64,13 @@ for (const [mode, filters, exact] of [
   ['strict_source_linked', { ...initialResultFilters, ...criteria, skill: 'any', showCollections: false, keepUnknown: false }, true],
 ]) {
   const rows = filterCandidates(result.candidates, evidence, true, filters, criteria.role, exact);
-  report.modes[mode] = { links: rows.length, groups: groupCandidates(rows).length, evidence_counts: tally(rows), first_ten_evidence_counts: tally(rows.slice(0, 10)), supported_all_three: rows.filter(row => ['role', 'region', 'arrangement'].every(field => relevanceStatus(row.relevance[field], criteria[field]) === 'supported')).length };
+  const supported = rows.filter(row => ['role', 'region', 'arrangement'].every(field => relevanceStatus(row.relevance[field], criteria[field]) === 'supported'));
+  report.modes[mode] = { links: rows.length, groups: groupCandidates(rows).length,
+    review_target: shortlistTarget, reviewable_coverage: shortlistCoverage(rows),
+    evidence_supported_groups: groupCandidates(supported).length,
+    evidence_support_below_minimum: groupCandidates(supported).length < shortlistTarget.minimum,
+    evidence_counts: tally(rows), first_ten_evidence_counts: tally(rows.slice(0, 10)), supported_all_three: supported.length,
+    work_requirements: requirements(rows), supported_all_three_work_requirements: requirements(supported) };
 }
 const times = [];
 for (let sample = 0; sample < 7; sample++) {

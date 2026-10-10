@@ -1,5 +1,7 @@
 # Installation and first-run design
 
+Release boundary — 2026-10-10: [v1.0](../releases.md) guides application/personal storage, provider configuration, local verification, setup-later and first use. A local model/runtime is not required or downloaded by v1.0 setup. Model/runtime sections below remain the brief for later optional matching/AI releases; apply their licence, size, hardware, cancellation, reuse and recovery rules when introduced. This planning decision does not change the installer or complete acceptance.
+
 Status: initial product design; this document describes the planned experience, not an implemented installer.
 
 ## Goal and scope

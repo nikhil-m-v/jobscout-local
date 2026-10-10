@@ -1,5 +1,6 @@
 # Conservative candidate link normalization
 
+Target references amended 2026-10-10 to the current 10–20 suitable-job requirement. Recorded measurements and trial outcomes remain historical.
 Date: 2026-10-04. First result-quality slice of roadmap increment 16.
 
 Search results are still web candidates, not verified vacancies. Normalize their links locally before deduplication so tracking variants do not occupy multiple slots in the bounded result pool. The provider-independent `domain/result_urls.py` helper retains the existing public HTTPS syntax boundary and performs no DNS lookup, website fetch, redirect following or resource loading.
@@ -12,4 +13,4 @@ The session result gains `duplicates_removed` and engine-generated UTC `retrieve
 
 No new dependency, storage, credential setting, setup step or outbound request is introduced. Results remain session-only and disappear on invalidation/restart. The local response contract is strict: rebuild/restart engine and frontend together; an old engine paired with the new UI fails with an unsupported-response error. Packaged upgrades include both sides. There is no database migration.
 
-Synthetic tests cover tracking aliases, meaningful job IDs/parameters, path distinctions, idempotence, URL safety/size limits, deduplication, credential echoes in discarded records, response metadata, request privacy and escaped rendering. Native interaction and deliberate live-provider search remain separate release gates. Job-specific filters, cross-source duplicates, local profile ranking and the 30–50-job shortlist remain next increments.
+Synthetic tests cover tracking aliases, meaningful job IDs/parameters, path distinctions, idempotence, URL safety/size limits, deduplication, credential echoes in discarded records, response metadata, request privacy and escaped rendering. Native interaction and deliberate live-provider search remain separate release gates. Job-specific filters, cross-source duplicates, local profile ranking and the 10–20-job shortlist remain next increments.

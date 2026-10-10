@@ -1,10 +1,11 @@
 # 0017 — Planned weighted local suitability ranking
 
+Target references amended 2026-10-10 to the current 10–20 suitable-job requirement. Recorded measurements and trial outcomes remain historical.
 Date: 2026-10-05. Status: planned design; no scoring model, embedding inference, generative analysis or new agent is enabled by this decision.
 
 ## Purpose and sequence
 
-Once discovery can supply a useful 30–50-job shortlist, help the user see which opportunities are best supported by their reviewed career evidence and preferences. Current discovery returns at most ten candidates, and shared-category counts are a diagnostic baseline, not suitability scores. This expands roadmap milestones 25–26 and 29–30 rather than adding an unrelated service or making the core depend on a model.
+Once discovery can supply a useful 10–20-job shortlist, help the user see which opportunities are best supported by their reviewed career evidence and preferences. Current discovery returns at most ten candidates, and shared-category counts are a diagnostic baseline, not suitability scores. This expands roadmap milestones 25–26 and 29–30 rather than adding an unrelated service or making the core depend on a model.
 
 There are two distinct optional AI uses: (1) locally summarize a reviewed resume and suggest fixed public search categories; (2) locally compare returned job evidence against the reviewed profile and explain the ordering. The summary itself never goes to the search API. Both flows work with deterministic fallbacks. Semantic ranking can precede generative summarization because embeddings do not require an LLM summary.
 

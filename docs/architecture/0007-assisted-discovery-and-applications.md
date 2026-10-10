@@ -1,10 +1,11 @@
 # 0007 — Assisted discovery and mature application workflows
 
+Target references amended 2026-10-10 to the current 10–20 suitable-job requirement. Recorded measurements and trial outcomes remain historical.
 Status: accepted implementation direction, 2026-10-01. The modules and records below are planned, except for the existing desktop/engine, import, saved-text and query-preview foundations. This decision does not enable online search or submission.
 
 ## Decision
 
-Extend the existing React/Tauri/FastAPI/SQLite modular monolith. Deliver the 30–50 relevant-job shortlist first; add local AI gap analysis, resume tailoring and automatic applications in that order after evaluating the core. Use small typed interfaces and local background tasks rather than new hosted services. The governing contracts are [privacy](../privacy.md), [reviewed profile storage](0003-reviewed-profile-storage.md), [public criteria](0005-public-search-criteria.md) and [query construction](0006-public-query-boundary.md).
+Extend the existing React/Tauri/FastAPI/SQLite modular monolith. Deliver the 10–20 relevant-job shortlist first; add local AI gap analysis, resume tailoring and automatic applications in that order after evaluating the core. Use small typed interfaces and local background tasks rather than new hosted services. The governing contracts are [privacy](../privacy.md), [reviewed profile storage](0003-reviewed-profile-storage.md), [public criteria](0005-public-search-criteria.md) and [query construction](0006-public-query-boundary.md).
 
 ```mermaid
 flowchart TD
@@ -18,7 +19,7 @@ flowchart TD
   Provider --> Normalize[Bounded normalization and deduplication]
   Normalize --> Rank[Local filters and ranking]
   Profile --> Rank
-  Rank --> Shortlist[30–50-job shortlist]
+  Rank --> Shortlist[10–20-job shortlist]
   Shortlist --> Gaps[Local AI gap analysis]
   Profile --> Gaps
   Shortlist --> Tailor[Local reviewed resume edits]
@@ -59,10 +60,10 @@ The future local analysis provider may suggest a primary role, adjacent roles an
 
 1. Build a local profile snapshot from explicitly reviewed text. Begin with deterministic skill aliases and editable facts; unknown facts remain unknown. Every derived fact points to text evidence or a user correction. Suggested public categories must pass the existing catalog boundary and user review.
 2. Bind a search run to criteria/query/provider versions and a profile revision. Revalidate immediately before dispatch. Search expands only through bounded pages of approved generic queries; do not silently broaden reviewed filters or send private identifiers. Show provider-visible terms and quota guidance.
-3. Fetch a larger candidate pool when needed to produce 30–50 suitable unique jobs. Define finite request, candidate, response-byte, elapsed-time and quota budgets in provider configuration before shipping. Stop at sufficient coverage, exhaustion, cancellation or a budget limit. Return useful partial results with the reason for stopping.
+3. Fetch a larger candidate pool when needed to produce 10–20 suitable unique jobs. Define finite request, candidate, response-byte, elapsed-time and quota budgets in provider configuration before shipping. Stop at sufficient coverage, exhaustion, cancellation or a budget limit. Return useful partial results with the reason for stopping.
 4. Normalize provider ID, title, company, canonical application/source URL, description text, source, retrieval time, published time when supported, and structured preferences with evidence. Strip active markup; never automatically fetch embedded resources. Canonicalization must not merge distinct postings merely because title/company match. Unsupported or unsafe links are unavailable for opening/submission.
 5. Apply hard user filters locally where evidence supports them; provider query terms are only hints. Mark unknown location/work mode/seniority explicitly and expose whether unknowns are included. Do not claim an unknown field satisfies a hard filter.
-6. Rank eligible jobs against the local profile using transparent weighted rules first. Record supported matches, gaps and missing evidence; do not use invented precision or claim hiring probability. Add embeddings only after comparative quality/resource evaluation. Select up to the configured 30–50 target without padding, with stable ordering and filter/match explanations.
+6. Rank eligible jobs against the local profile using transparent weighted rules first. Record supported matches, gaps and missing evidence; do not use invented precision or claim hiring probability. Add embeddings only after comparative quality/resource evaluation. Select up to the configured 10–20 target without padding, with stable ordering and filter/match explanations.
 7. Evaluate both the first ten and full shortlist using synthetic reviewed cases: filter adherence, relevance, duplicates, freshness uncertainty, source coverage, latency, cost and RAM. A raw web search hit is not automatically a usable job record; report insufficient job descriptions or source coverage honestly.
 
 Profile edits invalidate derived matches; criteria/provider changes invalidate search approval and results' applicability. Preserve the old view with an explicit stale label while recomputing, and never allow late responses to replace newer state. No automatic background provider refresh without a separately defined user control.
@@ -103,7 +104,7 @@ Deletion removes owned derived facts, matches, indexes, reports and artifact cop
 
 | Stage | Deliver before advancing |
 |---|---|
-| Core | Provider setup/secret storage, restricted transport and captured-request privacy tests; normalization; deterministic local profile matching; bounded 30–50 shortlist with honest shortfalls, cancellation and quality evidence |
+| Core | Provider setup/secret storage, restricted transport and captured-request privacy tests; normalization; deterministic local profile matching; bounded 10–20 shortlist with honest shortfalls, cancellation and quality evidence |
 | Gap analysis | Optional local model setup; schema/evidence validation; deduplicated frequency math, coverage reporting, user correction and deletion tests |
 | Tailoring | Grounded edit review, factual fidelity evaluation, separate artifact export/visual verification and original preservation |
 | Automatic applications | Approved privacy-contract extension; supported adapters; scoped approval invalidation, duplicate prevention, uncertain-outcome recovery, batch stop and synthetic receipt tests before any live submission |

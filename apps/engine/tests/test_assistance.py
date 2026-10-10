@@ -32,6 +32,21 @@ def test_no_role_does_not_fabricate_a_default_or_infer_private_preferences():
     assert analyze_review(review('')) == {'criteria': None, 'roles': [], 'skills': [], 'matches': []}
 
 
+def test_software_development_engineer_alias_keeps_literal_evidence_and_controlled_criteria():
+    title = 'Job Application for Software Development Engineer II - India at Example'
+    result = analyze_review(review('PRIVATE_NAME Software Development Engineer Python SQL',
+                                   [{'title': title, 'snippet': ''}]))
+    assert result['criteria'] == {'role': 'software-engineer', 'skills': ['python', 'sql'],
+                                  'region': 'any', 'arrangement': 'any', 'seniority': 'any'}
+    assert result['matches'][0]['shortlist']['roles'] == [
+        {'role': 'software-engineer', 'source': 'title', 'phrase': 'Software Development Engineer'}]
+    assert construct_public_query(result['criteria']) == 'Software engineer jobs Python SQL'
+    assert 'PRIVATE_NAME' not in json.dumps(result)
+    for near_miss in ['Software Development Engineering', 'Software Development Engineers',
+                      'Software Development Engineerish']:
+        assert analyze_review(review(near_miss))['criteria'] is None
+
+
 def test_job_category_evidence_is_bounded_and_profile_specific():
     candidates = [{'title': 'Software engineer - remote India', 'snippet': 'Python SQL senior'},
                   {'title': 'Data analyst', 'snippet': 'Tableau hybrid Canada junior'}]
@@ -93,7 +108,7 @@ def test_authenticated_local_analysis_then_preview_dispatch_never_sends_private_
     monkeypatch.setattr(Database, 'load_profile', forbidden)
     monkeypatch.setattr(Database, 'save_profile', forbidden)
     with TestClient(app(tmp_path, store, httpx.MockTransport(transport))) as client:
-        data = review('PRIVATE_NAME PRIVATE_EMAIL PRIVATE_EMPLOYER Software engineer Python SQL',
+        data = review('PRIVATE_NAME PRIVATE_EMAIL PRIVATE_EMPLOYER Software Development Engineer Python SQL',
                       [{'title': 'Python role', 'snippet': 'SQL'}])
         assert client.post('/api/v1/assistance', json=data).status_code == 401
         local = client.post('/api/v1/assistance', headers=HEADERS, json=data)

@@ -50,3 +50,23 @@ def test_harness_refuses_real_credentials():
     with pytest.raises(SecretStoreUnavailable):
         store.save('tvly-not-a-synthetic-key')
     assert store.read() == harness.KEY
+
+
+def test_native_sidecar_ignores_shell_storage_path_and_rejects_live_options(monkeypatch):
+    import sys
+    monkeypatch.setitem(sys.modules, 'acceptance_engine', harness)
+    native_spec = importlib.util.spec_from_file_location('native_acceptance_engine', Path(__file__).resolve().parents[3] / 'scripts/native_acceptance_engine.py')
+    native = importlib.util.module_from_spec(native_spec)
+    native_spec.loader.exec_module(native)
+    calls = []
+    monkeypatch.setattr(native, 'serve_synthetic', lambda *args: calls.append(args))
+    monkeypatch.setenv('JOBSCOUT_ACCEPTANCE_SCENARIO', 'failure')
+    native.main(['--owner-pid', '123', '--data-dir', 'PRIVATE_EXISTING_WORKSPACE', '--port', '0'])
+    assert calls == [(123, 'failure')]
+    for extra in [['--provider', 'live'], ['--port', '1420']]:
+        with pytest.raises(SystemExit):
+            native.main(['--owner-pid', '123', '--data-dir', 'PRIVATE_EXISTING_WORKSPACE', '--port', '0', *extra])
+    monkeypatch.setenv('JOBSCOUT_ACCEPTANCE_SCENARIO', 'live')
+    with pytest.raises(SystemExit):
+        native.main(['--owner-pid', '123', '--data-dir', 'PRIVATE_EXISTING_WORKSPACE', '--port', '0'])
+    assert len(calls) == 1

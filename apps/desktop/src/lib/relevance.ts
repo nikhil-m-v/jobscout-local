@@ -22,10 +22,16 @@ export function candidateRelevance(candidate: Candidate, mentions?: Mentions): C
   }
   for (const source of ['title', 'snippet'] as const) {
     const text = candidate[source];
+    // Greenhouse-style application titles delimit country before the employer.
+    // An employer name containing India or the same phrase in prose is not metadata.
+    const applicationCountry = source === 'title'
+      ? /^Job Application for [^\r\n]{1,350}([-–—]\s*India)\s+at\s+[^\r\n]{1,100}$/i.exec(text)
+      : null;
+    if (applicationCountry) region.push({ value: 'india', source, phrase: applicationCountry[1], polarity: 'positive' });
     // Standalone ATS metadata or a delimited title suffix, not surrounding
     // company prose. Restrictions do not assert eligibility in their area.
     const metadata = source === 'title'
-      ? /(?:\(|[-–—]\s*)Remote\s*[-–—,/]\s*(India|Latin America|EMEA)(?=\s*(?:[)|]| @|$))/gi
+      ? /(?:\(|[-–—]\s*)(?:100%\s+)?Remote\s*[-–—,/]\s*(India|Latin America|EMEA)(?=\s*(?:[)|]| @|$))/gi
       : /^\s*Remote\s*[-–—,/]\s*(India|Latin America|EMEA)\s*[.!]?\s*$/gim;
     for (const hit of text.matchAll(metadata)) {
       const phrase = hit[0].trim();

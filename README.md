@@ -4,7 +4,7 @@ Find your next role. Keep your personal story private.
 
 JobScout is an open-source Windows application designed to keep resumes, AI analysis, and career records on your computer. Its defining promise is local intelligence without uploading your personal career data. Built with Tauri 2, React, TypeScript, and a Python/FastAPI local engine.
 
-**Status: early development, updated 2026-10-06.** Local resume import/review/storage, explicit Tavily discovery, conservative result deduplication, local filters and deterministic resume-assisted ordering are implemented. A single search returns up to ten candidates; reviewed broader discovery allows up to fifty raw candidates; the core 30–50-job shortlist is still in progress. Local LLM summaries, embeddings, saved jobs and application tracking are planned. No model download is required for the current workflow.
+**Status: early development, updated 2026-10-10.** Local resume import/review/storage, explicit Tavily discovery, conservative result deduplication, local filters and deterministic resume-assisted ordering are implemented. A single search returns up to ten candidates; reviewed broader discovery allows up to fifty raw candidates; the core 10–20-job shortlist is still in progress. Local LLM summaries, embeddings, saved jobs and application tracking are planned. No model download is required for the current workflow.
 
 The workspace now has Find jobs with Resume → Job options/Review query → Results steps, plus Settings. Historical screenshots below show earlier layouts and appearance treatments; they do not represent the current navigation.
 
@@ -41,7 +41,7 @@ If Python is installed under another name, use that executable to create `.venv`
 
 Open [the development preview](http://127.0.0.1:1420). This starts both the real engine and the React interface. Press Ctrl+C to stop them. The engine uses an available loopback port and a random session credential. Preview database files are stored in `.local/`, which is ignored by Git.
 
-For Windows interactive checks with synthetic data and no live search or saved-key access, use `npm run acceptance:preview` (or `npm run acceptance:preview -- failure`) at port 1421. This runs the production UI/engine with mock transports and disposable storage. See [the acceptance preview guide](docs/acceptance-preview.md) and [milestone 17 evidence](docs/milestone17-acceptance.md).
+For interactive checks with synthetic data and no live search or saved-key access, use `npm run acceptance:preview` at browser port 1421, or `npm run acceptance:native` for the Windows shell with a separate frozen mock sidecar at port 1422. Both accept `-- failure` for partial-result recovery checks. The native harness uses a separate test application identifier and fresh temporary database; close its window normally to finish. See [the acceptance preview guide](docs/acceptance-preview.md) and [milestone 17 evidence](docs/milestone17-acceptance.md).
 
 Ollama is optional; its availability check does not enable model inference. When it is absent, the workspace continues running. No model downloads or search-provider requests run automatically.
 
@@ -119,11 +119,13 @@ The engine binds only to `127.0.0.1`, requires a fresh app-session token on ever
 
 The first [production engine resource baseline](docs/resource-baseline.md) includes a reproducible Windows benchmark, measured startup/import memory, and provisional regression thresholds. Full desktop and installed measurements remain outstanding.
 
-Milestone 17 remains the priority: bounded broader discovery toward 30–50 suitable unique jobs, local ranking/coverage evaluation and honest shortfall reporting. Every outbound query must remain reviewed, with request/cost/time limits and cancellation. Then add local job saving (18), application tracking (19), data controls (20), search-quality review (21), guided setup (22) and personal-alpha hardening (23).
+The [release plan](docs/releases.md) defines **v1.0 as the model-free Windows core**: local resume review, private discovery, useful shortlist evidence, saved jobs, basic tracking, data controls and guided setup. Optional semantic matching and local AI assistance have later releases. The application is still early development at 0.1.0; no v1.0 release has been made.
+
+Milestone 17 remains the priority: bounded broader discovery toward 10–20 suitable unique jobs, local ranking/coverage evaluation and honest shortfall reporting. Every outbound query must remain reviewed, with request/cost/time limits and cancellation. Then add local job saving (18), application tracking (19), data controls (20), search-quality review (21), guided setup (22) and v1.0 hardening/release review (23).
 
 Optional embeddings and semantic matching follow in milestones 24–26. Local generative runtime/inference follow in 27–28. Milestones 29–30 cover useful private structured summaries: primary/adjacent roles, skills/tools, industries, achievements, education/certifications and experience/seniority signals with source evidence, uncertainty and editable review. Model-assisted extraction can suggest roles; date-based experience totals require validated chronology, overlap handling and explicit assumptions. These features are planned. The current category detector does not summarize a career or calculate experience.
 
-AI gap advice, resume tailoring, automatic applications and periodic background discovery remain later backlog items. Complete and evaluate the core shortlist first. Start with [the current memory checkpoint](MEMORY.md), [latest progress](docs/progress/2026-10-06.md) and [the roadmap](docs/roadmap.md). Also see [project instructions](AGENTS.md), [contribution guidance](CONTRIBUTING.md) and [the assisted-discovery architecture](docs/architecture/0007-assisted-discovery-and-applications.md).
+AI gap advice, resume tailoring, automatic applications and periodic background discovery remain later backlog items. Complete and evaluate the core shortlist first. Start with [the current memory checkpoint](MEMORY.md), [latest progress](docs/progress/2026-10-10.md) and [the roadmap](docs/roadmap.md). Also see [project instructions](AGENTS.md), [contribution guidance](CONTRIBUTING.md) and [the assisted-discovery architecture](docs/architecture/0007-assisted-discovery-and-applications.md).
 
 Licensed under MIT. Model weights, provider services, and third-party dependencies retain their own licenses and terms.
 
@@ -148,6 +150,8 @@ Synthetic API/privacy/rendering tests and Windows packaging pass. Browser/native
 Tavily supplies web discovery through its direct HTTP API. The search-provider interface is replaceable; local matching and optional future models do not depend on Tavily. A usage-only connection check was previously exercised successfully; it does not establish real-search quality or current account availability.
 
 Shortlist ranking can be evaluated locally with `npm run evaluate:shortlist`. The checked-in synthetic corpus exercises production analysis, validation, ordering and filters without a provider request. See [the quality baseline](docs/shortlist-evaluation.md) for labels, metrics, known failures and the next discovery-quality gate.
+
+The current shortlist goal is 10–20 suitable unique jobs. Results show a reviewable-group count and warn below ten, excluding recognized boards/resources and grouping repeated links for coverage even when individual-link display is selected. Larger returned pools stay available. This count does not verify suitability, eligibility or vacancy status; the revised target does not automatically authorize extra requests. See [the target decision](docs/architecture/0027-ten-to-twenty-shortlist.md).
 
 ### Bounded broader discovery
 

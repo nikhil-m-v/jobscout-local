@@ -1,6 +1,16 @@
 # Windows installation checks — 2026-10-01
 
+Latest artifact scope — 2026-10-11: the subsequent [work-requirement disclosure](architecture/0030-work-requirement-review-notes.md) rebuilds the production frontend/Rust/NSIS package with an unchanged engine. Installed checks below remain specific to their measured binaries; no installed retest or new footprint/lifecycle claim follows from this frontend increment. See [the dated progress note](progress/2026-10-11.md).
+
+## Isolated installed production-code continuation — 2026-10-11
+
+The [separate-identity installed acceptance](installed-acceptance.md) passes empty first use, manual/synthetic assisted public-query preparation with no key, explicit local UI profile save, saved-profile restart, three normal closes and normal uninstall. All inventoried owned processes exit; test application files/registration and initially absent synthetic storage/settings are removed. Normal profile fingerprints and normal production artifact hashes remain unchanged. No provider request, runtime download, process kill or ACL change. Installed test files total 34,568,859 bytes (32.97 MiB); normal installer remains 23,191,627 bytes (22.12 MiB).
+
+This package uses current production frontend/Rust/engine code with only product identity/window metadata changed for safe isolation. Its engine matches the production sidecar; desktop exact-payload validation permits only the unique Tauri NSIS marker. Windows known-folder storage is not safely isolated by changing APPDATA. This evidence does not establish the exact normal-identity wizard/shortcuts, a fresh Windows account/missing runtime, version upgrade, optional data-deletion UI or installed active-work/abrupt exit. Earlier no-installed-launch statements below apply to their earlier silent subsets. Script syntax, release build and exercised payload/lifecycle guards pass; unchanged-production suites were not rerun.
+
 ## Current-package silent continuation — 2026-10-10
+
+Target-revision package retest: the rebuilt 10–20 target UI also passes this complete silent harness. Installed files total 34,565,020 bytes (32.96 MiB); existing profile database unchanged and test files/uninstall entry removed. This supersedes the footprint below for the latest package. No native application launch or interactive installer evidence.
 
 The current 0.1.0 x64 package containing the accessibility controls and SQLite connection cleanup passes the scoped silent check in `scripts/check-installer.ps1`. No JobScout install registration or running desktop existed; WebView2 was already present. A new ignored test destination was used with `/S /NS`, without launching the application.
 

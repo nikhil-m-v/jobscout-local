@@ -51,8 +51,8 @@ class OfflineModel:
 def synthetic_items(index):
     base = f'https://boards.greenhouse.io/synthetic{index}'
     rows = [
-        ('Senior software engineer', 'Hiring Python SQL engineers. Location: India. Work mode: Remote.', '/jobs/1'),
-        ('Senior software engineer', 'Hiring Python SQL engineers. Location: India. Work mode: Remote.', '/jobs/2'),
+        ('Senior software engineer', 'Hiring Python SQL engineers. Location: India. Work mode: Remote. Must work with ET time zone overlap. You must be legally authorised to work in India.', '/jobs/1'),
+        ('Senior software engineer', 'Hiring Python SQL engineers. Location: India. Work mode: Remote. We expect candidates to be physically located in PST - EST timezones. Visa sponsorship is not available.', '/jobs/2'),
         ('Software engineer', 'Hiring Python engineers. Location: United States. Work mode: Remote.', '/jobs/3'),
         ('Data analyst', 'Hiring SQL analysts. Location: India. Remote.', '/jobs/4'),
         ('Software engineer', 'Python team. Details to follow.', '/jobs/5'),
@@ -97,9 +97,13 @@ def main():
     parser.add_argument('--owner-pid', type=int, required=True)
     args = parser.parse_args()
     # This entry point has no existing-data-dir or real-provider option.
+    serve_synthetic(args.owner_pid, args.scenario)
+
+
+def serve_synthetic(owner_pid, scenario='complete'):
     with tempfile.TemporaryDirectory(prefix='jobscout-synthetic-') as directory:
         settings = Settings.from_environment(Path(directory))
-        application, _ = create_synthetic_app(settings.data_dir, settings.session_token, args.scenario)
+        application, _ = create_synthetic_app(settings.data_dir, settings.session_token, scenario)
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
             listener.bind(('127.0.0.1', 0))
             listener.listen(128)
@@ -107,7 +111,7 @@ def main():
             server = uvicorn.Server(uvicorn.Config(application, log_level='warning', access_log=False,
                                                   timeout_graceful_shutdown=3))
             from jobscout_engine.owner import watch_owner
-            finished = watch_owner(args.owner_pid, server)
+            finished = watch_owner(owner_pid, server)
             try:
                 print(json.dumps({'event': 'bound', 'port': listener.getsockname()[1]}), flush=True)
                 server.run(sockets=[listener])

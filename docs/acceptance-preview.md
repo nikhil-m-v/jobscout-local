@@ -1,5 +1,9 @@
 # Synthetic interactive acceptance preview
 
+Requirement-review fixture update — 2026-10-11: the two synthetic repeated-role links now contain separate working-hour/authorization and physical-location/unavailable-sponsorship clauses. Expand each **Work requirements to review** disclosure independently using Enter or Space. Verify literal source quotes and visible focus at compact width; notes must not change link/group counts, filters or ordering. No provider transport or storage-boundary change. Latest browser evidence is in [the dated progress note](progress/2026-10-11.md).
+
+For installed release-mode production-code first use, local save/restart and normal shutdown, see [isolated installed acceptance](installed-acceptance.md). That separate-identity harness uses the real production engine and an empty credential namespace; it has no mock provider and must not be configured for online search. The development mock workflows below remain separate evidence.
+
 Run the production browser UI and local engine with disposable storage and mock provider transports:
 
 ```powershell
@@ -18,7 +22,27 @@ npm run acceptance:preview -- failure
 
 Every second simulated request returns a rate-limit error. A broader run retains the first completed batch and stops after the failed second request. Further requests require explicit user action. Restarting resets the mock counter, synthetic key and database. Stop with Ctrl+C; the engine's owner watcher allows graceful exit and temporary-storage cleanup. Appearance preference belongs to browser local storage, so restore Follow system after theme checks. Abrupt machine/process shutdown can leave temporary files; this is not secure deletion.
 
-## Browser matrix
+## Windows native harness
+
+With the existing Windows Tauri and engine packaging prerequisites installed, run:
+
+```powershell
+npm run acceptance:native
+# Close its window normally before switching scenarios:
+npm run acceptance:native -- failure
+# Minimum supported native content size (760 × 640):
+npm run acceptance:native -- complete --compact
+```
+
+This packages a separate frozen mock sidecar and launches the production Rust shell/WebView UI at port 1422. A generated, ignored Tauri override uses a separate synthetic application identifier and dev build cache; production configuration and distribution binaries are untouched. The native wrapper accepts the shell's data-directory argument but discards it: every run uses a fresh temporary database. Mock transports, offline model status and synthetic in-memory credentials are shared with the browser harness. There is no live mode or existing-database option; native-wrapper regression checks reject live options and non-random ports.
+
+Use synthetic documents only. Display preferences persist in the separate test WebView storage, while imported text and results start fresh. The test window is named **JobScout — Synthetic acceptance** and displays the same no-live-search banner. Close that window normally to end the launcher, including when checking active-work exit. The production owner watcher lets the frozen mock sidecar finish shutdown and remove its disposable database. Record owned-process and temporary-directory cleanup rather than assuming it from window disappearance. Older interrupted preview directories may remain; this harness does not delete unrelated or older data.
+
+The optional `--compact` flag follows the explicit `complete` or `failure` scenario. It only changes the generated test window's initial content size to the production minimum; scenario transports, storage isolation, production configuration and release binaries remain unchanged. Other flags and extra arguments are rejected. A successful compact launch establishes neither screen-reader accessibility nor OS preference propagation. If accessibility element bounds remain stale after scrolling, refresh and use the current screenshot or keyboard navigation; do not reuse offscreen coordinates.
+
+Use the matrix below for both interfaces. Native harness evidence covers a development shell with a frozen mock sidecar, not an installed production launch, installer wizard, fresh Windows account, OS preference propagation, live search or complete accessibility audit. Restore Follow system and both manual reductions off after display checks. Port 1422 and the native test window must be free before starting another run.
+
+## Interaction matrix
 
 For an offline engine responsiveness check, run:
 
