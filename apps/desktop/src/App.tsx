@@ -7,7 +7,7 @@ import { useDiscovery } from './hooks/useDiscovery';
 import { useAssistance } from './hooks/useAssistance';
 import { ArrowUpRight, CircleHelp, LockKeyhole, Monitor, Moon, RefreshCw, Settings2, ShieldCheck, Sparkles, Sun } from 'lucide-react';
 import { useEngine } from './hooks/useEngine';
-import { useAppearance, type Appearance } from './hooks/useAppearance';
+import { useAppearance } from './hooks/useAppearance';
 import { openOllamaWebsite } from './lib/engine';
 
 import { useSavedProfile } from './hooks/useSavedProfile';
@@ -37,7 +37,8 @@ function PrivacyPanel() {
   </section>;
 }
 
-function Settings({ engine, appearance, changeAppearance }: { engine: Engine; appearance: Appearance; changeAppearance: (appearance: Appearance) => void }) {
+function Settings({ engine, preferences }: { engine: Engine; preferences: ReturnType<typeof useAppearance> }) {
+  const { appearance, changeAppearance, reduceTransparency, changeReduceTransparency, reduceMotion, changeReduceMotion } = preferences;
   const [linkError, setLinkError] = useState(false);
   const ai = engine.health?.local_ai;
   return <>
@@ -50,6 +51,11 @@ function Settings({ engine, appearance, changeAppearance }: { engine: Engine; ap
         <button className={`appearance-option ${appearance === 'system' ? 'selected' : ''}`} aria-pressed={appearance === 'system'} onClick={() => changeAppearance('system')}><Monitor size={18} /><span>Follow system</span><small>Match Windows</small></button>
         <button className={`appearance-option ${appearance === 'light' ? 'selected' : ''}`} aria-pressed={appearance === 'light'} onClick={() => changeAppearance('light')}><Sun size={18} /><span>Light</span><small>Bright and clear</small></button>
         <button className={`appearance-option ${appearance === 'dark' ? 'selected' : ''}`} aria-pressed={appearance === 'dark'} onClick={() => changeAppearance('dark')}><Moon size={18} /><span>Dark</span><small>Easy on the eyes</small></button>
+      </div>
+      <div className="appearance-accessibility">
+        <label className="appearance-reduction"><input type="checkbox" checked={reduceTransparency} onChange={event => changeReduceTransparency(event.target.checked)} aria-labelledby="transparency-label" aria-describedby="transparency-help" /><span><span id="transparency-label">Reduce transparency</span><small id="transparency-help">Use solid surfaces without background blur.</small></span></label>
+        <label className="appearance-reduction"><input type="checkbox" checked={reduceMotion} onChange={event => changeReduceMotion(event.target.checked)} aria-labelledby="motion-label" aria-describedby="motion-help" /><span><span id="motion-label">Reduce motion</span><small id="motion-help">Turn off interface animations and transitions.</small></span></label>
+        <p className="criteria-help">System accessibility preferences also apply when available. Turning these options off keeps those system preferences.</p>
       </div>
     </section>
     <section className="settings-panel" aria-labelledby="connection-title"><div className="settings-title"><span className="icon-tile green"><Monitor size={20} /></span><div><h2 id="connection-title">Local workspace</h2><p>The foundation for keeping your information on this computer.</p></div><EngineBadge engine={engine} /></div>
@@ -110,7 +116,7 @@ export function App() {
     setCurrentPage(next);
   };
   const saved = useSavedProfile(Boolean(engine.health));
-  const { appearance, changeAppearance } = useAppearance();
+  const preferences = useAppearance();
   const optionsAvailable = optionsReached && (searchMode === 'manual' || (searchMode === 'resume' && resume.reviewed && resume.text === reviewedText));
   const navigateStep = (next: DiscoveryStep) => {
     if ((next === 'options' && !optionsAvailable) || (next === 'results' && !resultsReached)) return;
@@ -134,7 +140,7 @@ export function App() {
         <div className="page-heading search-intro"><div><h1>{discoveryStep === 'resume' ? 'Start with your resume.' : discoveryStep === 'options' ? searchMode === 'resume' ? 'Review your suggested search.' : 'Choose your job options.' : 'Your search results.'}</h1><p className="muted">{discoveryStep === 'resume' ? 'Choose a file to read and review on this computer.' : discoveryStep === 'options' ? 'Review the public categories and exact query before searching.' : 'Refine candidates with local filters and evidence.'}</p></div></div>
         <DiscoveryJourney step={discoveryStep} navigate={navigateStep} optionsAvailable={optionsAvailable} resultsAvailable={resultsReached} continueWithoutResume={startManual} onResumeReviewed={() => void startAssisted()} assisted={searchMode === 'resume'} assistance={assistance} resultAnalysis={resultAnalysis} retryResultAnalysis={() => { if (discovery.result) void resultAnalysis.analyze(searchMode === 'resume' ? reviewedText : '', discovery.result.candidates); }} resume={resume} saved={saved} criteria={criteria} discovery={discovery} searchPreview={searchPreview} onChange={value => { searchPreview.invalidate(); discovery.invalidate(); setCriteria(value); }} />
       </div>
-      {page === 'settings' && <Settings engine={engine} appearance={appearance} changeAppearance={changeAppearance} />}
+      {page === 'settings' && <Settings engine={engine} preferences={preferences} />}
     </main><footer className="workspace-footer"><span><LockKeyhole size={12} /> Resume stays on this computer</span><EngineBadge engine={engine} /></footer></div>
   </div>;
 }

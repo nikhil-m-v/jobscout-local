@@ -10,7 +10,7 @@ The workspace now has Find jobs with Resume → Job options/Review query → Res
 
 ![Historical light appearance reference](docs/images/glass-light.png)
 
-Choose Light, Dark, or Follow system from the appearance control in Settings. The choice is remembered on this device. The Windows app uses the same interface in a Tauri desktop window; the browser preview is a development convenience.
+Choose Light, Dark, or Follow system from the appearance control in Settings. Reduce transparency provides solid surfaces without blur; Reduce motion turns off interface animations and transitions. These independent choices are remembered locally and add to system accessibility preferences when exposed. The Windows app uses the same interface in a Tauri desktop window; the browser preview is a development convenience.
 
 Settings offers optional Tavily key setup: masked entry, Show/Hide, explicit save/replace/remove, local status and setup later. Keys use Windows Credential Manager separately for each workspace; there is no plaintext fallback. Saving/checking local key status makes no provider request. A separately reviewed connection check sends only the saved credential to the fixed HTTPS account-usage endpoint, with no resume or job criteria. Key acceptance does not guarantee credits or authorize a search. Find jobs requires confirmation of the actual engine query before dispatch. Stop waiting cannot recall a sent request. Saved keys are retained after uninstall; remove them in Settings or Windows Credential Manager. See [the credential contract](docs/architecture/0009-search-provider-secrets.md) and [connection-check contract](docs/architecture/0010-provider-connection-check.md).
 
@@ -40,6 +40,8 @@ npm run dev
 If Python is installed under another name, use that executable to create `.venv`. An existing environment can be selected with `JOBSCOUT_PYTHON`. The Node scripts do not auto-load `.env` files; `.env.example` documents shell overrides.
 
 Open [the development preview](http://127.0.0.1:1420). This starts both the real engine and the React interface. Press Ctrl+C to stop them. The engine uses an available loopback port and a random session credential. Preview database files are stored in `.local/`, which is ignored by Git.
+
+For Windows interactive checks with synthetic data and no live search or saved-key access, use `npm run acceptance:preview` (or `npm run acceptance:preview -- failure`) at port 1421. This runs the production UI/engine with mock transports and disposable storage. See [the acceptance preview guide](docs/acceptance-preview.md) and [milestone 17 evidence](docs/milestone17-acceptance.md).
 
 Ollama is optional; its availability check does not enable model inference. When it is absent, the workspace continues running. No model downloads or search-provider requests run automatically.
 

@@ -17,6 +17,8 @@ Use Apple's material language as inspiration while retaining JobScout's identity
 - Settings rows wrap and controls retain useful touch/click targets. The header stays available while scrolling.
 - Unsupported blur uses opaque theme surfaces. Reduced-transparency and increased-contrast preferences disable the glass effect where the webview exposes those preferences. Forced-color mode uses system colors and visible borders.
 - Existing reduced-motion preferences continue to disable transitions and animations.
+- Settings → Appearance also provides independent Reduce transparency and Reduce motion checkboxes. Both default off, adding reductions when enabled without overriding system reductions when disabled. Choices persist with the theme in webview/browser local storage and are applied before first paint. Blocked storage permits a session choice; no network request, model, download or career-data storage is involved.
+- Explicit reduced transparency removes scene gradients, blur, material images and shadows, using opaque semantic theme surfaces. Preserve selected borders and keyboard focus. Forced-color rules remain able to use system colors even when this preference is enabled. Reduced motion removes animations/transitions while text status, progress counts and cancellation remain available.
 - Keep model-download progress, file pickers, and future search/results screens consistent with these materials as they are implemented.
 
 ## Release boundary

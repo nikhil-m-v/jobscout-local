@@ -17,6 +17,8 @@ Use the product message: **Find your next role. Keep your personal story private
 
 No telemetry, tracking pixels, remote fonts, automatic crash uploads, or background sync. Do not fetch images, links, scripts, or other embedded resources from imported documents or job descriptions. Store personal information outside the repository and exclude it from logs and diagnostic exports. Local storage is not automatically encrypted or protected from other software running as the same user; do not claim that it is.
 
+Theme, Reduce transparency and Reduce motion preferences are display-only settings kept in local webview/browser storage. They send nothing online and contain no career data. These accessibility controls do not change provider permissions or the discovery boundary.
+
 ## What optional online features may send
 
 | Action | Permitted outbound content | User guidance |

@@ -157,11 +157,31 @@
   .sidebar { background-color: var(--sidebar); }
   .topbar, .secondary, .appearance-option { background-color: var(--canvas); }
   .hero, .settings-panel, .empty-panel, .start-card { background-color: var(--surface); }
+  .appearance-option.selected { border-color: var(--accent); }
 }
+/* Explicit fallback for webviews that do not expose OS transparency preferences.
+   Keep it after all material rules; disabling the option never overrides media preferences. */
+:root[data-reduce-transparency="true"] .app-shell { background-image: none; }
+:root[data-reduce-transparency="true"] :is(.sidebar, .topbar, .hero, .settings-panel, .empty-panel, .start-card, .secondary,
+  .appearance-option, .icon-tile, .badge, .nav-item.active, .resume-art, .art-tags span) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  background-image: none;
+  border-color: var(--line);
+  box-shadow: none;
+}
+:root[data-reduce-transparency="true"] .sidebar { background-color: var(--sidebar); }
+:root[data-reduce-transparency="true"] :is(.topbar, .secondary, .appearance-option) { background-color: var(--canvas); }
+:root[data-reduce-transparency="true"] :is(.hero, .settings-panel, .empty-panel, .start-card) { background-color: var(--surface); }
+
+:root[data-reduce-transparency="true"] .appearance-option.selected { border-color: var(--accent); }
+
 @media (forced-colors: active) {
   .app-shell { background: Canvas; }
   .sidebar, .topbar, .hero, .settings-panel, .empty-panel, .start-card, .button,
-  .nav-item, .appearance-option, .resume-art, .icon-tile, .badge, .art-tags span {
+  .nav-item, .appearance-option, .resume-art, .icon-tile, .badge, .art-tags span,
+  :root[data-reduce-transparency] :is(.sidebar, .topbar, .hero, .settings-panel, .empty-panel, .start-card, .button,
+    .nav-item, .appearance-option, .resume-art, .icon-tile, .badge, .art-tags span) {
     background: Canvas;
     color: CanvasText;
     border: 1px solid CanvasText;
@@ -169,6 +189,7 @@
     -webkit-backdrop-filter: none;
     backdrop-filter: none;
   }
-  .nav-item.active { outline: 2px solid Highlight; outline-offset: -3px; }
+  .nav-item.active, .appearance-option.selected { outline: 2px solid Highlight; outline-offset: -3px; }
+  :root[data-reduce-transparency] .appearance-option.selected { border-color: CanvasText; }
   .status-dot { background: CanvasText; }
 }

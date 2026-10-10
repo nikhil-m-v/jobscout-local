@@ -171,6 +171,12 @@ svg { flex-shrink: 0; }
 .appearance-option svg { grid-row: 1 / span 2; align-self: center; }
 .appearance-option span { font-weight: 600; }
 .appearance-option small { color: var(--muted); font-size: 11px; margin-top: 4px; }
+.appearance-accessibility { margin-top: 24px; border-top: 1px solid var(--line); padding-top: 12px; }
+.appearance-reduction { display: flex; align-items: center; gap: 12px; min-height: 64px; cursor: pointer; padding: 10px 0; }
+.appearance-reduction input { width: 18px; height: 18px; flex-shrink: 0; accent-color: var(--accent); }
+.appearance-reduction input:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.appearance-reduction span { font-weight: 600; }
+.appearance-reduction small { display: block; font-weight: 400; color: var(--muted); margin-top: 4px; line-height: 1.5; }
 .resume-panel { max-width: 800px; }
 .resume-guidance { color: var(--muted); font-size: 14px; border-top: 1px solid var(--line); padding-top: 22px; }
 .resume-selection { display: flex; gap: 14px; align-items: center; padding: 22px 0; }
@@ -244,6 +250,9 @@ svg { flex-shrink: 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+}
+:root[data-reduce-motion="true"] *, :root[data-reduce-motion="true"] *::before, :root[data-reduce-motion="true"] *::after {
+  animation: none !important; transition: none !important; scroll-behavior: auto !important;
 }
 
 .criteria-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }

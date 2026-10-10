@@ -1,5 +1,31 @@
 # Windows installation checks — 2026-10-01
 
+## Current-package silent continuation — 2026-10-10
+
+The current 0.1.0 x64 package containing the accessibility controls and SQLite connection cleanup passes the scoped silent check in `scripts/check-installer.ps1`. No JobScout install registration or running desktop existed; WebView2 was already present. A new ignored test destination was used with `/S /NS`, without launching the application.
+
+| Check | Current evidence | Result |
+|---|---|---|
+| Clean per-user install | Correct version/location, desktop/engine/uninstaller present | Pass |
+| Exact payload | Engine hash matches packaged sidecar; desktop matches every byte after the expected unique Tauri `UNK` → `NSS` bundle-marker substitution in memory | Pass |
+| Application footprint | 34,562,914 bytes / 32.96 MiB including uninstaller | Measured; excludes personal data, extraction and shared WebView2 |
+| Same-version reinstall | `/S /NS /UPDATE`, correct destination and exact payload | Pass; not a version-to-version upgrade |
+| Default retained profile | One pre-existing profile database has unchanged SHA-256 after install, reinstall and uninstall | Pass; no profile contents or digest exported |
+| Silent uninstall | Exit 0; test application directory and uninstall registration removed | Pass; no app was launched |
+| Harness cleanup | Remembered installer destination restored after successful test | Pass; no recursive manual deletion |
+
+The initial direct desktop hash comparison failed because Tauri embeds the NSIS bundle marker during packaging and restores the build executable afterwards. Inspection showed exactly three changed bytes (`UNK` → `NSS`) and identical file sizes. The finished harness normalizes only that unique marker in memory, then compares the entire payload hash. No executable is modified and unrelated differences still fail. The earlier scoped test installation was removed with its verified normal uninstaller before repeating the finished check.
+
+Reproduce after building the current package:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/check-installer.ps1
+```
+
+The harness refuses existing JobScout registrations, a running desktop, existing autostart configuration, an occupied test destination, or missing WebView2. It requires permission for the scoped per-user installation/registry changes. It preserves profile databases, never chooses optional app-data deletion, and uses only the normal uninstaller for its new verified destination. Failures retain the installation for inspection instead of recursively deleting files. Reports contain counts/size/status only. This does not exercise the interactive wizard, shortcuts, new Windows user, missing runtime, genuine version upgrade, installed launch, normal native close or active-work exit. The historical interactive evidence below remains historical.
+
+## Historical checks
+
 Tested the generated 0.1.0 x64 NSIS installer with the pending saved-profile startup fix. Used a previously absent installation directory under ignored test storage, per-user registration, existing WebView2, silent mode, and `/NS` to suppress shortcuts. No previously registered JobScout installation was overwritten. Existing app data contained the synthetic 84-character profile from native workflow testing.
 
 | Check | Evidence | Result |

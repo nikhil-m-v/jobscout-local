@@ -79,3 +79,9 @@ pwsh -NoProfile -File scripts/measure-desktop.ps1
 ```
 
 Raw outputs remain ignored local artifacts. No measured regression justifies a worker, dependency, packaging or hosted-service change.
+
+## Synthetic discovery responsiveness — 2026-10-10
+
+Current silent installation measures application files including the uninstaller at 34,562,914 bytes (32.96 MiB). This excludes personal data, sidecar temporary extraction and shared WebView2. Install/reinstall/uninstall and unchanged existing profile database checks pass; see [installation checks](installation-checks.md). No installed native window was opened during this measurement.
+
+The [17D acceptance matrix](milestone17-acceptance.md) records nine development-engine HTTP runs using one-second mock provider waits. Concurrent health/progress requests remained available (maximum 25.31/17.73 ms); cancellation returned earlier safe results in 4.84–9.37 ms and skipped later dispatch. Reproduce using `scripts/measure-discovery.py` as described in [acceptance preview](acceptance-preview.md). These are local API observations with the client and server sharing a Python event loop, not native rendering, packaged sidecar memory, live latency or billing. The benchmark exposed and verified a fix for SQLite handle cleanup; it does not establish normal native close or installer cleanup.
