@@ -1,6 +1,6 @@
 # Privacy is the product
 
-Status: product contract and implementation requirements. Local PDF/DOCX extraction, text review, and explicit reviewed-text saving/deletion are implemented. Optional provider-key setup and an explicit account connection check are implemented. Explicit Tavily search is implemented for local development; live-provider and interactive release verification remain pending. Future controls below must be implemented and verified before enabling those features.
+Status: product contract and implementation requirements. Local PDF/DOCX extraction, text review, explicit reviewed-text saving/deletion and bounded candidate saving/removal are implemented. Optional provider-key setup and an explicit account connection check are implemented. Explicit Tavily search is implemented for local development; broader quality and interactive release verification remain pending. Future controls below must be implemented and verified before enabling those features.
 
 ## Promise
 
@@ -18,6 +18,8 @@ Use the product message: **Find your next role. Keep your personal story private
 No telemetry, tracking pixels, remote fonts, automatic crash uploads, or background sync. Do not fetch images, links, scripts, or other embedded resources from imported documents or job descriptions. Store personal information outside the repository and exclude it from logs and diagnostic exports. Local storage is not automatically encrypted or protected from other software running as the same user; do not claim that it is.
 
 Theme, Reduce transparency and Reduce motion preferences are display-only settings kept in local webview/browser storage. They send nothing online and contain no career data. These accessibility controls do not change provider permissions or the discovery boundary.
+
+Save candidate explicitly keeps a local snapshot of returned title/snippet, safe URL, provider/source index and retrieval time, with a local identifier/save time. Up to 200 records are retained; same-link saves keep the first copy and never silently refresh or evict it. Query history, reviewed profile and match explanations are not saved with the candidate. Saving/loading/removal access no provider, vault, model or result page. Saved jobs remain after clearing results or deleting the profile; remove each item in Saved jobs to delete its owned record. Existing uninstall retention applies, so remove saved jobs before uninstalling if desired. Local records are not automatically encrypted and deletion does not promise secure disk erasure or removal from backups. Broader data controls remain milestone 20. See [the saving contract](architecture/0032-bounded-local-job-snapshots.md).
 
 ## What optional online features may send
 

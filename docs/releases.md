@@ -2,6 +2,10 @@
 
 Adopted: 2026-10-10. This plan owns release scope; [roadmap.md](roadmap.md) retains the numbered implementation sequence. It replaces the older thirty-session delivery estimate. No release date, version bump, publication or automated deployment is implied.
 
+Delivery reset adopted 2026-10-11: [decision 0031](architecture/0031-core-acceptance-and-deferred-release-gates.md) gives 17D a finite core-development exit checklist. After it passes, local saving/tracking can proceed while representative quality (21) and full Windows/accessibility/resources acceptance (23) remain required for v1.0 release. The reset does not waive demonstrated privacy, data-loss or critical lifecycle defects.
+
+17D status: **core acceptance complete; broader quality and release acceptance deferred**. Current checks pass and applicable bounded interactive/installed evidence is recorded in [the acceptance matrix](milestone17-acceptance.md#core-development-exit-checklist). [Local saving (18)](architecture/0032-bounded-local-job-snapshots.md) is implemented with automated restart/delete and synthetic browser evidence; native/installed saving follow-up remains owner 23. Simple application tracking (19) is next; this is not v1.0 release readiness.
+
 ## Release boundaries
 
 | Release | Useful outcome | Scope and entry gate |
@@ -19,7 +23,7 @@ The main journey is **local resume review or manual preferences → reviewed pub
 
 - Local PDF/DOCX import, responsive parsing, editable review and explicit profile save/delete.
 - One replaceable search adapter: masked OS-vault key setup, setup-later, exact query/source/cost disclosures, request/time limits, cancellation and partial recovery. No automatic search or retry; only reviewed generic catalog criteria leave the computer.
-- Canonical links, source/time provenance, conservative repeated-role grouping, reversible filters and deterministic ordering with exact evidence, contradictions and unknowns. Target 10–20 suitable unique opportunities when available; retain larger pools and report shortfalls without padding or automatic extra spend.
+- Canonical links, source/time provenance, conservative repeated-role grouping, reversible filters and deterministic ordering with exact evidence, contradictions and unknowns. Aspire to 10–20 suitable unique opportunities when available, not a universal milestone pass condition; retain larger pools and report shortfalls without padding or automatic extra spend. Keep existing reviewable-group counts/below-ten guidance distinct from verified suitability.
 - Local saved jobs and a small tracker with saved/applied/interview stages and private notes. Applying remains an explicit external activity; no automatic submission.
 - Storage, retention and deletion controls for profile/jobs/notes and app-owned derived data, with original-file/vault/shared-runtime/uninstall limits explained.
 - Guided Windows core setup, Light/Dark/System, keyboard access, compact layout, reduced effects and readable error recovery. No model/runtime download prerequisite.
@@ -32,24 +36,24 @@ These are requirements, not claims of implementation. Saving jobs, tracking, ful
 | Gate | Completion evidence |
 |---|---|
 | Privacy | Captured synthetic requests, strict engine validation and installed behavior exclude private markers/records; malformed input, redirects and untrusted job content cannot broaden outbound permissions |
-| Useful shortlist | Finish 17D and milestone 21 representative review: first-ten/full-shortlist relevance, unique-opportunity evidence, filter adherence, contradictions/unknowns, source coverage, freshness limits, latency and cost. Raw links/groups or one narrow query are insufficient; ten jobs are not promised for every search |
+| Useful shortlist — owner 21 | Representative independently reviewed cases: first-ten/full-pool relevance, unique-opportunity evidence, restrictions/filter adherence, contradictions/unknowns, duplicates, source coverage, freshness limits, latency and cost. Investigate/fix the largest demonstrated discovery weakness. Raw links/groups, synthetic retention or one narrow trial do not establish representative quality; no universal ten-job threshold |
 | Durable local workflow | Synthetic save/restart/update/delete tests for jobs and tracker records, duplicate prevention, source/time preservation, retention/deletion and migration evidence |
-| Windows experience | Installed first run, upgrade where an earlier version exists, normal/active-work close, recovery, accessibility/themes/compact checks, setup/runtime skip paths and installation/uninstallation limits |
-| Resources | Separate shipped/installed/temp sizes, cold start, idle and import/search/Results peaks; measured budgets and hardware/test limitations |
+| Windows experience — owner 23 | Current-package installed first run, normal wizard/shortcuts, fresh-user/runtime paths, upgrade where an earlier version exists, normal/active-import/search/abrupt-exit behavior and recovery, full accessibility/OS/themes/compact checks, setup skip paths and installation/uninstallation limits |
+| Resources — owner 23 | Separate shipped/installed/temp sizes, cold start, idle and import/search/Results peaks; measured budgets and hardware/test limitations |
 | Reproducibility and release review | Milestone 23 CI/build checks, passing current suites, verified package, synthetic demo, setup/privacy/recovery docs and explicit release review; honest signing/distribution limitations |
 
-Privacy, quality and lifecycle failures remain blockers. Narrow-query scarcity is recorded and investigated through approved scope rather than disguised as success. Release planning grants no network or publication permission.
+Privacy, data-loss and critical lifecycle defects block affected functionality. Representative quality and Windows readiness remain release gates; missing broader evidence no longer blocks independent saving/tracking development. Narrow-query scarcity stays recorded and investigated through approved scope. Release planning grants no network or publication permission.
 
 ## Small delivery sequence
 
 | Order | Increment | Next concrete outcome |
 |---|---|---|
-| 1 | Finish 17D | Bounded ATS title correction/replay complete; installed/full accessibility and representative quality/resource checks remain. Two joint-support groups in the saved trial do not meet the suitable-evidence gate; see [results](17d-live-results-2026-10-10.md) |
-| 2 | 18 — Local saving | One bounded persistence workflow after the shortlist gate |
-| 3 | 19 — Basic tracker | Stages/notes with restart/delete evidence |
+| 1 | 17D — core acceptance complete | Finite checklist passes with applicable existing evidence and current checks; stop extending 17D. Broader quality/release checks have owners 21/23; see [closure status](milestone17-acceptance.md#core-development-exit-checklist) |
+| 2 | 18 — Local saving — implemented | Bounded candidate snapshots, source/retrieval time, restart/delete/upgrade and synthetic browser evidence. Native/installed saving follow-up owned by 23; no suitability certification |
+| 3 | 19 — Basic tracker — next | Stages/notes with restart/delete evidence |
 | 4 | 20 — Data controls | Deletion/retention across implemented records |
-| 5 | 21 — Quality review | Evaluate the stable core and fix the largest demonstrated issue |
+| 5 | 21 — Quality review | Own deferred representative independent review; investigate/fix the largest demonstrated discovery issue before v1.0 release |
 | 6 | 22 — Guided core setup | Storage/provider/skip/recovery without a model prerequisite |
-| 7 | 23 — v1.0 release candidate | CI/Windows packaging, fresh-user/upgrade checks, demo/docs and review of all release gates |
+| 7 | 23 — v1.0 release candidate | Own deferred installed active-work/abrupt-exit, fresh-user/wizard/runtime/upgrade, full accessibility/OS and production-resource checks; CI/Windows packaging, demo/docs and all release gates |
 
 Keep milestone identifiers and evidence history. Advance one coherent feature, fix or acceptance slice per session; update [MEMORY.md](../MEMORY.md) and dated progress. Revisit optional release scope after v1.0 instead of pulling future features into the core.

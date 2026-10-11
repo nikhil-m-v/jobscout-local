@@ -1,5 +1,7 @@
 # 0027 — Target ten to twenty suitable jobs
 
+Sequencing amendment — 2026-10-11: [decision 0031](0031-core-acceptance-and-deferred-release-gates.md) makes 10–20 suitable opportunities an aspiration when available, not a universal milestone pass condition. Existing count/below-ten behavior remains. Representative quality belongs to 21, full Windows/accessibility/resources to 23; saving follows finite 17D core acceptance. The original decision and measurements below remain historical.
+
 Date: 2026-10-10
 
 The user reduced the core shortlist requirement to **10–20 suitable unique opportunities**. This supersedes the earlier count target in roadmap, architecture, evaluation and progress references. Historical measurements, labels and trial outcomes are unchanged. The lower target does not waive native/accessibility/privacy/installation or quality acceptance.

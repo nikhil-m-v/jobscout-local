@@ -1,5 +1,7 @@
 # 0029 — Bounded ATS title evidence
 
+Sequencing amendment — 2026-10-11: [decision 0031](0031-core-acceptance-and-deferred-release-gates.md) supersedes the partial-status/next-action statements below. 17D uses finite core acceptance; representative quality belongs to 21 and full installed/accessibility/resources to 23. The original implementation record and evidence limits remain historical.
+
 Date: 2026-10-11. Status: implemented local quality correction during 17D; overall acceptance remains partial.
 
 The [approved 2026-10-10 trial](../17d-live-results-2026-10-10.md) exposed three specific returned-title gaps. Correct those forms without broad country/remote matching, page retrieval or changes to the outbound contract.

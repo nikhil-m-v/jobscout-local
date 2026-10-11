@@ -9,6 +9,9 @@ import { shortlistCoverage, shortlistTarget } from '../lib/shortlist-coverage';
 import { groupCandidates, inspectCandidate, isCollection } from '../lib/candidate-pool';
 import { relevanceStatus } from '../lib/relevance';
 import { candidateRequirements, workRequirementLabels } from '../lib/work-requirements';
+import type { useSavedJobs } from '../hooks/useSavedJobs';
+import { snapshotFor, MAX_SAVED_JOBS } from '../lib/saved-jobs-state';
+import { SavedJobsStatus } from './SavedJobs';
 
 type SearchProps = {
   criteria: PublicSearchCriteria; searchPreview: ReturnType<typeof useSearchPreview>;
@@ -37,7 +40,7 @@ export function SearchQuery({ criteria, searchPreview, discovery, broader = true
     {!connected && <p className="criteria-help" role="status">Connect the local workspace in Settings to search.</p>}
     {error && <p className="inline-error" role="alert">{error}</p>}
     {discovery.error && <p className="inline-error" role="alert">{discovery.error}</p>}
-    <details className="search-disclosure"><summary>Search & privacy details</summary><p className="criteria-help">The endpoint is <span className="provider-endpoint">https://api.tavily.com/search</span>. Find jobs authorizes the displayed plan: one basic search, or up to five when Broader discovery is selected. Every query retains your reviewed categories; broader mode also sends the displayed fixed domain restrictions to Tavily. These are search scopes, not additional network endpoints. No automatic retries are made. Resume text, profile details, embeddings and private notes stay local. Results stay in this session. Stop discovery asks the local engine to cancel the active wait and skip remaining requests, retaining completed results. A sent request may still consume credits. Stop waiting in single-search mode discards late replies.</p></details>
+    <details className="search-disclosure"><summary>Search & privacy details</summary><p className="criteria-help">The endpoint is <span className="provider-endpoint">https://api.tavily.com/search</span>. Find jobs authorizes the displayed plan: one basic search, or up to five when Broader discovery is selected. Every query retains your reviewed categories; broader mode also sends the displayed fixed domain restrictions to Tavily. These are search scopes, not additional network endpoints. No automatic retries are made. Resume text, profile details, embeddings and private notes stay local. Results stay in this session unless you explicitly save a candidate locally. Stop discovery asks the local engine to cancel the active wait and skip remaining requests, retaining completed results. A sent request may still consume credits. Stop waiting in single-search mode discards late replies.</p></details>
   </>;
 }
 
@@ -79,7 +82,7 @@ export function SearchCriteria({ criteria, searchPreview, discovery, onChange, i
   </section>;
 }
 
-export function SearchResults({ discovery, analysis, assisted = false, reviewedRole = 'any', onRetryAnalysis }: { discovery: ReturnType<typeof useDiscovery>; analysis?: ReturnType<typeof useAssistance>; assisted?: boolean; reviewedRole?: ResultFilters['role']; onRetryAnalysis?: () => void }) {
+export function SearchResults({ discovery, analysis, assisted = false, reviewedRole = 'any', onRetryAnalysis, savedJobs }: { discovery: ReturnType<typeof useDiscovery>; analysis?: ReturnType<typeof useAssistance>; assisted?: boolean; reviewedRole?: ResultFilters['role']; onRetryAnalysis?: () => void; savedJobs?: ReturnType<typeof useSavedJobs> }) {
   const [filters, setFilters] = useState<ResultFilters>(initialResultFilters);
   const [groupRepeated, setGroupRepeated] = useState(true);
   useEffect(() => { setFilters(initialResultFilters); setGroupRepeated(true); }, [discovery.result]);
@@ -107,7 +110,9 @@ export function SearchResults({ discovery, analysis, assisted = false, reviewedR
         <p className="criteria-help">Shared skill mentions: {shared.map(id => skills[id]).join(', ') || 'None detected in the title or snippet.'}</p>
         {evidence?.shortlist && <details className="search-disclosure"><summary>Shortlist ordering evidence</summary><p className="criteria-help">Advertised title roles take priority over snippet mentions. Exact shared tool phrases count before broad categories. Explicit exclusions do not add positive tool evidence. These are text signals, not verified requirements or suitability.</p><ul>{evidence.shortlist.roles.map(entry => <li key={`${entry.role}:${entry.source}`}>{roles[entry.role]} in {entry.source}: <q>{entry.phrase}</q></li>)}{evidence.shortlist.exact_tools.map(entry => <li key={entry.skill}>Exact shared phrase: resume <q>{entry.resume_phrase}</q>; job {entry.job_source} <q>{entry.job_phrase}</q></li>)}{evidence.shortlist.exclusions.map(entry => <li key={`${entry.skill}:${entry.source}:${entry.phrase}`}>Exclusion signal in {entry.source}: <q>{entry.phrase}</q></li>)}</ul>{evidence.shortlist.exact_tools.length === 0 && <p className="criteria-help">No exact shared tool phrase detected. Broad categories may still overlap; this does not establish a skills gap.</p>}</details>}
         {!!evidence?.shared_evidence.length && <details className="search-disclosure"><summary>Why this candidate appears here</summary><p className="criteria-help">Exact phrases from your reviewed resume and the returned job text. A shared category does not establish proficiency, a requirement, or an exact tool match.</p><ul>{evidence.shared_evidence.map(entry => <li key={entry.skill}><strong>{skills[entry.skill]}</strong><p className="criteria-help">Your resume: <q>{entry.resume_phrase}</q><br />Job {entry.job_source}: <q>{entry.job_phrase}</q></p></li>)}</ul></details>}
-      </>}<p className="provider-endpoint">{item.url}</p><p className="discovery-snippet">{item.snippet || 'No snippet provided.'}</p></article>;
+      </>}<p className="provider-endpoint">{item.url}</p><p className="discovery-snippet">{item.snippet || 'No snippet provided.'}</p>
+      {savedJobs && <button className="button secondary" type="button" disabled={!savedJobs.connected || !savedJobs.ready || savedJobs.busy || savedJobs.jobs.some(job => job.url === item.url) || savedJobs.jobs.length >= MAX_SAVED_JOBS} aria-label={`${savedJobs.jobs.some(job => job.url === item.url) ? 'Saved candidate' : 'Save candidate'}: ${item.title}`} onClick={() => { if (discovery.result) void savedJobs.save(snapshotFor(item, discovery.result)); }}>{savedJobs.ready && savedJobs.jobs.some(job => job.url === item.url) ? 'Saved on this computer' : 'Save candidate'}</button>}
+      </article>;
   };
   return <>
     <p className="criteria-help">Return to Job options to adjust your choices and search again.</p>
@@ -116,7 +121,8 @@ export function SearchResults({ discovery, analysis, assisted = false, reviewedR
       <p className="criteria-help">Retrieved <time dateTime={discovery.result.retrieved_at}>{new Date(discovery.result.retrieved_at).toLocaleString()}</time>. This is the search retrieval time, not the listing date.</p>
       <p className="query-text">{discovery.result.query}</p>
       {discovery.result.coverage && <div role="status"><p className="criteria-help">Broader discovery: {discovery.result.coverage.completed} of {discovery.result.coverage.max_requests} searches completed; {discovery.result.coverage.attempted} requests started. {discovery.result.coverage.stop_reason === 'complete' ? 'Reviewed request limit reached.' : discovery.result.coverage.stop_reason === 'cancelled' ? 'Stopped; completed results are retained.' : discovery.result.coverage.stop_reason === 'time_limit' ? 'Time limit reached; completed results are retained.' : 'Provider failure stopped discovery; completed results are retained.'} Started requests may consume credits, including failed or cancelled requests.</p>{discovery.result.coverage.failures.map(failure => <p className="inline-error" key={failure.request}>Search {failure.request}: {searchError(failure.code)}</p>)}</div>}
-      <p className="criteria-help">These are web search candidates, not verified vacancies or ranked matches. Preferences are search hints; availability and freshness have not been checked. Results stay in this session.</p>
+      <p className="criteria-help">These are web search candidates, not verified vacancies or ranked matches. Preferences are search hints; availability and freshness have not been checked. Results stay in this session unless you choose Save candidate to keep a local snapshot in Saved jobs.</p>
+      {savedJobs && <><SavedJobsStatus saved={savedJobs} />{savedJobs.jobs.length >= MAX_SAVED_JOBS && <p className="criteria-help">Your {MAX_SAVED_JOBS} saved places are full. Remove an item in Saved jobs to make room.</p>}</>}
       <p className="criteria-help" role="status">URL coverage: {links.filter(link => link.kind === 'posting').length} posting patterns; {links.filter(link => link.kind === 'board').length} ATS board pages; {links.filter(link => link.kind === 'unknown').length} unknown patterns. {links.filter(link => link.scope === 'outside').length} links outside their requested source scope. Unique links are not verified unique opportunities.</p>
       <details className="optional-skills"><summary>Organize candidate links</summary>
         <label className="criteria-help"><input type="checkbox" checked={groupRepeated} onChange={event => setGroupRepeated(event.target.checked)} /> Group likely repeated roles</label>

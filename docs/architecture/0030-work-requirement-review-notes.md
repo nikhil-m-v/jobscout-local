@@ -1,5 +1,7 @@
 # 0030 — Source-linked work requirements for review
 
+Sequencing amendment — 2026-10-11: [decision 0031](0031-core-acceptance-and-deferred-release-gates.md) supersedes the partial-status and numeric suitable-job gate below. Representative quality belongs to 21 and full installed/accessibility/resources to 23; saving follows finite 17D core acceptance. The original implementation record, source rules and evidence limits remain historical.
+
 Date: 2026-10-11. Status: implemented bounded 17D quality increment; overall acceptance remains partial.
 
 The saved approved public trial contains explicit working-hour, physical-location, work-authorization and unavailable-visa-sponsorship statements. One of the two candidates supporting role/India/remote text also expects physical presence within named timezones. Those three supported fields do not establish eligibility.

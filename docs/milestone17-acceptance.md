@@ -1,6 +1,27 @@
 # Milestone 17 acceptance — updated 2026-10-11
 
-Overall status: **partial**. Historical review, bounded resources, browser interaction, native development and isolated installed production-code subsets, and one approved live trial have evidence. Suitable opportunity coverage, full installed/fresh-user interaction and full native accessibility acceptance are not established. Release scope now follows [the v1.0 plan](releases.md).
+Current status: **core acceptance complete; broader quality and release acceptance deferred** (2026-10-11), under [decision 0031](architecture/0031-core-acceptance-and-deferred-release-gates.md). 17D now means finite core development acceptance. Representative quality belongs to milestone 21; full installed/fresh-user/accessibility/OS and production workload-resource acceptance belongs to 23. Those remain v1.0 release gates, not additional 17D exit conditions. Release scope follows [the v1.0 plan](releases.md). Continuation 2026-10-12: [18 — local saving](architecture/0032-bounded-local-job-snapshots.md) implemented with automated/synthetic browser evidence; **next: 19 — simple application tracking**. Native/installed saving follow-up remains owner 23.
+
+## Core development exit checklist
+
+| Criterion | Applicable evidence and limits | Status |
+|---|---|---|
+| Reviewed generic queries, request bounds, cancellation and partial recovery | Engine captured-request/privacy regressions; browser/native mock complete/stop/partial-failure/single-retry checks. No private criteria, automatic retry or expanded provider scope | Existing bounded evidence passes |
+| Safe rendering, source-linked evidence, reversible filters and retained alternatives | Current escaped-rendering/source/filter regressions; nine labeled synthetic pools and clean-pool retention; browser/native filter/reset/alternative checks. Candidate evidence does not verify suitability | Pass within bounded evidence |
+| Basic keyboard, compact layout and themes | Recorded native 760 × 640 keyboard/focus/theme/reduction subset; latest requirement disclosure has browser keyboard/compact evidence. Full screen-reader/contrast/forced-colors/OS propagation and fresh native disclosure checks remain owner 23 | Existing bounded evidence passes |
+| Installed first use, profile restart and normal close | Separate-identity production-code installed subset: empty first use, query preparation, UI profile save, restart, three normal closes with zero owned processes, uninstall/profile preservation. Earlier measured binary; not exact current normal-identity installer/fresh Windows user/active-work/upgrade | Existing bounded evidence passes |
+| Current engine/frontend suites, shortlist evaluation, typecheck and build | 2026-10-11: 333 engine and 104 frontend tests pass; nine diagnostic pools retain 72/72 reviewable labels and clean-pool evaluation passes; typecheck/production frontend build pass. Synthetic/mock checks only, no live provider/page/vault request | Pass |
+| No unresolved demonstrated privacy, data-loss or critical lifecycle defect | Current checks and recorded evidence identify no unresolved demonstrated defect in this reviewed scope. Missing broader acceptance is retained below, not treated as passed. Any newly demonstrated defect blocks affected functionality | No unresolved demonstrated defect found within reviewed evidence |
+
+All finite checklist items now have applicable passing evidence. Stop extending 17D and begin 18. Reopen only for a demonstrated regression or newly approved requirement. No new live trial, extraction feature, full installation audit or Windows package rebuild was performed for this documentation reset; reused interactive/installed evidence stays within its stated limits.
+
+Validation tooling: the restricted engine run stalled at the first synthetic test harness and was interrupted; the same full suite passed with scoped process permission in 8.22 seconds. One existing FastAPI/Starlette TestClient deprecation warning remains; no dependency change is part of this reset. Automated checks and the frontend build do not establish new native/installed acceptance or resource measurements.
+
+The 10–20 suitable-opportunity target is an aspiration when available, not a universal milestone pass condition. Existing reviewable-group counts, below-ten guidance, larger pools and provider budgets remain. The saved trial's 47 links, 33 selected default groups, two joint-support groups and zero first-ten joint support remain unchanged; one supported group carries a physical-location requirement. No suitable-job or release-readiness claim follows from closure.
+
+## Historical acceptance evidence
+
+The checkpoints and matrix below preserve measurements and their original limits. Earlier partial-status/17D-next-action statements are historical; decision 0031 supersedes their sequencing. Remaining work has explicit owners in the deferred table.
 
 Latest quality continuation (2026-10-11): [bounded work requirement notes](architecture/0030-work-requirement-review-notes.md) identify five candidates in the same 47-link saved pool: two schedule, one physical-location, one authorization and one unavailable-sponsorship case. All 47 links, 33 selected default groups and two strict/joint-support groups remain; one joint-support group has a physical-location note. Exact clauses appear separately in manual/assisted Results without eligibility inference, filter/ranking or coverage changes. All 104 frontend checks, four harness isolation/privacy checks and nine pools (72/72 reviewable labels) pass. Browser keyboard/compact disclosure and repeated-alternative checks pass for a mock fixture; the new disclosure still lacks native/installed acceptance. No provider/page/vault request; original approval stays consumed.
 
@@ -40,14 +61,14 @@ Target implementation evidence: all 94 frontend tests, nine synthetic pools (72/
 
 ## Remaining 17D slices
 
-Keep these separate, bounded acceptance sessions rather than one broad completion claim. The title-evidence correction is complete for its narrow scope; it does not close the quality gate.
+This heading is retained for existing links. These checks are **deferred to owners 21 and 23**, not remaining exit conditions for 17D. Moving them does not mark them passed; they remain required v1.0 quality/release evidence.
 
-| Slice | Challenge | Next evidence |
+| Owner / slice | Challenge | Required evidence |
 |---|---|---|
-| Quality and coverage | Bounded work-requirement notes now expose five explicit cases; sparse/contradictory text, unsupported wording and one-query sampling remain; two joint-support groups do not establish ten suitable jobs | Independently reviewed representative cases and source-coverage evaluation; preserve unknowns and honest shortfalls. Additional online evidence needs its own exact review |
-| Installed Windows behavior | Separate-identity installed first-use/restart/normal-close subset passes; normal wizard, fresh Windows account, upgrade and active-work/abrupt exit remain | Separately scoped installed active-work test, normal wizard/fresh account and genuine upgrade evidence when an earlier version is available |
-| Full accessibility and OS behavior | Existing keyboard/compact/theme checks cover only a subset | Screen-reader, complete keyboard/contrast, forced colors and OS preference propagation with readable reduced effects |
-| Production resources | Mock timings and one debug snapshot omit shipped search/Results peaks | Reproducible packaged resource measurements with synthetic data; separate initial-view, import/search/Results peaks and hardware limits |
+| 21 — Quality and coverage | Sparse/contradictory text, unsupported restrictions and one-query sampling; two joint-support groups do not establish suitable jobs | Representative independently reviewed first-ten/full-pool relevance, restrictions/filter adherence, duplicates, source coverage, freshness uncertainty, latency and provider cost; investigate/fix the largest demonstrated discovery weakness. Additional online evidence needs its own exact review |
+| 23 — Installed Windows behavior | Separate-identity earlier-binary first-use/restart/normal-close subset passes; exact current package, normal wizard/shortcuts, fresh Windows account/runtime, upgrade and active-work/abrupt exit remain | Current-package verification, installed active-import/search/abrupt-exit recovery, normal wizard/fresh-user/runtime paths and genuine upgrade evidence when an earlier version is available |
+| 23 — Full accessibility and OS behavior | Existing keyboard/compact/theme checks cover only a subset; latest disclosure lacks fresh native/installed acceptance | Screen-reader, complete keyboard/contrast, forced colors, OS preference propagation, readable reduced effects and current disclosure native/installed checks |
+| 23 — Production resources and CI | Engine/mock timings and process snapshots omit shipped workload peaks; CI remains planned | Reproducible packaged startup/idle/import/search/Results measurements with synthetic data, sizes and hardware budgets; CI/Windows packaging and release review |
 
 Current paired engine/frontend/Rust/NSIS rebuild passes (23,191,627 bytes / 22.12 MiB). Restricted Tauri packaging hit access denial reading generated dist; scoped permission completed the same package with no ACL change. The subsequent separate-identity installed subset uses that production engine and frontend/Rust source, with normal production artifact hashes preserved. Earlier normal-package footprint/lifecycle evidence remains specific to its measured binary; build success alone does not establish installed acceptance.
 

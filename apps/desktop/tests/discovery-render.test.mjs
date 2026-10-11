@@ -36,6 +36,19 @@ test('candidate markup stays escaped text without scripts, images or navigable r
   assert.ok(markup.includes('not the listing date'));
 });
 
+test('every candidate alternative has a save control with loaded state and no remote resource', () => {
+  const savedJobs = { jobs: [], connected: true, ready: true, busy: false, error: '', notice: '', save: noop, reload: noop };
+  const candidates = [1, 2].map(index => ({ title: 'Example - Software engineer', snippet: 'Synthetic', url: `https://jobs.lever.co/example/00000000-0000-4000-8000-00000000000${index}`, source_index: 1 }));
+  const discovery = { result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-12T03:00:00Z', candidates, duplicates_removed: 0, discarded_results: 0 } };
+  const markup = render(true, false, true, false, { discovery, savedJobs });
+  assert.equal((markup.match(/aria-label="Save candidate: Example - Software engineer"/g) ?? []).length, 2);
+  const loaded = render(true, false, true, false, { discovery, savedJobs: { ...savedJobs, jobs: [{ url: candidates[0].url }] } });
+  assert.ok(loaded.includes('Saved on this computer'));
+  assert.match(loaded, /<button[^>]*disabled=""[^>]*aria-label="Saved candidate:/);
+  const uncertain = render(true, false, true, false, { discovery, savedJobs: { ...savedJobs, ready: false } });
+  assert.equal((uncertain.match(/disabled="" aria-label="Save candidate:/g) ?? []).length, 2);
+});
+
 test('manual Results exposes exact location and work-mode sources without analysis or external resources', () => {
   const candidate = { title: 'Engineer (Remote)', snippet: 'Location: India. Not remote. <script>steal()</script>', url: 'https://jobs.example.com/1' };
   const markup = render(true, false, true, false, { discovery: { result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-07T03:00:00Z', candidates: [candidate], duplicates_removed: 0, discarded_results: 0 } } });

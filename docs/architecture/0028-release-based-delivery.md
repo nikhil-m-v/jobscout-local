@@ -1,5 +1,7 @@
 # 0028 — Release-based delivery
 
+Sequencing amendment — 2026-10-11: [decision 0031](0031-core-acceptance-and-deferred-release-gates.md) supersedes the saving/tracking prerequisite below. Finite 17D core acceptance permits milestone 18; representative quality (21) and full Windows/accessibility/resources (23) remain v1.0 release gates. Release boundaries stay unchanged. The original adoption record below remains historical.
+
 Date: 2026-10-10. Status: adopted planning decision; no version bump or publication.
 
 The user requested releases with v1.0 focused on core functionality, then continuation of 17D. [The release plan](../releases.md) now owns scope. Keep numbered implementation milestones and acceptance evidence rather than restarting or renumbering the project.

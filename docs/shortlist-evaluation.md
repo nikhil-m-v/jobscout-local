@@ -1,5 +1,17 @@
 # Synthetic shortlist quality baseline
 
+## Current evaluation ownership — 2026-10-11
+
+[Decision 0031](architecture/0031-core-acceptance-and-deferred-release-gates.md) moves representative search-quality acceptance to **milestone 21**. Current synthetic evaluation remains a regression/retention check in the finite 17D core-development checklist; it is not representative quality evidence. Local saving can proceed after that checklist passes, without meeting a suitable-job quota.
+
+The 10–20 suitable-opportunity target is a product aspiration when available, not a universal milestone pass condition. Keep production `shortlistTarget`, reviewable-group/below-ten disclosures and provider budgets unchanged. Reviewable groups, supported title/snippet combinations and fixture relevance labels do not establish verified suitable openings.
+
+Milestone 21 owns independently reviewed representative cases: first-ten/full-pool relevance, restrictions, filter adherence, duplicate/unique-opportunity uncertainty, source coverage, freshness uncertainty, latency and provider cost. Investigate the largest demonstrated discovery weakness before more narrow extraction rules. The saved 47-link trial still has 33 selected default groups, two joint-support groups and zero first-ten joint support; one supported group carries a physical-location requirement. No new trial or page fetch is authorized; further online evaluation needs separate reviewed scope. Full installed/accessibility/OS/resource acceptance belongs to 23. Both owners remain v1.0 release gates.
+
+## Historical evaluation checkpoints
+
+The records below preserve original metrics, labels and limitations. Their old 17D/shortlist-gate next actions are superseded by decision 0031; no historical measurement is revised by the reset.
+
 17D requirement-review continuation — 2026-10-11: [decision 0030](architecture/0030-work-requirement-review-notes.md) adds bounded source-linked work-requirement notes, separate from filter/ranking labels. Same saved 47-link trial: five explicit cases (two schedule, one physical location, one authorization, one unavailable sponsorship); all remain among 33 selected default groups. Two strict/joint-support groups remain, one with a physical-location note. These are review prompts and do not establish personal eligibility or suitable vacancies. The offline replay tool reports aggregate counts and source-substring assertions; no new provider/page request. Nine existing pools still retain 72/72 reviewable labels. See [17D acceptance](milestone17-acceptance.md).
 
 Current target revision (2026-10-10): ten to twenty suitable unique jobs. `shortlistTarget` is shared by Results and evaluation disclosures. The provider pool can still contain fifty raw candidates; larger pools are retained. Coverage counts conservatively grouped reviewable pages, excluding known boards/resources, independently of the display toggle. It does not label unknowns or repeated-role groups verified suitable openings. New boundary/render checks cover nine/ten/twenty/larger pools and repeated-link inflation; all 94 frontend checks pass. Historical replay reports 31 reviewable groups but just one supporting all three selected role/region/work-mode categories, still below ten. Existing nine-pool synthetic retention (72/72) and ranking guards pass unchanged. See [decision 0027](architecture/0027-ten-to-twenty-shortlist.md).

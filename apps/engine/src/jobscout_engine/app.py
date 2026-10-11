@@ -24,6 +24,7 @@ from jobscout_engine.domain.providers import MAX_PROVIDER_BODY_BYTES, validate_t
 from jobscout_engine.config import Settings
 from jobscout_engine.domain.contracts import EngineHealth, ModelProvider
 from jobscout_engine.storage import Database
+from jobscout_engine.domain.saved_jobs import validate_snapshot, SavedJobsFull, MAX_SAVED_JOB_BODY_BYTES
 from jobscout_engine.domain.documents import ImportFailure, MAX_DOCUMENT_BYTES, MAX_TEXT_CHARACTERS
 from jobscout_engine.imports import ImportService
 from jobscout_engine.domain.search import (
@@ -310,6 +311,51 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
             return profile_response({"deleted": True})
         except sqlite3.Error:
             return profile_response({"error": "storage_unavailable"}, 503)
+
+    @application.get('/api/v1/jobs', dependencies=[Depends(require_session)])
+    async def load_jobs():
+        try:
+            return profile_response({'jobs': await run_in_threadpool(database.load_jobs)})
+        except (sqlite3.Error, ValueError):
+            return profile_response({'error': 'storage_unavailable'}, 503)
+
+    @application.put('/api/v1/jobs', dependencies=[Depends(require_session)])
+    async def save_job(request: Request):
+        async def read_snapshot():
+            body = bytearray()
+            async for chunk in request.stream():
+                if len(body) + len(chunk) > MAX_SAVED_JOB_BODY_BYTES:
+                    raise ValueError()
+                body.extend(chunk)
+            return json.loads(body, object_pairs_hook=reject_duplicate_keys)
+        try:
+            if request.headers.get('content-type') != 'application/json':
+                raise ValueError()
+            value = await asyncio.wait_for(read_snapshot(), timeout=5)
+            if type(value) is not dict or set(value) != {'candidate', 'confirmed'} or value['confirmed'] is not True:
+                raise ValueError()
+            snapshot = validate_snapshot(value['candidate'])
+        except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
+            return profile_response({'error': 'invalid_saved_job'}, 422)
+        try:
+            return profile_response({'job': await run_in_threadpool(database.save_job, snapshot)})
+        except SavedJobsFull:
+            return profile_response({'error': 'saved_jobs_full'}, 409)
+        except (sqlite3.Error, ValueError):
+            return profile_response({'error': 'storage_unavailable'}, 503)
+
+    @application.delete('/api/v1/jobs/{job_id}', dependencies=[Depends(require_session)])
+    async def delete_job(job_id: str):
+        try:
+            if str(UUID(job_id)) != job_id:
+                raise ValueError()
+        except ValueError:
+            return profile_response({'error': 'invalid_saved_job'}, 422)
+        try:
+            await run_in_threadpool(database.delete_job, job_id)
+            return profile_response({'deleted': True})
+        except sqlite3.Error:
+            return profile_response({'error': 'storage_unavailable'}, 503)
 
     @application.post("/api/v1/imports", dependencies=[Depends(require_session)])
     async def reserve_import():

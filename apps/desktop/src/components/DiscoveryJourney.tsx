@@ -8,12 +8,14 @@ import type { useSearchPreview } from '../hooks/useSearchPreview';
 import type { PublicSearchCriteria } from '../lib/public-search-criteria';
 import { roles, skills } from '../lib/public-search-criteria';
 import type { useAssistance } from '../hooks/useAssistance';
+import type { useSavedJobs } from '../hooks/useSavedJobs';
 
 export type DiscoveryStep = 'resume' | 'options' | 'results';
-export function DiscoveryJourney({ step, navigate, optionsAvailable, resultsAvailable, continueWithoutResume, onResumeReviewed, assisted = false, assistance, resultAnalysis, retryResultAnalysis, resume, saved, criteria, searchPreview, discovery, onChange }: {
+export function DiscoveryJourney({ step, navigate, optionsAvailable, resultsAvailable, continueWithoutResume, onResumeReviewed, assisted = false, assistance, resultAnalysis, retryResultAnalysis, resume, saved, savedJobs, criteria, searchPreview, discovery, onChange }: {
   step: DiscoveryStep; navigate: (step: DiscoveryStep) => void;
   optionsAvailable: boolean; resultsAvailable: boolean; continueWithoutResume: () => void;
   resume: ReturnType<typeof useResumeImport>; saved: ReturnType<typeof useSavedProfile>;
+  savedJobs?: ReturnType<typeof useSavedJobs>;
   criteria: PublicSearchCriteria; searchPreview: ReturnType<typeof useSearchPreview>;
   discovery: ReturnType<typeof useDiscovery>; onChange: (criteria: PublicSearchCriteria) => void;
   onResumeReviewed?: () => void; assisted?: boolean; assistance?: ReturnType<typeof useAssistance>; resultAnalysis?: ReturnType<typeof useAssistance>; retryResultAnalysis?: () => void;
@@ -40,6 +42,6 @@ export function DiscoveryJourney({ step, navigate, optionsAvailable, resultsAvai
       </section>}
       {(!assisted || assistance?.result) && <SearchCriteria key={assisted ? 'assisted' : 'manual'} initialSide={assisted && assistance?.result?.criteria ? 'query' : 'preferences'} requireRoleChoice={assisted && assistance?.result?.criteria === null} assisted={assisted} criteria={criteria} searchPreview={searchPreview} discovery={discovery} onChange={onChange} />}
       {searchPreview.preview?.provider !== 'tavily' && <details className="inline-setup"><summary>Set up online search</summary><SearchProviderSettings connected={searchPreview.connected} /></details>}
-    </> : <SearchResults discovery={discovery} analysis={resultAnalysis} assisted={assisted} reviewedRole={criteria.role} onRetryAnalysis={retryResultAnalysis} />}
+    </> : <SearchResults discovery={discovery} analysis={resultAnalysis} assisted={assisted} reviewedRole={criteria.role} onRetryAnalysis={retryResultAnalysis} savedJobs={savedJobs} />}
   </>;
 }

@@ -12,8 +12,10 @@ import { openOllamaWebsite } from './lib/engine';
 
 import { useSavedProfile } from './hooks/useSavedProfile';
 import { useResumeImport } from './hooks/useResumeImport';
+import { useSavedJobs } from './hooks/useSavedJobs';
+import { SavedJobs } from './components/SavedJobs';
 
-type Page = 'discover' | 'settings';
+type Page = 'discover' | 'saved' | 'settings';
 type Engine = ReturnType<typeof useEngine>;
 function EngineBadge({ engine }: { engine: Engine }) {
   const label = engine.health ? 'Workspace connected' : engine.checking ? 'Connecting workspace' : 'Workspace offline';
@@ -29,7 +31,7 @@ function PrivacyPanel() {
       <div><h2 id="privacy-title">Your privacy comes first.</h2><p>Our commitment: personal career data stays on this computer.</p></div>
     </div>
     <dl className="privacy-details">
-      <div><dt>Local intelligence</dt><dd>PDF/Word extraction and saved profile text stay on this computer. Embeddings and matching will also run locally. No hosted AI fallback.</dd></div>
+      <div><dt>Local intelligence</dt><dd>PDF/Word extraction, saved profile text and saved candidates stay on this computer. Embeddings and matching will also run locally. No hosted AI fallback.</dd></div>
       <div><dt>Private discovery</dt><dd>Searches send only reviewed, generic job criteria. Your resume and personal details will stay local.</dd></div>
       <div><dt>Clear boundaries</dt><dd>Online search uses Tavily after you review and send a public query. Opening an external website connects your browser to that site.</dd></div>
     </dl>
@@ -116,6 +118,7 @@ export function App() {
     setCurrentPage(next);
   };
   const saved = useSavedProfile(Boolean(engine.health));
+  const savedJobs = useSavedJobs(Boolean(engine.health));
   const preferences = useAppearance();
   const optionsAvailable = optionsReached && (searchMode === 'manual' || (searchMode === 'resume' && resume.reviewed && resume.text === reviewedText));
   const navigateStep = (next: DiscoveryStep) => {
@@ -134,12 +137,13 @@ export function App() {
     document.getElementById('main-content')?.focus({ preventScroll: true });
   }, [page, discoveryStep]);
   return <div className="app-shell focused-shell"><a className="skip-link" href="#main-content">Skip to main content</a>
-    <div className="workspace"><header className="topbar"><a href="#" className="brand" onClick={event => { event.preventDefault(); setPage('discover'); }} aria-label="JobScout home"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><nav className="flow-nav" aria-label="Main navigation">{page === 'settings' && <button className="button secondary" onClick={() => setPage('discover')}>Back to job search</button>}<button className="button secondary" aria-current={page === 'settings' ? 'page' : undefined} onClick={() => setPage('settings')}><Settings2 size={16} />Settings</button></nav></header>
+    <div className="workspace"><header className="topbar"><a href="#" className="brand" onClick={event => { event.preventDefault(); setPage('discover'); }} aria-label="JobScout home"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><nav className="flow-nav" aria-label="Main navigation">{page !== 'discover' && <button className="button secondary" onClick={() => setPage('discover')}>Back to job search</button>}<button className="button secondary" aria-current={page === 'saved' ? 'page' : undefined} onClick={() => setPage('saved')}>Saved jobs</button><button className="button secondary" aria-current={page === 'settings' ? 'page' : undefined} onClick={() => setPage('settings')}><Settings2 size={16} />Settings</button></nav></header>
     <main id="main-content" className="main-content" tabIndex={-1}>
       <div hidden={page !== 'discover'} className="find-workspace">
         <div className="page-heading search-intro"><div><h1>{discoveryStep === 'resume' ? 'Start with your resume.' : discoveryStep === 'options' ? searchMode === 'resume' ? 'Review your suggested search.' : 'Choose your job options.' : 'Your search results.'}</h1><p className="muted">{discoveryStep === 'resume' ? 'Choose a file to read and review on this computer.' : discoveryStep === 'options' ? 'Review the public categories and exact query before searching.' : 'Refine candidates with local filters and evidence.'}</p></div></div>
-        <DiscoveryJourney step={discoveryStep} navigate={navigateStep} optionsAvailable={optionsAvailable} resultsAvailable={resultsReached} continueWithoutResume={startManual} onResumeReviewed={() => void startAssisted()} assisted={searchMode === 'resume'} assistance={assistance} resultAnalysis={resultAnalysis} retryResultAnalysis={() => { if (discovery.result) void resultAnalysis.analyze(searchMode === 'resume' ? reviewedText : '', discovery.result.candidates); }} resume={resume} saved={saved} criteria={criteria} discovery={discovery} searchPreview={searchPreview} onChange={value => { searchPreview.invalidate(); discovery.invalidate(); setCriteria(value); }} />
+        <DiscoveryJourney step={discoveryStep} navigate={navigateStep} optionsAvailable={optionsAvailable} resultsAvailable={resultsReached} continueWithoutResume={startManual} onResumeReviewed={() => void startAssisted()} assisted={searchMode === 'resume'} assistance={assistance} resultAnalysis={resultAnalysis} retryResultAnalysis={() => { if (discovery.result) void resultAnalysis.analyze(searchMode === 'resume' ? reviewedText : '', discovery.result.candidates); }} resume={resume} saved={saved} savedJobs={savedJobs} criteria={criteria} discovery={discovery} searchPreview={searchPreview} onChange={value => { searchPreview.invalidate(); discovery.invalidate(); setCriteria(value); }} />
       </div>
+      {page === 'saved' && <SavedJobs saved={savedJobs} />}
       {page === 'settings' && <Settings engine={engine} preferences={preferences} />}
     </main><footer className="workspace-footer"><span><LockKeyhole size={12} /> Resume stays on this computer</span><EngineBadge engine={engine} /></footer></div>
   </div>;

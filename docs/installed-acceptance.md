@@ -2,7 +2,7 @@
 
 Artifact scope update: the later [work-requirement disclosure](architecture/0030-work-requirement-review-notes.md) changes the production frontend and rebuilds the normal Windows package. The installed observations below remain evidence for their earlier measured binary; the new disclosure has browser mock evidence and still needs native/installed verification. Rebuild this isolated package from the current paired production release before another installed run.
 
-This slice runs installed release-mode production code with a separate Windows identity. It provides evidence for empty first use, local query preparation, saved-profile review, restart and normal shutdown. It does not close milestone 17D.
+This slice runs installed release-mode production code with a separate Windows identity. It provides bounded evidence for empty first use, local query preparation, saved-profile review, restart and normal shutdown. Under [decision 0031](architecture/0031-core-acceptance-and-deferred-release-gates.md), it supplies the installed subset of the finite 17D core checklist; it does not establish current normal-identity installer or full Windows release acceptance. Remaining installed/accessibility/OS/workload checks belong to milestone 23; representative suitability belongs to 21.
 
 ## Isolation and reproduction
 

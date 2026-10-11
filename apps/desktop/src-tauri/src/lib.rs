@@ -86,6 +86,35 @@ async fn profile_record(
 }
 
 #[tauri::command]
+async fn saved_jobs(
+    state: tauri::State<'_, Arc<EngineState>>, action: String,
+    candidate: Option<serde_json::Value>, id: Option<String>,
+) -> Result<serde_json::Value, String> {
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
+        .clone().ok_or("Workspace is starting")?;
+    let url = format!("{endpoint}/api/v1/jobs");
+    let request = match action.as_str() {
+        "load" => state.client.get(url),
+        "save" => {
+            let body = serde_json::to_vec(&serde_json::json!({"candidate": candidate.ok_or("Candidate required")?, "confirmed": true}))
+                .map_err(|_| "Invalid candidate")?;
+            if body.len() > 120_000 { return Err("Candidate too large".into()); }
+            state.client.put(url).header("Content-Type", "application/json").body(body)
+        },
+        "delete" => {
+            let id = id.ok_or("Candidate required")?;
+            let parsed = uuid::Uuid::parse_str(&id).map_err(|_| "Invalid candidate id")?;
+            if parsed.to_string() != id { return Err("Invalid candidate id".into()); }
+            state.client.delete(format!("{url}/{id}"))
+        },
+        _ => return Err("Unknown saved jobs action".into()),
+    };
+    request.timeout(Duration::from_secs(15)).bearer_auth(&state.token)
+        .send().await.map_err(|_| "Local storage connection unavailable")?
+        .json().await.map_err(|_| "Local storage response could not be read".into())
+}
+
+#[tauri::command]
 async fn search_preview(
     state: tauri::State<'_, Arc<EngineState>>, criteria: serde_json::Value,
 ) -> Result<serde_json::Value, String> {
@@ -212,7 +241,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .manage(state)
-        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, search_preview, search_plan, search_control, search_provider, provider_connection, job_search, local_assistance])
+        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, saved_jobs, search_preview, search_plan, search_control, search_provider, provider_connection, job_search, local_assistance])
         .setup(|app| {
             let state = app.state::<Arc<EngineState>>().inner().clone();
             let directory = app.path().app_data_dir()?;
