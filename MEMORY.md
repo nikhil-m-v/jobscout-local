@@ -1,6 +1,6 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-12 (18 — bounded local candidate saving). This is project memory for contributors and future assistant sessions, not a store for user information.
+Last checkpoint: 2026-10-12 (18 — bounded local candidate saving, published). This is project memory for contributors and future assistant sessions, not a store for user information.
 
 ## Current checkpoint — 18 local saving implemented
 
@@ -10,7 +10,7 @@ Evidence: all 355 engine and 113 frontend tests pass. Engine checks cover app re
 
 Synthetic browser flow saved a primary link, its distinct repeated-role alternative and an escaped-markup candidate. All three survived results clearing and browser reload; removal cancellation retained the item/restored focus; confirmed independent removals reached zero and stayed absent after reload. Enter/Space behavior and 760 × 640 Light/Dark layouts verified; document width 745 px, no result image/script/iframe elements. Two labeled synthetic screenshots. Browser appearance restored, viewport reset/tab closed; preview stopped with zero matching runtime processes. Engine restart evidence is automated; browser reload is not a native app restart.
 
-Production frontend typecheck/build, production engine freezing, Rust/native-bridge and NSIS packaging pass. Final installer 23,217,574 bytes (22.14 MiB), JobScout 0.1.0. No installer execution or new native/installed saving interaction, genuine installed upgrade or workload-resource measurement. Such release checks remain owner 23; representative quality remains owner 21. Prior measured binaries/evidence keep their limits. No live search/page request, credential operation, spending or publication. Work remains local/unpublished, preserving yesterday's delivery-reset changes.
+Production frontend typecheck/build, production engine freezing, Rust/native-bridge and NSIS packaging pass. Final installer 23,217,574 bytes (22.14 MiB), JobScout 0.1.0. No installer execution or new native/installed saving interaction, genuine installed upgrade or workload-resource measurement. Such release checks remain owner 23; representative quality remains owner 21. Prior measured binaries/evidence keep their limits. No live search/page request, credential operation or spending. On explicit user authorization, published all 36 reviewed implementation/documentation/test/synthetic-image files, including yesterday's delivery reset, as `4ab4914`; verified `origin/main` equals the full implementation commit. Ignored installers, caches and local test/private data were excluded. This checkpoint records that verified source publication; the next milestone and release limitations are unchanged.
 
 Next concrete action: **19 — simple application tracking**, one coherent slice: Saved/Applied/Interview stages and private local notes on saved records, with restart/delete/failure evidence. Do not infer applying or submission permission. 17D stays core acceptance complete; stop extending it absent a demonstrated regression or newly approved requirement. Broader data controls are 20; quality 21 and Windows/accessibility/resources/CI 23 remain v1.0 release gates. See [dated progress](docs/progress/2026-10-12.md).
 
