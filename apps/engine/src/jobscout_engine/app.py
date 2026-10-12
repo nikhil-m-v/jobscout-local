@@ -23,7 +23,7 @@ from jobscout_engine.broader_discovery import BroaderDiscovery
 from jobscout_engine.domain.providers import MAX_PROVIDER_BODY_BYTES, validate_tavily_key, provider_status
 from jobscout_engine.config import Settings
 from jobscout_engine.domain.contracts import EngineHealth, ModelProvider
-from jobscout_engine.storage import Database
+from jobscout_engine.storage import Database, DataReviewChanged
 from jobscout_engine.domain.saved_jobs import validate_snapshot, validate_tracking, SavedJobsFull, TrackingConflict, MAX_SAVED_JOB_BODY_BYTES, MAX_TRACKING_BODY_BYTES
 from jobscout_engine.domain.documents import ImportFailure, MAX_DOCUMENT_BYTES, MAX_TEXT_CHARACTERS
 from jobscout_engine.imports import ImportService
@@ -49,6 +49,8 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
     discovery = search_provider if search_provider is not None else TavilySearch()
     search_lock = asyncio.Lock()
     broader = BroaderDiscovery(discovery)
+    active_data_operations = 0
+    data_deleting = False
 
     @asynccontextmanager
     async def lifespan(_: FastAPI):
@@ -63,6 +65,25 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
         title="JobScout local engine", version=__version__, lifespan=lifespan,
         docs_url=None, redoc_url=None, openapi_url=None,
     )
+
+    @application.middleware('http')
+    async def data_operation_boundary(request: Request, call_next):
+        nonlocal active_data_operations
+        path = request.url.path
+        operation = request.method != 'GET' and (path == '/api/v1/profile' or path == '/api/v1/assistance'
+                    or path.startswith('/api/v1/jobs') or path.startswith('/api/v1/imports') or path.startswith('/api/v1/search'))
+        if not operation:
+            return await call_next(request)
+        if data_deleting:
+            scheme, _, token = request.headers.get('authorization', '').partition(' ')
+            if scheme.lower() != 'bearer' or not secrets.compare_digest(token.encode(), settings.session_token.encode()):
+                return JSONResponse({'detail': 'A valid app session is required.'}, status_code=401)
+            return JSONResponse({'error': 'data_busy'}, status_code=409, headers={'Cache-Control': 'no-store'})
+        active_data_operations += 1
+        try:
+            return await call_next(request)
+        finally:
+            active_data_operations -= 1
 
     async def require_session(
         credentials: HTTPAuthorizationCredentials | None = Depends(bearer),
@@ -311,6 +332,46 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
             return profile_response({"deleted": True})
         except sqlite3.Error:
             return profile_response({"error": "storage_unavailable"}, 503)
+
+    @application.get('/api/v1/data', dependencies=[Depends(require_session)])
+    async def review_data():
+        try:
+            return profile_response({'review': await run_in_threadpool(database.review_data, settings.session_token)})
+        except (sqlite3.Error, ValueError):
+            return profile_response({'error': 'storage_unavailable'}, 503)
+
+    @application.delete('/api/v1/data', dependencies=[Depends(require_session)])
+    async def clear_data(request: Request):
+        nonlocal data_deleting
+        async def read_review():
+            body = bytearray()
+            async for chunk in request.stream():
+                if len(body) + len(chunk) > 1024:
+                    raise ValueError()
+                body.extend(chunk)
+            return json.loads(body, object_pairs_hook=reject_duplicate_keys)
+        try:
+            if request.headers.get('content-type') != 'application/json':
+                raise ValueError()
+            value = await asyncio.wait_for(read_review(), timeout=5)
+            if (type(value) is not dict or set(value) != {'review_token', 'confirmed'} or value['confirmed'] is not True
+                    or type(value['review_token']) is not str or len(value['review_token']) != 64
+                    or any(char not in '0123456789abcdef' for char in value['review_token'])):
+                raise ValueError()
+        except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
+            return profile_response({'error': 'invalid_data_review'}, 422)
+        if data_deleting or active_data_operations or search_lock.locked() or (imports.task and imports.task.running):
+            return profile_response({'error': 'data_busy'}, 409)
+        data_deleting = True
+        try:
+            await run_in_threadpool(database.clear_career_data, settings.session_token, value['review_token'])
+            return profile_response({'deleted': True})
+        except DataReviewChanged:
+            return profile_response({'error': 'data_review_changed'}, 409)
+        except (sqlite3.Error, ValueError):
+            return profile_response({'error': 'storage_unavailable'}, 503)
+        finally:
+            data_deleting = False
 
     @application.get('/api/v1/jobs', dependencies=[Depends(require_session)])
     async def load_jobs():

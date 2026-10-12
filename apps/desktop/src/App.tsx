@@ -14,6 +14,8 @@ import { useSavedProfile } from './hooks/useSavedProfile';
 import { useResumeImport } from './hooks/useResumeImport';
 import { useSavedJobs } from './hooks/useSavedJobs';
 import { SavedJobs } from './components/SavedJobs';
+import { DataControls } from './components/DataControls';
+import { useDataControls } from './hooks/useDataControls';
 
 type Page = 'discover' | 'saved' | 'settings';
 type Engine = ReturnType<typeof useEngine>;
@@ -39,14 +41,15 @@ function PrivacyPanel() {
   </section>;
 }
 
-function Settings({ engine, preferences }: { engine: Engine; preferences: ReturnType<typeof useAppearance> }) {
+function Settings({ engine, preferences, dataControls, workBusy }: { engine: Engine; preferences: ReturnType<typeof useAppearance>; dataControls: ReturnType<typeof useDataControls>; workBusy: boolean }) {
   const { appearance, changeAppearance, reduceTransparency, changeReduceTransparency, reduceMotion, changeReduceMotion } = preferences;
   const [linkError, setLinkError] = useState(false);
   const ai = engine.health?.local_ai;
   return <>
     <div className="page-heading"><div><p className="eyebrow">MAKE IT YOURS</p><h1>Your workspace, at a glance.</h1><p className="muted">See what is ready and what needs a little attention.</p></div></div>
     <PrivacyPanel />
-    <SearchProviderSettings connected={Boolean(engine.health)} />
+    <DataControls controls={dataControls} workBusy={workBusy} />
+    <div inert={dataControls.blocked}><SearchProviderSettings connected={Boolean(engine.health) && !dataControls.blocked} /></div>
     <section className="settings-panel appearance-panel" aria-labelledby="appearance-title">
       <div className="settings-title"><span className="icon-tile lavender"><Sun size={20} /></span><div><h2 id="appearance-title">Appearance</h2><p>Choose how JobScout looks on this computer.</p></div></div>
       <div className="appearance-options" role="group" aria-label="Appearance preference">
@@ -73,7 +76,14 @@ function Settings({ engine, preferences }: { engine: Engine; preferences: Return
 }
 
 export function App() {
-  const [page, setCurrentPage] = useState<Page>('discover');
+  const engine = useEngine();
+  const [session, setSession] = useState(0);
+  const dataControls = useDataControls(Boolean(engine.health), () => setSession(value => value + 1));
+  return <Workspace key={session} engine={engine} dataControls={dataControls} initialPage={session ? 'settings' : 'discover'} />;
+}
+
+function Workspace({ engine, dataControls, initialPage }: { engine: Engine; dataControls: ReturnType<typeof useDataControls>; initialPage: Page }) {
+  const [page, setCurrentPage] = useState<Page>(initialPage);
   const [discoveryStep, setDiscoveryStep] = useState<DiscoveryStep>('resume');
   const [optionsReached, setOptionsReached] = useState(false);
   const [resultsReached, setResultsReached] = useState(false);
@@ -82,11 +92,11 @@ export function App() {
   const [reviewedText, setReviewedText] = useState('');
 
   const resume = useResumeImport();
-  const engine = useEngine();
-  const searchPreview = useSearchPreview(Boolean(engine.health));
-  const discovery = useDiscovery(Boolean(engine.health));
-  const assistance = useAssistance(Boolean(engine.health));
-  const resultAnalysis = useAssistance(Boolean(engine.health));
+  const connected = Boolean(engine.health) && !dataControls.blocked;
+  const searchPreview = useSearchPreview(connected);
+  const discovery = useDiscovery(connected);
+  const assistance = useAssistance(connected);
+  const resultAnalysis = useAssistance(connected);
   const startManual = () => {
     assistance.invalidate(); resultAnalysis.invalidate(); searchPreview.invalidate(); discovery.invalidate();
     setSearchMode('manual'); setReviewedText(''); setCriteria(initialCriteria);
@@ -117,8 +127,9 @@ export function App() {
     if (next === 'settings') { if (assistance.busy) assistance.invalidate(); searchPreview.invalidate(); discovery.invalidate(); }
     setCurrentPage(next);
   };
-  const saved = useSavedProfile(Boolean(engine.health));
-  const savedJobs = useSavedJobs(Boolean(engine.health));
+  const saved = useSavedProfile(connected);
+  const savedJobs = useSavedJobs(connected);
+  const workBusy = resume.busy || saved.busy || savedJobs.busy || assistance.busy || resultAnalysis.busy || discovery.busy || searchPreview.busy;
   const preferences = useAppearance();
   const optionsAvailable = optionsReached && (searchMode === 'manual' || (searchMode === 'resume' && resume.reviewed && resume.text === reviewedText));
   const navigateStep = (next: DiscoveryStep) => {
@@ -137,14 +148,14 @@ export function App() {
     document.getElementById('main-content')?.focus({ preventScroll: true });
   }, [page, discoveryStep]);
   return <div className="app-shell focused-shell"><a className="skip-link" href="#main-content">Skip to main content</a>
-    <div className="workspace"><header className="topbar"><a href="#" className="brand" onClick={event => { event.preventDefault(); setPage('discover'); }} aria-label="JobScout home"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><nav className="flow-nav" aria-label="Main navigation">{page !== 'discover' && <button className="button secondary" onClick={() => setPage('discover')}>Back to job search</button>}<button className="button secondary" aria-current={page === 'saved' ? 'page' : undefined} onClick={() => setPage('saved')}>Saved jobs</button><button className="button secondary" aria-current={page === 'settings' ? 'page' : undefined} onClick={() => setPage('settings')}><Settings2 size={16} />Settings</button></nav></header>
+    <div className="workspace"><header className="topbar"><a href="#" className="brand" onClick={event => { event.preventDefault(); if (!dataControls.blocked) setPage('discover'); }} aria-label="JobScout home"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><nav className="flow-nav" aria-label="Main navigation">{page !== 'discover' && <button className="button secondary" disabled={dataControls.blocked} onClick={() => setPage('discover')}>Back to job search</button>}<button className="button secondary" disabled={dataControls.blocked} aria-current={page === 'saved' ? 'page' : undefined} onClick={() => setPage('saved')}>Saved jobs</button><button className="button secondary" aria-current={page === 'settings' ? 'page' : undefined} onClick={() => setPage('settings')}><Settings2 size={16} />Settings</button></nav></header>
     <main id="main-content" className="main-content" tabIndex={-1}>
-      <div hidden={page !== 'discover'} className="find-workspace">
+      <div hidden={page !== 'discover'} inert={dataControls.blocked} className="find-workspace">
         <div className="page-heading search-intro"><div><h1>{discoveryStep === 'resume' ? 'Start with your resume.' : discoveryStep === 'options' ? searchMode === 'resume' ? 'Review your suggested search.' : 'Choose your job options.' : 'Your search results.'}</h1><p className="muted">{discoveryStep === 'resume' ? 'Choose a file to read and review on this computer.' : discoveryStep === 'options' ? 'Review the public categories and exact query before searching.' : 'Refine candidates with local filters and evidence.'}</p></div></div>
         <DiscoveryJourney step={discoveryStep} navigate={navigateStep} optionsAvailable={optionsAvailable} resultsAvailable={resultsReached} continueWithoutResume={startManual} onResumeReviewed={() => void startAssisted()} assisted={searchMode === 'resume'} assistance={assistance} resultAnalysis={resultAnalysis} retryResultAnalysis={() => { if (discovery.result) void resultAnalysis.analyze(searchMode === 'resume' ? reviewedText : '', discovery.result.candidates); }} resume={resume} saved={saved} savedJobs={savedJobs} criteria={criteria} discovery={discovery} searchPreview={searchPreview} onChange={value => { searchPreview.invalidate(); discovery.invalidate(); setCriteria(value); }} />
       </div>
-      {page === 'saved' && <SavedJobs saved={savedJobs} />}
-      {page === 'settings' && <Settings engine={engine} preferences={preferences} />}
+      {page === 'saved' && <div inert={dataControls.blocked}><SavedJobs saved={savedJobs} /></div>}
+      {page === 'settings' && <Settings engine={engine} preferences={preferences} dataControls={dataControls} workBusy={workBusy} />}
     </main><footer className="workspace-footer"><span><LockKeyhole size={12} /> Resume stays on this computer</span><EngineBadge engine={engine} /></footer></div>
   </div>;
 }

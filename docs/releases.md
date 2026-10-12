@@ -4,7 +4,7 @@ Adopted: 2026-10-10. This plan owns release scope; [roadmap.md](roadmap.md) reta
 
 Delivery reset adopted 2026-10-11: [decision 0031](architecture/0031-core-acceptance-and-deferred-release-gates.md) gives 17D a finite core-development exit checklist. After it passes, local saving/tracking can proceed while representative quality (21) and full Windows/accessibility/resources acceptance (23) remain required for v1.0 release. The reset does not waive demonstrated privacy, data-loss or critical lifecycle defects.
 
-17D status: **core acceptance complete; broader quality and release acceptance deferred**. Current checks pass and applicable bounded interactive/installed evidence is recorded in [the acceptance matrix](milestone17-acceptance.md#core-development-exit-checklist). [Local saving (18)](architecture/0032-bounded-local-job-snapshots.md) is implemented with automated restart/delete and synthetic browser evidence; native/installed saving follow-up remains owner 23. [Private tracking (19)](architecture/0033-private-application-tracking.md) is implemented with automated and synthetic browser evidence; data controls (20) are next; this is not v1.0 release readiness.
+17D status: **core acceptance complete; broader quality and release acceptance deferred**. Current checks pass and applicable bounded interactive/installed evidence is recorded in [the acceptance matrix](milestone17-acceptance.md#core-development-exit-checklist). [Local saving (18)](architecture/0032-bounded-local-job-snapshots.md) is implemented with automated restart/delete and synthetic browser evidence; native/installed saving follow-up remains owner 23. [Private tracking (19)](architecture/0033-private-application-tracking.md) is implemented with automated and synthetic browser evidence; [Reviewed data controls (20)](architecture/0034-local-career-data-controls.md) are implemented for current owned records/session copies; quality review (21) is next; this is not v1.0 release readiness.
 
 ## Release boundaries
 
@@ -29,7 +29,7 @@ The main journey is **local resume review or manual preferences → reviewed pub
 - Guided Windows core setup, Light/Dark/System, keyboard access, compact layout, reduced effects and readable error recovery. No model/runtime download prerequisite.
 - Reproducible checks, Windows packaging, contributor/setup documentation and a synthetic end-to-end demo. CI stays the dedicated milestone 23 increment.
 
-These are requirements, not claims of implementation. Saving jobs and basic tracking are implemented with bounded evidence; full data controls and guided setup remain planned. The application stays version 0.1.0 until an intentional version/release change is requested after acceptance.
+These are requirements, not claims of implementation. Saving jobs and basic tracking are implemented with bounded evidence; current data controls are implemented with bounded evidence; guided setup remains planned. The application stays version 0.1.0 until an intentional version/release change is requested after acceptance.
 
 ## v1.0 completion gates
 
@@ -51,8 +51,8 @@ Privacy, data-loss and critical lifecycle defects block affected functionality. 
 | 1 | 17D — core acceptance complete | Finite checklist passes with applicable existing evidence and current checks; stop extending 17D. Broader quality/release checks have owners 21/23; see [closure status](milestone17-acceptance.md#core-development-exit-checklist) |
 | 2 | 18 — Local saving — implemented | Bounded candidate snapshots, source/retrieval time, restart/delete/upgrade and synthetic browser evidence. Native/installed saving follow-up owned by 23; no suitability certification |
 | 3 | 19 — Basic tracker — implemented | Reversible stages and bounded private notes; restart/delete/upgrade/conflict and synthetic browser evidence. Native/installed follow-up owned by 23 |
-| 4 | 20 — Data controls — next | Deletion/retention across implemented records |
-| 5 | 21 — Quality review | Own deferred representative independent review; investigate/fix the largest demonstrated discovery issue before v1.0 release |
+| 4 | 20 — Data controls — implemented | Count-only review, atomic profile/jobs/notes deletion, session clearing and explicit retained-data limits; native/installed follow-up remains owner 23 |
+| 5 | 21 — Quality review — next | Own deferred representative independent review; investigate/fix the largest demonstrated discovery issue before v1.0 release |
 | 6 | 22 — Guided core setup | Storage/provider/skip/recovery without a model prerequisite |
 | 7 | 23 — v1.0 release candidate | Own deferred installed active-work/abrupt-exit, fresh-user/wizard/runtime/upgrade, full accessibility/OS and production-resource checks; CI/Windows packaging, demo/docs and all release gates |
 

@@ -86,6 +86,23 @@ async fn profile_record(
 }
 
 #[tauri::command]
+async fn career_data(state: tauri::State<'_, Arc<EngineState>>, action: String, review_token: Option<String>) -> Result<serde_json::Value, String> {
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?.clone().ok_or("Workspace is starting")?;
+    let url = format!("{endpoint}/api/v1/data");
+    let request = match action.as_str() {
+        "review" => state.client.get(url),
+        "delete" => {
+            let token = review_token.ok_or("Data review required")?;
+            if token.len() != 64 || !token.bytes().all(|value| value.is_ascii_digit() || (b'a'..=b'f').contains(&value)) { return Err("Invalid data review".into()); }
+            state.client.delete(url).json(&serde_json::json!({"review_token": token, "confirmed": true}))
+        },
+        _ => return Err("Unknown data action".into()),
+    };
+    request.timeout(Duration::from_secs(15)).bearer_auth(&state.token).send().await
+        .map_err(|_| "Local data connection unavailable")?.json().await.map_err(|_| "Local data response could not be read".into())
+}
+
+#[tauri::command]
 async fn saved_jobs(
     state: tauri::State<'_, Arc<EngineState>>, action: String,
     candidate: Option<serde_json::Value>, id: Option<String>, tracking: Option<serde_json::Value>,
@@ -249,7 +266,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .manage(state)
-        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, saved_jobs, search_preview, search_plan, search_control, search_provider, provider_connection, job_search, local_assistance])
+        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, career_data, saved_jobs, search_preview, search_plan, search_control, search_provider, provider_connection, job_search, local_assistance])
         .setup(|app| {
             let state = app.state::<Arc<EngineState>>().inner().clone();
             let directory = app.path().app_data_dir()?;

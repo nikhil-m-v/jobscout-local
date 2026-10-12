@@ -3,8 +3,14 @@ import sqlite3
 from datetime import datetime, timezone
 from contextlib import closing
 import json
+import hashlib
+import hmac
 from uuid import uuid4
 from jobscout_engine.domain.saved_jobs import MAX_SAVED_JOBS, SavedJobsFull, TrackingConflict
+
+
+class DataReviewChanged(Exception):
+    pass
 
 
 class Database:
@@ -99,3 +105,26 @@ class Database:
         with closing(sqlite3.connect(self.path)) as connection, connection:
             connection.execute("PRAGMA secure_delete=ON")
             connection.execute("DELETE FROM saved_jobs WHERE id = ?", (job_id,))
+
+    @staticmethod
+    def _data_review(connection, secret: str) -> dict:
+        # Only counts and a session-bound opaque token leave storage. Never expose content.
+        profiles = connection.execute('SELECT id, text, saved_at FROM profile ORDER BY id').fetchall()
+        jobs = connection.execute('SELECT id, url, snapshot, saved_at, stage, notes, revision FROM saved_jobs ORDER BY id').fetchall()
+        token = hmac.new(secret.encode(), json.dumps([profiles, jobs], ensure_ascii=True).encode(), hashlib.sha256).hexdigest()
+        return {'profile_present': bool(profiles), 'saved_jobs': len(jobs),
+                'jobs_with_notes': sum(bool(row[5]) for row in jobs), 'review_token': token}
+
+    def review_data(self, secret: str) -> dict:
+        with closing(sqlite3.connect(self.path)) as connection, connection:
+            connection.execute('BEGIN')
+            return self._data_review(connection, secret)
+
+    def clear_career_data(self, secret: str, review_token: str) -> None:
+        with closing(sqlite3.connect(self.path)) as connection, connection:
+            connection.execute('PRAGMA secure_delete=ON')
+            connection.execute('BEGIN IMMEDIATE')
+            if not hmac.compare_digest(self._data_review(connection, secret)['review_token'], review_token):
+                raise DataReviewChanged()
+            connection.execute('DELETE FROM profile')
+            connection.execute('DELETE FROM saved_jobs')
