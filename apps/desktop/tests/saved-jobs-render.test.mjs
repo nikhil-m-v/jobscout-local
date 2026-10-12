@@ -13,7 +13,8 @@ await bundle.close();
 const exports = {};
 new Function('require', 'exports', compiled)(require, exports);
 const job = { title: '<script>steal()</script>', snippet: 'Must work with ET time zone overlap. <img src="https://tracker.example.com">', url: 'https://jobs.lever.co/example/00000000-0000-4000-8000-000000000001', source_index: 1, provider: 'tavily', id: '00000000-0000-4000-8000-000000000001', retrieved_at: '2026-10-12T03:00:00Z', saved_at: '2026-10-12T03:01:00Z' };
-const saved = { jobs: [job], ready: true, busy: false, connected: true, error: '', notice: '', reload() {}, remove() {} };
+Object.assign(job, { stage: 'applied', notes: '<script>PRIVATE_SYNTHETIC_NOTE</script>', revision: 1 });
+const saved = { jobs: [job], ready: true, busy: false, connected: true, error: '', notice: '', drafts: {}, reload() {}, remove() {}, update() {}, setDraft() {}, clearDraft() {} };
 function render(extra = {}) { return renderToStaticMarkup(React.createElement(exports.SavedJobs, { saved: { ...saved, ...extra } })); }
 test('saved snapshots keep source, timestamps, uncertainty and safely escaped content', () => {
   const markup = render();
@@ -34,4 +35,16 @@ test('unconfirmed storage disables removal, retains records and offers reload re
   assert.ok(markup.includes('Reload saved jobs'));
   assert.ok(markup.includes(job.url));
   assert.ok(render({ jobs: [] }).includes('Keep a candidate with Save candidate'));
+});
+
+test('tracking safely renders private notes and stale drafts require explicit recovery', () => {
+  const markup = render();
+  assert.ok(markup.includes('Stage: <strong>Applied</strong>'));
+  assert.ok(markup.includes('&lt;script&gt;PRIVATE_SYNTHETIC_NOTE&lt;/script&gt;'));
+  assert.ok(markup.includes('does not apply, contact an employer'));
+  const editing = render({ drafts: { [job.id]: { stage: 'saved', notes: '<img src="https://tracker.example.com">', revision: 0 } } });
+  assert.ok(editing.includes('Discard draft and use latest'));
+  assert.match(editing, /<button[^>]*type="submit"[^>]*disabled=""/);
+  assert.ok(editing.includes('maxLength="4000"'));
+  assert.ok(!/<(script|img|iframe)\b/.test(editing));
 });

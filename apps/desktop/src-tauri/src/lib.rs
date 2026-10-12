@@ -88,7 +88,7 @@ async fn profile_record(
 #[tauri::command]
 async fn saved_jobs(
     state: tauri::State<'_, Arc<EngineState>>, action: String,
-    candidate: Option<serde_json::Value>, id: Option<String>,
+    candidate: Option<serde_json::Value>, id: Option<String>, tracking: Option<serde_json::Value>,
 ) -> Result<serde_json::Value, String> {
     let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
         .clone().ok_or("Workspace is starting")?;
@@ -100,6 +100,14 @@ async fn saved_jobs(
                 .map_err(|_| "Invalid candidate")?;
             if body.len() > 120_000 { return Err("Candidate too large".into()); }
             state.client.put(url).header("Content-Type", "application/json").body(body)
+        },
+        "update" => {
+            let id = id.ok_or("Candidate required")?;
+            let parsed = uuid::Uuid::parse_str(&id).map_err(|_| "Invalid candidate id")?;
+            if parsed.to_string() != id { return Err("Invalid candidate id".into()); }
+            let body = serde_json::to_vec(&tracking.ok_or("Tracking required")?).map_err(|_| "Invalid tracking")?;
+            if body.len() > 50_000 { return Err("Tracking too large".into()); }
+            state.client.patch(format!("{url}/{id}")).header("Content-Type", "application/json").body(body)
         },
         "delete" => {
             let id = id.ok_or("Candidate required")?;

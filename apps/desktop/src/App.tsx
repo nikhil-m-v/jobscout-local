@@ -31,7 +31,7 @@ function PrivacyPanel() {
       <div><h2 id="privacy-title">Your privacy comes first.</h2><p>Our commitment: personal career data stays on this computer.</p></div>
     </div>
     <dl className="privacy-details">
-      <div><dt>Local intelligence</dt><dd>PDF/Word extraction, saved profile text and saved candidates stay on this computer. Embeddings and matching will also run locally. No hosted AI fallback.</dd></div>
+      <div><dt>Local intelligence</dt><dd>PDF/Word extraction, saved profile text, saved candidates, application stages and private notes stay on this computer. Embeddings and matching will also run locally. No hosted AI fallback.</dd></div>
       <div><dt>Private discovery</dt><dd>Searches send only reviewed, generic job criteria. Your resume and personal details will stay local.</dd></div>
       <div><dt>Clear boundaries</dt><dd>Online search uses Tavily after you review and send a public query. Opening an external website connects your browser to that site.</dd></div>
     </dl>

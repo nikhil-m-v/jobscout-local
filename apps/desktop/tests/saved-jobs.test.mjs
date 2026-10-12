@@ -5,7 +5,7 @@ import { createSavedJobsState, snapshotFor, validateSavedJob } from '../src/lib/
 const candidate = { title: 'Synthetic engineer', url: 'https://jobs.example.com/1', snippet: '<img src="https://tracker.example.com">', source_index: 1 };
 const result = { provider: 'tavily', retrieved_at: '2026-10-12T03:00:00Z', query: 'public query', profile: 'SYNTHETIC_PRIVATE_PROFILE', matches: [{ resume_phrase: 'private' }] };
 const snapshot = snapshotFor(candidate, result);
-const job = { ...snapshot, id: '00000000-0000-4000-8000-000000000001', saved_at: '2026-10-12T03:01:00Z' };
+const job = { ...snapshot, id: '00000000-0000-4000-8000-000000000001', saved_at: '2026-10-12T03:01:00Z', stage: 'saved', notes: '', revision: 0 };
 const tick = () => new Promise(resolve => setImmediate(resolve));
 test('saving projects only returned candidate content and provenance', () => {
   assert.deepEqual(Object.keys(snapshot).sort(), ['title', 'url', 'snippet', 'source_index', 'provider', 'retrieved_at'].sort());
@@ -70,4 +70,51 @@ test('malformed reload retains last known records and suppresses private error d
   assert.deepEqual(store.getSnapshot().jobs, [job]);
   assert.equal(store.getSnapshot().ready, false);
   assert.ok(!store.getSnapshot().error.includes('PRIVATE'));
+});
+
+test('tracking waits for acknowledgement, preserves snapshot and blocks stale overwrites', async () => {
+  let persisted = job, finish, conflict = false;
+  const update = { id: job.id, stage: 'applied', notes: 'PRIVATE_SYNTHETIC_NOTE', revision: 0 };
+  const store = createSavedJobsState(async action => action === 'load' ? { jobs: [persisted] } : conflict ? { error: 'tracking_conflict' } : new Promise(resolve => { finish = () => { persisted = { ...job, ...update, revision: 1 }; resolve({ job: persisted }); }; }));
+  store.connect(true); await tick();
+  const writing = store.update(update);
+  assert.deepEqual(store.getSnapshot().jobs, [job]);
+  finish(); assert.equal(await writing, true);
+  assert.deepEqual(store.getSnapshot().jobs, [persisted]);
+  assert.ok(store.getSnapshot().notice.includes('Stage and notes'));
+  conflict = true;
+  assert.equal(await store.update(update), false);
+  assert.equal(store.getSnapshot().ready, false);
+  assert.deepEqual(store.getSnapshot().jobs, [persisted]);
+  await store.reload();
+  assert.equal(store.getSnapshot().ready, true);
+});
+
+test('lost update acknowledgement and reconnect recover by reading without repeating private writes', async () => {
+  let persisted = job, writes = 0, finish;
+  const update = { id: job.id, stage: 'interview', notes: 'PRIVATE_SYNTHETIC_NOTE', revision: 0 };
+  const store = createSavedJobsState(async action => {
+    if (action === 'load') return { jobs: [persisted] };
+    writes++;
+    return new Promise((resolve, reject) => { finish = () => { persisted = { ...job, ...update, revision: 1 }; reject(new Error('PRIVATE_TRANSPORT')); }; });
+  });
+  store.connect(true); await tick();
+  const writing = store.update(update);
+  store.connect(false); store.connect(true);
+  finish(); assert.equal(await writing, false); await tick();
+  assert.equal(writes, 1);
+  assert.deepEqual(store.getSnapshot().jobs, [persisted]);
+  assert.equal(store.getSnapshot().ready, true);
+});
+
+test('tracking rejects malformed notes, stage, revision and altered snapshot acknowledgements', async () => {
+  for (const change of [{ stage: 'offer' }, { stage: 'toString' }, { notes: 'x'.repeat(4001) }, { notes: '\ud800' }, { revision: -1 }, { revision: true }]) assert.throws(() => validateSavedJob({ ...job, ...change }));
+  const update = { id: job.id, stage: 'applied', notes: 'NOTE', revision: 0 };
+  for (const change of [{ title: 'Replaced source' }, { url: 'https://jobs.example.com/other' }, { revision: 0 }, { notes: 'Different' }]) {
+    const store = createSavedJobsState(async action => action === 'load' ? { jobs: [job] } : { job: { ...job, ...update, revision: 1, ...change } });
+    store.connect(true); await tick();
+    assert.equal(await store.update(update), false);
+    assert.deepEqual(store.getSnapshot().jobs, [job]);
+    assert.equal(store.getSnapshot().ready, false);
+  }
 });

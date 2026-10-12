@@ -2,16 +2,22 @@ import type { Candidate, SearchResult } from './discovery-state.ts';
 
 export const MAX_SAVED_JOBS = 200;
 export type JobSnapshot = Omit<Candidate, 'source_index'> & { source_index: number | null } & Pick<SearchResult, 'provider' | 'retrieved_at'>;
-export type SavedJob = JobSnapshot & { id: string; saved_at: string };
-export type JobsAction = 'load' | 'save' | 'delete';
-export type JobsRequest = (action: JobsAction, value?: JobSnapshot | string) => Promise<unknown>;
+export const MAX_JOB_NOTES = 4000;
+export const jobStages = { saved: 'Saved', applied: 'Applied', interview: 'Interview' } as const;
+export type JobTracking = { stage: keyof typeof jobStages; notes: string; revision: number };
+export type TrackingUpdate = JobTracking & { id: string };
+export type SavedJob = JobSnapshot & JobTracking & { id: string; saved_at: string };
+export type JobsAction = 'load' | 'save' | 'delete' | 'update';
+export type JobsRequest = (action: JobsAction, value?: JobSnapshot | TrackingUpdate | string) => Promise<unknown>;
 const uuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/;
 const date = (value: unknown) => typeof value === 'string' && value.length <= 40 && /(?:Z|\+00:00)$/.test(value) && Number.isFinite(Date.parse(value));
 const text = (value: unknown, max: number, required = false) => typeof value === 'string' && value.length <= max && (!required || !!value.trim()) && !/[\x00-\x08\x0b\x0c\x0e-\x1f\x7f\ud800-\udfff]/u.test(value);
 export function validateSavedJob(value: unknown): SavedJob {
   if (!value || typeof value !== 'object') throw new Error();
   const job = value as SavedJob;
-  if (Object.keys(job).sort().join(',') !== 'id,provider,retrieved_at,saved_at,snippet,source_index,title,url'
+  if (Object.keys(job).sort().join(',') !== 'id,notes,provider,retrieved_at,revision,saved_at,snippet,source_index,stage,title,url'
+      || !Object.hasOwn(jobStages, job.stage) || !text(job.notes, MAX_JOB_NOTES)
+      || !Number.isInteger(job.revision) || job.revision < 0 || job.revision > 2147483647
       || typeof job.id !== 'string' || !uuid.test(job.id) || job.provider !== 'tavily'
       || !date(job.retrieved_at) || !date(job.saved_at) || !text(job.title, 512, true)
       || !text(job.snippet, 16384) || !text(job.url, 2048, true)
@@ -20,7 +26,7 @@ export function validateSavedJob(value: unknown): SavedJob {
   if (url.protocol !== 'https:' || !url.hostname || url.username || url.password || (url.port && url.port !== '443') || /[\s\\]/.test(job.url)) throw new Error();
   return Object.freeze({ ...job });
 }
-export function snapshotFor(candidate: Candidate, result: SearchResult): JobSnapshot {
+export function snapshotFor(candidate: Candidate, result: Pick<SearchResult, 'provider' | 'retrieved_at'>): JobSnapshot {
   // Explicit projection: never save the query, reviewed profile or match assessments.
   return { title: candidate.title, url: candidate.url, snippet: candidate.snippet, source_index: candidate.source_index ?? null, provider: result.provider, retrieved_at: result.retrieved_at };
 }
@@ -30,13 +36,17 @@ export function createSavedJobsState(request: JobsRequest) {
   let state = empty, refreshRequested = false;
   const listeners = new Set<() => void>();
   const publish = (next: State) => { state = next; listeners.forEach(listener => listener()); };
-  async function run(action: JobsAction, value?: JobSnapshot | string): Promise<boolean> {
+  async function run(action: JobsAction, value?: JobSnapshot | TrackingUpdate | string): Promise<boolean> {
     if (!state.connected || state.busy || (action !== 'load' && !state.ready)) return false;
     publish({ ...state, busy: true, error: '', notice: '' });
     try {
       const response = await request(action, value);
       if (!response || typeof response !== 'object') throw new Error();
       const data = response as Record<string, unknown>;
+      if (data.error === 'tracking_conflict' || data.error === 'saved_job_missing') {
+        publish({ ...state, ready: false, error: 'This saved candidate changed or was removed. Reload saved jobs and review the latest copy before editing again.' });
+        return false;
+      }
       if (data.error === 'saved_jobs_full') {
         publish({ ...state, error: `Your ${MAX_SAVED_JOBS} saved places are full. Remove an item in Saved jobs to make room.` });
         return false;
@@ -52,14 +62,21 @@ export function createSavedJobsState(request: JobsRequest) {
         if (job.url !== (value as JobSnapshot).url) throw new Error();
         jobs = Object.freeze([job, ...jobs.filter(item => item.id !== job.id && item.url !== job.url)]);
         if (jobs.length > MAX_SAVED_JOBS) throw new Error();
+      } else if (action === 'update') {
+        if (Object.keys(data).join(',') !== 'job') throw new Error();
+        const job = validateSavedJob(data.job), update = value as TrackingUpdate;
+        const previous = jobs.find(item => item.id === update.id);
+        if (!previous || job.id !== update.id || job.stage !== update.stage || job.notes !== update.notes || job.revision !== update.revision + 1
+            || JSON.stringify(snapshotFor(job, job)) !== JSON.stringify(snapshotFor(previous, previous)) || job.saved_at !== previous.saved_at) throw new Error();
+        jobs = Object.freeze(jobs.map(item => item.id === job.id ? job : item));
       } else {
         if (Object.keys(data).join(',') !== 'deleted' || data.deleted !== true) throw new Error();
         jobs = Object.freeze(jobs.filter(job => job.id !== value));
       }
-      publish({ ...state, jobs, ready: state.connected && !refreshRequested, notice: action === 'save' ? 'Candidate saved on this computer.' : action === 'delete' ? 'Saved candidate removed from this computer.' : '' });
+      publish({ ...state, jobs, ready: state.connected && !refreshRequested, notice: action === 'save' ? 'Candidate saved on this computer.' : action === 'delete' ? 'Saved candidate and its notes removed from this computer.' : action === 'update' ? 'Stage and notes saved on this computer.' : '' });
       return true;
     } catch {
-      publish({ ...state, ready: false, error: action === 'load' ? 'Saved jobs could not be loaded. Check the workspace and reload.' : `${action === 'save' ? 'Saving' : 'Removal'} could not be confirmed. Reload saved jobs to check before trying again.` });
+      publish({ ...state, ready: false, error: action === 'load' ? 'Saved jobs could not be loaded. Check the workspace and reload.' : `${action === 'delete' ? 'Removal' : 'Saving'} could not be confirmed. Reload saved jobs to check before trying again.` });
       return false;
     } finally {
       publish({ ...state, busy: false });
@@ -76,5 +93,6 @@ export function createSavedJobsState(request: JobsRequest) {
       else if (connected) { refreshRequested = false; void run('load'); }
     },
     reload: () => run('load'), save: (snapshot: JobSnapshot) => run('save', snapshot), remove: (id: string) => run('delete', id),
+    update: (tracking: TrackingUpdate) => run('update', tracking),
   };
 }

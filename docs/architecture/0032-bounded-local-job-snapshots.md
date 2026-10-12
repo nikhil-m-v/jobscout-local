@@ -30,4 +30,4 @@ Confirmed removal deletes the owned SQLite record with `secure_delete=ON` and DE
 
 See [dated progress](../progress/2026-10-12.md) for suites, package and synthetic browser evidence. Engine restart/delete/upgrade/concurrent-limit/rollback and no-external-service tests, frontend projection/transport/validation/uncertain-write/reconnection and escaped-rendering checks cover this contract. Browser save/alternative/reload/clear/keyboard-removal/compact Light/Dark checks use disposable synthetic data. They do not establish native or installed job-saving interaction, genuine installed upgrade or production resource measurements; these remain owner 23.
 
-Next: 19 — simple application stages and private local notes for saved records, one coherent increment with restart/deletion evidence. No application submission is implied.
+Follow-up implemented: [19 — private application tracking](0033-private-application-tracking.md) additively introduces schema marker 3, reversible stages and bounded notes while preserving snapshots. No application submission is implied. Next: 20 — privacy and data controls.

@@ -24,7 +24,7 @@ from jobscout_engine.domain.providers import MAX_PROVIDER_BODY_BYTES, validate_t
 from jobscout_engine.config import Settings
 from jobscout_engine.domain.contracts import EngineHealth, ModelProvider
 from jobscout_engine.storage import Database
-from jobscout_engine.domain.saved_jobs import validate_snapshot, SavedJobsFull, MAX_SAVED_JOB_BODY_BYTES
+from jobscout_engine.domain.saved_jobs import validate_snapshot, validate_tracking, SavedJobsFull, TrackingConflict, MAX_SAVED_JOB_BODY_BYTES, MAX_TRACKING_BODY_BYTES
 from jobscout_engine.domain.documents import ImportFailure, MAX_DOCUMENT_BYTES, MAX_TEXT_CHARACTERS
 from jobscout_engine.imports import ImportService
 from jobscout_engine.domain.search import (
@@ -341,6 +341,29 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
             return profile_response({'job': await run_in_threadpool(database.save_job, snapshot)})
         except SavedJobsFull:
             return profile_response({'error': 'saved_jobs_full'}, 409)
+        except (sqlite3.Error, ValueError):
+            return profile_response({'error': 'storage_unavailable'}, 503)
+
+    @application.patch('/api/v1/jobs/{job_id}', dependencies=[Depends(require_session)])
+    async def update_job(job_id: str, request: Request):
+        async def read_tracking():
+            body = bytearray()
+            async for chunk in request.stream():
+                if len(body) + len(chunk) > MAX_TRACKING_BODY_BYTES:
+                    raise ValueError()
+                body.extend(chunk)
+            return json.loads(body, object_pairs_hook=reject_duplicate_keys)
+        try:
+            if str(UUID(job_id)) != job_id or request.headers.get('content-type') != 'application/json':
+                raise ValueError()
+            tracking = validate_tracking(await asyncio.wait_for(read_tracking(), timeout=5))
+        except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
+            return profile_response({'error': 'invalid_job_tracking'}, 422)
+        try:
+            job = await run_in_threadpool(database.update_job, job_id, tracking)
+            return profile_response({'job': job} if job else {'error': 'saved_job_missing'}, 200 if job else 404)
+        except TrackingConflict:
+            return profile_response({'error': 'tracking_conflict'}, 409)
         except (sqlite3.Error, ValueError):
             return profile_response({'error': 'storage_unavailable'}, 503)
 

@@ -5,6 +5,25 @@ from jobscout_engine.domain.result_urls import public_result_url
 
 MAX_SAVED_JOBS = 200
 MAX_SAVED_JOB_BODY_BYTES = 120_000
+MAX_JOB_NOTES = 4000
+MAX_TRACKING_BODY_BYTES = 50_000
+
+
+class TrackingConflict(Exception):
+    pass
+
+
+def validate_tracking(value: object) -> dict:
+    if (type(value) is not dict or set(value) != {'stage', 'notes', 'revision', 'confirmed'}
+            or value['confirmed'] is not True or value['stage'] not in ('saved', 'applied', 'interview')
+            or type(value['revision']) is not int or not 0 <= value['revision'] < 2**31 - 1):
+        raise ValueError()
+    notes = value['notes']
+    if (type(notes) is not str or len(notes) > MAX_JOB_NOTES
+            or re.search(r'[\x00-\x08\x0b\x0c\x0e-\x1f\x7f]', notes)):
+        raise ValueError()
+    notes.encode('utf-8')
+    return {key: value[key] for key in ('stage', 'notes', 'revision')}
 
 
 class SavedJobsFull(Exception):

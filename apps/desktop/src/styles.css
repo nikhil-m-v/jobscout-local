@@ -374,3 +374,10 @@ svg { flex-shrink: 0; }
 .saved-remove { margin-top: 14px; padding: 14px; border: 1px solid var(--line); border-radius: 12px; }
 .saved-jobs-status:empty { display: none; }
 .flow-nav { flex-wrap: wrap; }
+/* Tracking uses existing opaque surfaces and semantic theme colors. */
+.job-tracking, .job-tracking-editor { margin-block: 1rem; }
+.job-tracking-editor { display: grid; gap: .6rem; }
+.job-tracking-editor select, .job-tracking-editor textarea { width: 100%; min-width: 0; min-height: 44px; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--card); color: var(--ink); font: inherit; }
+.job-tracking-editor textarea { resize: vertical; }
+.job-tracking-editor textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.job-tracking-editor textarea, .job-tracking-editor .discovery-snippet, .job-tracking .discovery-snippet { white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }

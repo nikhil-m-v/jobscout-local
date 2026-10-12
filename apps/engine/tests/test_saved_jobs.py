@@ -93,7 +93,7 @@ def test_additive_upgrade_retains_profile_and_saved_job_limit_is_atomic(tmp_path
         assert sorted(pool.map(save, [1, 2])) == [False, True]
     jobs = database.load_jobs()
     assert len(jobs) == MAX_SAVED_JOBS
-    assert database.save_job({key: value for key, value in jobs[0].items() if key not in {'id', 'saved_at'}}) == jobs[0]
+    assert database.save_job({key: jobs[0][key] for key in SNAPSHOT}) == jobs[0]
     with TestClient(app(tmp_path)) as client:
         assert client.put('/api/v1/jobs', headers=HEADERS, json={'candidate': SNAPSHOT, 'confirmed': True}).json() == {'error': 'saved_jobs_full'}
     database.delete_job(jobs[0]['id'])
@@ -151,5 +151,6 @@ def test_saving_loading_deleting_never_accesses_provider_vault_model_or_network(
                              secret_store=services, provider_connection=services, search_provider=services)
     with TestClient(application) as client:
         saved = client.put('/api/v1/jobs', headers=HEADERS, json={'candidate': SNAPSHOT, 'confirmed': True}).json()['job']
+        saved = client.patch('/api/v1/jobs/' + saved['id'], headers=HEADERS, json={'stage': 'interview', 'notes': 'SYNTHETIC_PRIVATE_NOTE', 'revision': 0, 'confirmed': True}).json()['job']
         assert client.get('/api/v1/jobs', headers=HEADERS).json() == {'jobs': [saved]}
         assert client.delete('/api/v1/jobs/' + saved['id'], headers=HEADERS).json() == {'deleted': True}

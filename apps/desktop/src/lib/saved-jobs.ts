@@ -1,13 +1,16 @@
 import { invoke, isTauri } from '@tauri-apps/api/core';
-import type { JobsRequest } from './saved-jobs-state';
+import type { JobsRequest, TrackingUpdate } from './saved-jobs-state';
 
 export const savedJobsRequest: JobsRequest = async (action, value) => {
-  if (isTauri()) return invoke('saved_jobs', { action, candidate: action === 'save' ? value : undefined, id: action === 'delete' ? value : undefined });
-  const suffix = action === 'delete' ? `/${encodeURIComponent(value as string)}` : '';
+  const update = action === 'update' ? value as TrackingUpdate : undefined;
+  const id = action === 'delete' ? value as string : update?.id;
+  const tracking = update ? { stage: update.stage, notes: update.notes, revision: update.revision, confirmed: true } : undefined;
+  if (isTauri()) return invoke('saved_jobs', { action, candidate: action === 'save' ? value : undefined, id, tracking });
+  const suffix = id ? `/${encodeURIComponent(id)}` : '';
   const response = await fetch(`/engine/jobs${suffix}`, {
-    method: action === 'load' ? 'GET' : action === 'save' ? 'PUT' : 'DELETE',
-    headers: { 'X-JobScout-Import': '1', ...(action === 'save' ? { 'Content-Type': 'application/json' } : {}) },
-    body: action === 'save' ? JSON.stringify({ candidate: value, confirmed: true }) : undefined,
+    method: action === 'load' ? 'GET' : action === 'save' ? 'PUT' : action === 'update' ? 'PATCH' : 'DELETE',
+    headers: { 'X-JobScout-Import': '1', ...(action === 'save' || action === 'update' ? { 'Content-Type': 'application/json' } : {}) },
+    body: action === 'save' ? JSON.stringify({ candidate: value, confirmed: true }) : tracking ? JSON.stringify(tracking) : undefined,
     cache: 'no-store', redirect: 'error', credentials: 'omit', signal: AbortSignal.timeout(15_000),
   });
   return response.json();

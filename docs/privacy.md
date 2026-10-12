@@ -1,6 +1,6 @@
 # Privacy is the product
 
-Status: product contract and implementation requirements. Local PDF/DOCX extraction, text review, explicit reviewed-text saving/deletion and bounded candidate saving/removal are implemented. Optional provider-key setup and an explicit account connection check are implemented. Explicit Tavily search is implemented for local development; broader quality and interactive release verification remain pending. Future controls below must be implemented and verified before enabling those features.
+Status: product contract and implementation requirements. Local PDF/DOCX extraction, text review, explicit reviewed-text saving/deletion and bounded candidate saving/removal and private application tracking are implemented. Optional provider-key setup and an explicit account connection check are implemented. Explicit Tavily search is implemented for local development; broader quality and interactive release verification remain pending. Future controls below must be implemented and verified before enabling those features.
 
 ## Promise
 
@@ -20,6 +20,8 @@ No telemetry, tracking pixels, remote fonts, automatic crash uploads, or backgro
 Theme, Reduce transparency and Reduce motion preferences are display-only settings kept in local webview/browser storage. They send nothing online and contain no career data. These accessibility controls do not change provider permissions or the discovery boundary.
 
 Save candidate explicitly keeps a local snapshot of returned title/snippet, safe URL, provider/source index and retrieval time, with a local identifier/save time. Up to 200 records are retained; same-link saves keep the first copy and never silently refresh or evict it. Query history, reviewed profile and match explanations are not saved with the candidate. Saving/loading/removal access no provider, vault, model or result page. Saved jobs remain after clearing results or deleting the profile; remove each item in Saved jobs to delete its owned record. Existing uninstall retention applies, so remove saved jobs before uninstalling if desired. Local records are not automatically encrypted and deletion does not promise secure disk erasure or removal from backups. Broader data controls remain milestone 20. See [the saving contract](architecture/0032-bounded-local-job-snapshots.md).
+
+Saved jobs also keeps user-recorded Saved/Applied/Interview stages and up to 4,000 characters of private notes. Edit stage and notes → Save changes updates only the local record; it never applies, contacts an employer or sends notes online. In-memory drafts survive navigation but disappear on close/reload. Confirmed candidate removal also deletes its stage and notes; clearing results/profile deletion and uninstall retain saved records under the existing policy. Clearing notes replaces the owned text; deletion does not promise secure erasure or backup removal. Revision checks prevent stale writers from silently overwriting newer notes. See [the tracking contract](architecture/0033-private-application-tracking.md).
 
 ## What optional online features may send
 

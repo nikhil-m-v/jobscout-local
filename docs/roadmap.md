@@ -4,11 +4,11 @@ Release scope adopted 2026-10-10: **v1.0 is the model-free Windows core through 
 
 Baseline: 2026-09-29. Rows remain small meaningful deliveries; difficult milestones can span several sessions. Reorder when evidence warrants it and preserve a working app. No deadline, automation or reminder is implied.
 
-## Current milestone — local saving, 2026-10-12
+## Current milestone — private application tracking, 2026-10-12
 
 [Decision 0031](architecture/0031-core-acceptance-and-deferred-release-gates.md) redefines 17D as core development acceptance with a [finite exit checklist](milestone17-acceptance.md#core-development-exit-checklist). Representative search quality belongs to milestone 21; full installed/accessibility/OS/resource acceptance and CI belong to 23. Those remain v1.0 release gates. Privacy, data-loss and critical lifecycle defects still block affected functionality.
 
-17D remains **core acceptance complete; broader quality and release acceptance deferred**. [18 — local saving](architecture/0032-bounded-local-job-snapshots.md) is implemented: explicit bounded snapshots, original source/retrieval time, same-link first-copy retention, restart and confirmed removal. Current 355 engine/113 frontend tests, nine diagnostic pools (72/72 reviewable labels), clean-pool evaluation, typecheck and production frontend build pass. Synthetic browser save/alternative/reload/clear/keyboard-removal/compact Light/Dark evidence is recorded in [dated progress](progress/2026-10-12.md); native/installed saving and genuine installed upgrade remain owner 23. Next is **19 — simple application tracking** with private local notes and restart/delete evidence. Continue one coherent increment at a time. The 10–20 suitable-opportunity target is an aspiration when available, not a universal pass condition. No live provider request or publication; version stays 0.1.0.
+17D remains **core acceptance complete; broader quality and release acceptance deferred**. [18 — local saving](architecture/0032-bounded-local-job-snapshots.md) and [19 — private tracking](architecture/0033-private-application-tracking.md) are implemented. Saved/Applied/Interview stages and bounded notes use explicit local saves with revision checks, restart/delete and additive migration evidence. Current 370 engine/117 frontend tests, nine diagnostic pools (72/72 reviewable labels), clean-pool evaluation and production frontend build pass. Synthetic browser navigation-draft/save/reload/removal and compact Light/Dark evidence is recorded in [dated progress](progress/2026-10-12.md). Native/installed saving/tracking and genuine installed upgrade remain owner 23; quality remains owner 21. Next is **20 — privacy and data controls** across profile, saved candidates and notes, with explicit retention/deletion guidance. Continue one coherent increment at a time. No live provider request or new publication; version stays 0.1.0.
 
 ## Prior milestone checkpoints — historical
 
@@ -141,8 +141,8 @@ The revised sequence below preserves increments 1–7 and moves resource measure
 | 16 | Results normalization and filtering | Partial: canonical links, tracking-key removal, source/time, deduplication and local role/region/work-mode/seniority/skill mention filters implemented (decisions 0014–0015). Missing snippet details remain visible by default. Verified job attributes and cross-source identity remain pending; no result websites/resources are fetched. |
 | 17 | Core discovery and local ranking without a model | 17A/17B and conservative 17C implemented; 17D core acceptance complete; broader quality and release acceptance deferred to 21/23. Candidate groups do not establish suitability. |
 | 18 | Local job saving — implemented | Explicit snapshots capped at 200; source/retrieval time, first-copy same-link retention, engine restart/delete/upgrade and synthetic browser keyboard/compact evidence pass. Availability/suitability unverified; native/installed saving follow-up owned by 23. |
-| 19 | Simple application tracker — next | Saved/applied/interview stages and private local notes, with restart/deletion evidence; external applying remains explicit. |
-| 20 | Privacy and data controls | Verify deletion of profile, jobs, notes, derived indexes and caches; explain retention and original-file limits. |
+| 19 | Simple application tracker — implemented | Reversible Saved/Applied/Interview stages and private notes; automated restart/delete/upgrade/conflict and synthetic browser evidence. Tracking sends nothing to employers; native/installed follow-up owned by 23. |
+| 20 | Privacy and data controls — next | Verify deletion of profile, jobs, notes, derived indexes and caches; explain retention and original-file limits. |
 | 21 | Search quality review | Own deferred representative independent first-ten/full-pool review: relevance, restrictions, filter adherence, duplicates, source coverage, freshness uncertainty, latency and provider cost. Investigate/fix the largest demonstrated discovery issue; 10–20 suitable opportunities is an aspiration when available. Required before v1.0 release. |
 | 22 | Guided core setup | Storage/search configuration, skip paths, external-site disclosures and recovery; no model download required. |
 | 23 | v1.0 hardening and release-candidate demo | Own deferred installed active-import/search/abrupt-exit, normal wizard/shortcuts, fresh-user/runtime/upgrade, full accessibility/OS/themes, current-package and production workload-resource checks; CI/Windows packaging, docs and synthetic search/save/track demo. Review all v1.0 gates before version change/publication. |
@@ -167,7 +167,7 @@ The revised sequence below preserves increments 1–7 and moves resource measure
 
 ## Deferred milestone within 23 — GitHub Actions CI and Windows packaging
 
-Status: planned, not implemented. Take this up during core alpha hardening after core acceptance, local saving, application tracking, data controls, search-quality review and guided setup (milestones 17–22). Local saving is implemented; application tracking is next.
+Status: planned, not implemented. Take this up during core alpha hardening after core acceptance, local saving, application tracking, data controls, search-quality review and guided setup (milestones 17–22). Local saving and application tracking are implemented; privacy and data controls are next.
 
 - Run the complete engine and frontend suites, synthetic shortlist evaluations, typechecking and frontend builds on pull requests and pushes to `main`. Test counts follow the current suites rather than a fixed historical total.
 - Generate Windows installers only after validation passes, using GitHub-hosted Windows runners to exercise Windows-specific checks and packaging.
