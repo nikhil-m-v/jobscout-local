@@ -2,6 +2,8 @@
 
 Date: 2026-10-14. Status: exact approved acquisition and frozen blinded assessment complete as a development slice; tools/aggregate evidence published as `7dba0f9` on separate explicit user authorization. The human explicitly approved [the two-case scope](21e-provider-review.md) after offline preparation. Its authorization is consumed; no further provider request, retry, page fetch, account check or purchase is included. Milestone 21 remains open.
 
+Continuation 2026-10-14: [21F structured job-heading correction](21f-structured-heading-results.md) recognizes the previously missed analyst opening's metadata, moves it from twentieth to tenth in assisted order and preserves it under strict filtering. Original 21E acquisition/labels/figures below remain unchanged; 21F replay is reported separately.
+
 ## Acquisition
 
 The predeclared cases use `Quality engineer jobs India Remote .NET Software testing` and `Data analyst jobs Canada Hybrid Data analytics SQL`, each across the unchanged production Greenhouse/Lever/Ashby/Workday/SmartRecruiters scopes and basic-search options. Both cases and synthetic references existed in the registry before acquisition. This broadens role/country/work-mode coverage; these are different markets, not a paired causal query comparison.

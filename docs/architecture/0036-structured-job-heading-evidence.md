@@ -1,0 +1,24 @@
+# 0036 — Structured job-heading evidence
+
+Date: 2026-10-14. Status: 21F offline correction predeclared, implemented and verified; local/unpublished.
+
+## Evidence and bounded decision
+
+[The frozen 21E review](../21e-quality-case-results.md#disagreements-and-diagnosis) identifies one analyst opening whose generic returned title conceals explicit job-specific metadata in its snippet. Its role is a primary Markdown heading, followed by an employer/location subheading containing a literal country, plus a standalone posting work-mode tag. Production leaves all three fields unknown, loses that opening in strict filtering and places it twentieth in assisted order. Broader returned-country/work-mode sparsity remains the largest discovery shortfall; this correction cannot create absent evidence.
+
+Recognize this structure only for a known individual ATS posting URL pattern and generic `Job Posting` title, optionally followed by a bounded employer suffix after `|`. Require exactly one primary Markdown heading whose entire text is a canonical public role label, immediately followed (allowing one blank line) by an employer/location subheading. The subheading must have one middle-dot separator and two or three comma-separated location components ending in a literal catalog country. Earlier place components are bounded opaque capitalized words, never geocoded. Non-location prose, markup, malformed/overlong values, code fences, multiple primary headings and missing/unsupported countries do not qualify. Existing collection/resource suppression remains.
+
+Only within that validated same-link job structure, recognize a standalone line/provider `[...]` fragment containing exactly one `#LI-REMOTE`, `#LI-HYBRID` or `#LI-ONSITE` token, optionally followed by recruiter-code tags of one to three letters and one to three digits. Ordinary work-mode prose, hybrid testing methods, company policy, partial/prefixed tags and tags without the structure remain unknown. Conflicting work-mode tag fragments supply no new positive mode; a tag also supplies no new positive if an existing recognized positive mode is incompatible. Existing explicit exclusions still compete with accepted signals. Each signal quotes an exact literal snippet span; no role/location/mode is borrowed from another link. These pattern guards do not prove that every plausible returned structure is truthful or belongs to a current vacancy.
+
+Do not broaden general hiring prose or alter the two disputed quality-role exclusions. An explicit development title with testing duties does not automatically become a dedicated quality role. Original reviewer judgments remain immutable and policy disagreements explicit. No ranking weight, filter/query/source default, requirement grammar, engine/API/native/storage contract, budget, dependency, version or setup change. The existing source disclosure explains recognized metadata in manual/assisted Results; adjust its ordering guidance to mention job headings alongside titles.
+
+## Finite acceptance, declared before correction
+
+1. Synthetic positives for at least two countries/modes quote exact role/location/tag spans. Missing/ambiguous/adversarial structure and ordinary company/testing prose cannot gain support from this addition; exclusions, non-openings and unknown defaults remain.
+2. Production local analysis/validation/filtering/order tests and safely escaped manual rendering demonstrate behavior; existing synthetic retention and full frontend/report tests plus typecheck/build pass.
+3. Replay all five original byte-bound frozen pools against published `daede22`, keeping labels/references/criteria fixed. Preserve all reviewer-supported candidates in selected pools; report first-ten/full retention, strict, field disagreements and any tradeoff. Do not silently retune labels or claim every disagreement is a defect.
+4. Record aggregate results, checkpoint and dated progress with privacy/publication/native/installed/freshness limits. Close this correction after the finite checks; representative milestone-21 acceptance remains open.
+
+No provider/page/vault/model/private-profile operation or new acquisition is part of this slice. The two consumed provider approvals cannot be reused. Raw historical reviews and comparison artifacts remain ignored/local; only synthetic examples and aggregates enter source control. Existing installations need a new frontend-containing desktop build for this correction; the prior installer is unchanged. Publication needs separate user authorization.
+
+All four finite checks pass with their stated limits. [The aggregate replay record](../21f-structured-heading-results.md) documents the single corrected opening, unchanged pools and unresolved representative-quality shortfall. Predeclared positive/filter checks failed before implementation; adversarial headquarters and competing-mode checks exposed unsafe additions and passed after tightening. Original labels were not changed.

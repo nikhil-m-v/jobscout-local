@@ -74,6 +74,15 @@ test('manual Results quote compact metadata and separate physical requirements w
   assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
 });
 
+test('manual Results quote structured posting role/location/tag metadata and escape unrelated markup', () => {
+  const candidate = { title: 'Job Posting | Example Employer', url: 'https://job-boards.greenhouse.io/synthetic/jobs/101', snippet: '#LI-HYBRID #LI-EX1 [...] Other text.\n# Data analyst\n\n## Example Employer · Sample City, Example Province, Canada\n<img src="https://tracker.example.com/pixel"><script>steal()</script>' };
+  const markup = render(true, false, true, false, { discovery: { result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-14T03:00:00Z', candidates: [candidate], duplicates_removed: 0, discarded_results: 0 } } });
+  for (const phrase of ['# Data analyst', '## Example Employer · Sample City, Example Province, Canada', '#LI-HYBRID']) assert.ok(markup.includes(`Advertised detail in snippet: <q>${phrase}</q>`));
+  assert.ok(markup.includes('Supported text is not verified eligibility'));
+  assert.ok(markup.includes('&lt;img')); assert.ok(markup.includes('&lt;script&gt;'));
+  assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
+});
+
 test('remote area restrictions remain source-linked review evidence in manual Results', () => {
   const candidate = { title: 'Software engineer (Remote – EMEA)', snippet: 'Location: India. <img src="https://tracker.example.com">', url: 'https://jobs.example.com/1' };
   const markup = render(true, false, true, false, { discovery: { result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-07T03:00:00Z', candidates: [candidate], duplicates_removed: 0, discarded_results: 0 } } });

@@ -1,6 +1,7 @@
 import type { Candidate } from './discovery-state.ts';
 import type { Mentions } from './assistance.ts';
-import { regions, arrangements } from './public-search-criteria.ts';
+import { regions, arrangements, roles } from './public-search-criteria.ts';
+import { inspectCandidate } from './candidate-pool.ts';
 
 export type Signal = Readonly<{ value: string; source: 'title' | 'snippet'; phrase: string; polarity: 'positive' | 'negative' | 'restriction'; excludes?: readonly string[] }>;
 export type RelevanceStatus = 'supported' | 'contradiction' | 'conflict' | 'unknown';
@@ -16,12 +17,41 @@ const placeAndMode = /^(?:(.*?)[\t ]+)?(Remote|Hybrid|On[ -]?site|\([\t ]*(?:Rem
 // partial percentages and unfinished details cannot establish an arrangement.
 const placeWords = /^[\p{Lu}][\p{L}'’\-]{0,39}(?:[\t ]+[\p{Lu}][\p{L}'’\-]{0,39}){0,2}$/u;
 const nonPlaceWords = /\b(?:support|supports|team|teams|client|clients|customer|customers|office|offices|policy|culture|partial|partially|flexible|not|no|only|all|worldwide|global|can|may|must|prefer|prefers|allows|offers|is|are)\b/i;
+const roleIds = new Map(Object.entries(roles).map(([value, label]) => [label.toLowerCase(), value]));
+
+function structuredHeading(candidate: Candidate): CandidateRelevance {
+  const role: Signal[] = [], region: Signal[] = [], arrangement: Signal[] = [];
+  const output = { role, region, arrangement };
+  const { title, snippet } = candidate;
+  if (!/^Job Posting(?:[\t ]*\|[\t ]*[^<>\r\n]{1,160})?$/i.test(title) || inspectCandidate(candidate).kind !== 'posting' || /^(?:[\t ]*)(?:```|~~~)/m.test(snippet)) return output;
+  // One complete primary role heading and its adjacent employer/location line;
+  // a copied collection, code sample or unrelated country paragraph cannot join it.
+  const headings = [...snippet.matchAll(/^#[\t ]+([^\r\n]+)(?=\r?$)/gm)];
+  if (headings.length !== 1) return output;
+  const heading = headings[0], roleId = roleIds.get(heading[1].trim().toLowerCase());
+  const next = /^[\t ]*\r?\n(?:[\t ]*\r?\n)?(##[\t ]+[^\r\n]{1,264})(?=\r?\n|$)/.exec(snippet.slice(heading.index! + heading[0].length));
+  const location = next && /^##[\t ]+([^<>#·\r\n]{1,100})[\t ]*·[\t ]*([^<>#·\r\n]{1,160})$/.exec(next[1]);
+  if (!roleId || !location || !location[1].trim()) return output;
+  const parts = location[2].split(',').map(part => part.trim());
+  const countryId = countryIds.get(parts.at(-1)!.toLowerCase());
+  if (!countryId || ![2, 3].includes(parts.length) || parts.slice(0, -1).some(part => !placeWords.test(part) || nonPlaceWords.test(part) || /\b(?:our|headquarters|company|companies|employer|employers|products|benefits|news|opportunities)\b/i.test(part))) return output;
+  output.role.push({ value: roleId, source: 'snippet', phrase: heading[0].trim(), polarity: 'positive' });
+  output.region.push({ value: countryId, source: 'snippet', phrase: next![1].trim(), polarity: 'positive' });
+  const tags = snippet.split(/\r?\n|\[\.\.\.\]/).flatMap(fragment => {
+    const match = /^(#LI-(REMOTE|HYBRID|ONSITE))(?:[\t ]+#LI-[A-Z]{1,3}\d{1,3})*$/i.exec(fragment.trim());
+    return match ? [match] : [];
+  });
+  if (tags.length && new Set(tags.map(tag => tag[2].toLowerCase())).size === 1) output.arrangement.push({ value: tags[0][2].toLowerCase(), source: 'snippet', phrase: tags[0][1], polarity: 'positive' });
+  return output;
+}
 
 // Deliberately narrow source language. Unqualified snippet mentions, cities,
 // eligibility and global remote availability cannot establish a job location.
 export function candidateRelevance(candidate: Candidate, mentions?: Mentions): CandidateRelevance {
   const role: Signal[] = [], region: Signal[] = [], arrangement: Signal[] = [];
   if (mentions?.content?.status === 'collection' || mentions?.content?.status === 'resource') return { role, region, arrangement };
+  const heading = structuredHeading(candidate);
+  role.push(...heading.role); region.push(...heading.region);
   for (const entry of mentions?.shortlist?.roles ?? []) {
     const text = candidate[entry.source];
     const negatives = [...text.matchAll(new RegExp(`\\b(?:no|not) +${escape(entry.phrase)} +(positions|roles|jobs|openings)\\b`, 'gi'))];
@@ -108,6 +138,9 @@ export function candidateRelevance(candidate: Candidate, mentions?: Mentions): C
       }
     }
   }
+  // A work-mode tag may supplement an explicit matching detail, never replace
+  // an incompatible existing positive mode. Explicit negatives still conflict.
+  if (heading.arrangement.length && !arrangement.some(signal => signal.polarity === 'positive' && signal.value !== heading.arrangement[0].value)) arrangement.push(...heading.arrangement);
   return { role, region, arrangement };
 }
 

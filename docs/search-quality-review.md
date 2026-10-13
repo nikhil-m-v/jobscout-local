@@ -6,6 +6,8 @@ Continuation 2026-10-14: [21D below](#milestone-21d--compact-locationmode-correc
 
 Further coverage: [21E additional cases](21e-quality-case-results.md) records the separately approved quality-engineer/India/remote and data-analyst/Canada/hybrid acquisition and frozen assessment. Its exact one-use scope is [recorded separately](21e-provider-review.md). Earlier criteria, inputs and labels remain unchanged.
 
+Current correction: [21F structured job-heading evidence](21f-structured-heading-results.md) improves the analyst opening's recognition/visibility without changing any original labels or the other four pool reports. Earlier 21A/B/C/D/E figures retain their checkpoint meanings.
+
 ## Reproduce and interpret
 
 After the normal Node and `.venv` setup in [README](../README.md), run:

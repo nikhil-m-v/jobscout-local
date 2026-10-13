@@ -223,3 +223,80 @@ test('production analysis and compact filters retain unknowns/conflicts and reje
   assert.deepEqual(filterCandidates(candidates, evidence, false, { ...filters, keepUnknown: false }).map(row => row.index), [0, 1]);
   assert.deepEqual(filterCandidates(candidates, evidence, false, initialResultFilters).map(row => row.index), [0, 1, 2, 3, 4, 5]);
 });
+
+const headingJob = (snippet, title = 'Job Posting | Example Employer', url = 'https://job-boards.greenhouse.io/synthetic/jobs/101') => ({ title, snippet, url, source_index: 0 });
+const heading = (country = 'Canada', role = 'Data analyst') => `# ${role}\n\n## Example Employer · Sample City, Example Province, ${country}`;
+
+test('structured posting headings quote canonical role, literal country and standalone work-mode tags', () => {
+  for (const [country, region, tag, mode] of [['Canada', 'canada', 'HYBRID', 'hybrid'], ['India', 'india', 'REMOTE', 'remote'], ['Australia', 'australia', 'ONSITE', 'onsite']]) {
+    const candidate = headingJob(`#LI-${tag} #LI-EX1 [...] Other text.\n${heading(country)}`);
+    const evidence = candidateRelevance(candidate);
+    assert.equal(relevanceStatus(evidence.role, 'data-analyst'), 'supported');
+    assert.equal(relevanceStatus(evidence.region, region), 'supported');
+    assert.equal(relevanceStatus(evidence.arrangement, mode), 'supported');
+    assert.ok(evidence.role.some(signal => signal.phrase === '# Data analyst'));
+    assert.ok(evidence.region.some(signal => signal.phrase === `## Example Employer · Sample City, Example Province, ${country}`));
+    assert.ok(evidence.arrangement.some(signal => signal.phrase === `#LI-${tag}`));
+    for (const signals of Object.values(evidence)) for (const signal of signals) assert.ok(candidate[signal.source].includes(signal.phrase));
+  }
+  const crlf = candidateRelevance(headingJob('# Data analyst\r\n## Example Employer · Sample City, Canada\r\n#LI-HYBRID', 'Job Posting'));
+  assert.equal(relevanceStatus(crlf.role, 'data-analyst'), 'supported');
+  assert.equal(relevanceStatus(crlf.region, 'canada'), 'supported');
+  assert.equal(relevanceStatus(crlf.arrangement, 'hybrid'), 'supported');
+});
+
+test('structured headings reject ambiguous pages, locations, code samples and unrelated tags', () => {
+  for (const candidate of [
+    headingJob(`${heading()}\n#LI-HYBRID`, 'Careers'),
+    headingJob(`${heading()}\n#LI-HYBRID`, undefined, 'https://job-boards.greenhouse.io/synthetic'),
+    headingJob(`${heading()}\n#LI-HYBRID`, undefined, 'https://jobs.example.com/unknown'),
+    headingJob(`${heading()}\n# Data engineer\n#LI-HYBRID`),
+    headingJob(`${heading()}\n${heading()}\n#LI-HYBRID`),
+    headingJob('# Data analyst\n## Example Employer · Sample City\n#LI-HYBRID'),
+    headingJob(heading('Canada?') + '\n#LI-HYBRID'),
+    headingJob(heading('Canada Offices') + '\n#LI-HYBRID'),
+    headingJob('# Data analyst\n## Example Employer · Our Customers, Canada\n#LI-HYBRID'),
+    headingJob('# Data analyst\n## Example Employer · Company Headquarters, Canada\n#LI-HYBRID'),
+    headingJob('# Data analyst\n## Example Employer · ' + 'X'.repeat(170) + ', Canada\n#LI-HYBRID'),
+    headingJob('```\n' + heading() + '\n#LI-HYBRID\n```'),
+    headingJob('# Data analyst\nResponsibilities\n## Example Employer · Sample City, Canada\n#LI-HYBRID'),
+    headingJob('# Data analyst jobs\n## Example Employer · Sample City, Canada\n#LI-HYBRID'),
+  ]) {
+    const evidence = candidateRelevance(candidate);
+    assert.equal(relevanceStatus(evidence.role, 'data-analyst'), 'unknown', candidate.snippet);
+    assert.equal(relevanceStatus(evidence.region, 'canada'), 'unknown', candidate.snippet);
+    assert.equal(relevanceStatus(evidence.arrangement, 'hybrid'), 'unknown', candidate.snippet);
+  }
+  for (const text of ['Our company offers hybrid benefits.', 'Hybrid testing methods.', 'Not #LI-HYBRID', '#LI-HYBRID-PARTIAL', '#LI-HYBRID team', '#LI-HYBRID\n#LI-REMOTE']) {
+    const evidence = candidateRelevance(headingJob(`${heading()}\n${text}`));
+    assert.equal(relevanceStatus(evidence.arrangement, 'hybrid'), 'unknown', text);
+  }
+});
+
+test('structured heading evidence preserves explicit exclusions and non-opening suppression', () => {
+  const candidate = headingJob(`${heading()}\n#LI-HYBRID\nNot hybrid.`);
+  assert.equal(relevanceStatus(candidateRelevance(candidate).arrangement, 'hybrid'), 'conflict');
+  assert.equal(relevanceStatus(candidateRelevance(headingJob(`${heading()}\n#LI-HYBRID\nNot Canada.`)).region, 'canada'), 'conflict');
+  const competingMode = candidateRelevance(headingJob(`${heading()}\n#LI-HYBRID\nWork mode: remote.`));
+  assert.equal(relevanceStatus(competingMode.arrangement, 'hybrid'), 'contradiction', 'An incompatible explicit work-mode detail must not be overwritten by a tag');
+  for (const status of ['collection', 'resource']) assert.ok(Object.values(candidateRelevance(candidate, { ...mentions(false), content: { status } })).every(signals => signals.length === 0));
+  for (const title of ['Software engineer (Development & Testing)', 'Software engineer (Automation Testing, C# and .NET)']) {
+    const evidence = candidateRelevance(headingJob('Responsible for testing.\n' + heading('India', 'Quality engineer') + '\n#LI-REMOTE', title), mentions(true));
+    assert.equal(relevanceStatus(evidence.role, 'quality-engineer'), 'contradiction');
+  }
+});
+
+test('production analysis gives structured analyst metadata existing role priority and strict retention', () => {
+  const candidates = [headingJob('Data analytics SQL.\n' + heading() + '\n#LI-HYBRID'),
+    { ...job('Data analyst', 'Data analytics SQL.'), url: 'https://job-boards.greenhouse.io/synthetic/jobs/102' },
+    headingJob('Data analytics SQL.\n' + heading('India') + '\n#LI-HYBRID')];
+  const review = 'Data analyst SQL data analytics';
+  const root = fileURLToPath(new URL('../../../', import.meta.url));
+  const analyzed = spawnSync(resolve(root, '.venv', process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python'), ['-c', 'import json,sys; from jobscout_engine.domain.assistance import analyze_review; print(json.dumps(analyze_review(json.load(sys.stdin))))'], { cwd: root, input: JSON.stringify({ text: review, reviewed: true, candidates: candidates.map(({ title, snippet }) => ({ title, snippet })) }), encoding: 'utf8', timeout: 30000, windowsHide: true });
+  assert.equal(analyzed.status, 0);
+  const evidence = validateAssistance(JSON.parse(analyzed.stdout), candidates.length, review, candidates).matches;
+  const filters = { ...initialResultFilters, role: 'data-analyst', region: 'canada', arrangement: 'hybrid' };
+  assert.deepEqual(filterCandidates(candidates, evidence, true, filters, 'data-analyst').map(row => row.index), [0, 1]);
+  assert.deepEqual(filterCandidates(candidates, evidence, true, { ...filters, keepUnknown: false }, 'data-analyst').map(row => row.index), [0]);
+  assert.deepEqual(filterCandidates(candidates, evidence, false, initialResultFilters).map(row => row.index), [0, 1, 2]);
+});
