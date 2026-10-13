@@ -6,6 +6,7 @@ import { resolve } from 'node:path';
 import { validateAssistance } from '../src/lib/assistance.ts';
 import { candidateRelevance, relevanceStatus } from '../src/lib/relevance.ts';
 import { filterCandidates, initialResultFilters } from '../src/lib/result-filters.ts';
+import { candidateRequirements } from '../src/lib/work-requirements.ts';
 const job = (title, snippet = '') => ({ title, snippet, url: 'https://jobs.example.com/1', source_index: null });
 const mentions = title => ({ index: 0, roles: ['software-engineer'], regions: [], arrangements: [], seniorities: [], skills: [], shared_skills: [], content: { status: 'opening' }, shortlist: { roles: title ? [{ role: 'software-engineer', source: 'title', phrase: 'Software engineer' }] : [], exact_tools: [], exclusions: [] } });
 
@@ -144,4 +145,81 @@ test('engine alias and frontend ATS evidence change strict filtering without los
     const index = candidates.indexOf(candidate);
     for (const signals of Object.values(candidateRelevance(candidate, evidence[index]))) for (const signal of signals) assert.ok(candidate[signal.source].includes(signal.phrase));
   }
+});
+
+test('compact location metadata supports literal country and mode with exact source spans', () => {
+  for (const [snippet, country, mode] of [
+    ['India, Remote', 'india', 'remote'],
+    ['India, Remote [...] India, Remote\nAbout this role', 'india', 'remote'],
+    ['Job locations: India Example City Remote ... Python SQL.', 'india', 'remote'],
+    ['Apply. locations: India Example City Remote ... Responsibilities.', 'india', 'remote'],
+    ['Location: India (Remote)', 'india', 'remote'],
+    ['Canada, Hybrid', 'canada', 'hybrid'],
+    ['Location: Canada Sample City On-site.', 'canada', 'onsite'],
+  ]) {
+    const candidate = job('Software engineer', snippet);
+    const evidence = candidateRelevance(candidate, mentions(true));
+    assert.equal(relevanceStatus(evidence.region, country), 'supported', snippet);
+    assert.equal(relevanceStatus(evidence.arrangement, mode), 'supported', snippet);
+    for (const signals of Object.values(evidence)) for (const signal of signals) assert.ok(candidate[signal.source].includes(signal.phrase));
+  }
+});
+
+test('compact metadata does not promote company prose, questions, partial modes or city-only text', () => {
+  for (const snippet of [
+    'Our customers are in India, Remote teams support them.',
+    'India, Remote team support',
+    'Is this India, Remote?',
+    'Company locations: India Example City Remote.',
+    'Our policy: India, Remote',
+    'locations: India Supports Remote.',
+    'locations: India Remote team.',
+    'locations: India Example City Partially Remote.',
+    'locations: India Example City 50% Remote.',
+    'locations: Example City Remote.',
+    'locations: India Example City Remote offices.',
+    'locations: India Example City (Remote',
+    'locations: India Example City Remote)',
+    `locations: India ${'X'.repeat(150)} Remote.`,
+  ]) {
+    const evidence = candidateRelevance(job('Software engineer', snippet));
+    assert.equal(relevanceStatus(evidence.region, 'india'), 'unknown', snippet);
+    assert.equal(relevanceStatus(evidence.arrangement, 'remote'), 'unknown', snippet);
+  }
+});
+
+test('compact metadata preserves exclusions, conflicts, requirement prompts and non-opening suppression', () => {
+  const negative = candidateRelevance(job('Software engineer', 'Not India, Remote. Not remote.'));
+  assert.equal(relevanceStatus(negative.region, 'india'), 'contradiction');
+  assert.equal(relevanceStatus(negative.arrangement, 'remote'), 'contradiction');
+  const candidate = job('Software engineer', 'India, Remote\nNot remote. Must physically reside in PST - EST timezones.');
+  const evidence = candidateRelevance(candidate, mentions(true));
+  assert.equal(relevanceStatus(evidence.region, 'india'), 'supported');
+  assert.equal(relevanceStatus(evidence.arrangement, 'remote'), 'conflict');
+  assert.ok(candidateRequirements(candidate).some(note => note.kind === 'location'));
+  for (const status of ['collection', 'resource']) {
+    assert.ok(Object.values(candidateRelevance(candidate, { ...mentions(true), content: { status } })).every(signals => signals.length === 0));
+  }
+});
+
+test('production analysis and compact filters retain unknowns/conflicts and reject explicit mismatches', () => {
+  const candidates = [
+    job('Software engineer', 'India, Remote\nPython SQL.'),
+    job('Software engineer', 'locations: India Example City Remote ... Python SQL.'),
+    job('Software engineer', 'Location: Canada Sample City Remote. Python SQL.'),
+    job('Software engineer', 'Location: India (Hybrid). Python SQL.'),
+    job('Software engineer', 'Company locations: India Example City Remote. Python SQL.'),
+    job('Software engineer', 'India, Remote\nNot remote. Python SQL.'),
+  ];
+  const root = fileURLToPath(new URL('../../../', import.meta.url));
+  const review = 'Software engineer Python SQL';
+  const analyzed = spawnSync(resolve(root, '.venv', process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python'), ['-c', 'import json,sys; from jobscout_engine.domain.assistance import analyze_review; print(json.dumps(analyze_review(json.load(sys.stdin))))'], {
+    cwd: root, input: JSON.stringify({ text: review, reviewed: true, candidates: candidates.map(({ title, snippet }) => ({ title, snippet })) }), encoding: 'utf8', timeout: 30000, windowsHide: true,
+  });
+  assert.equal(analyzed.status, 0);
+  const evidence = validateAssistance(JSON.parse(analyzed.stdout), candidates.length, review, candidates).matches;
+  const filters = { ...initialResultFilters, role: 'software-engineer', region: 'india', arrangement: 'remote' };
+  assert.deepEqual(filterCandidates(candidates, evidence, false, filters).map(row => row.index), [0, 1, 4, 5]);
+  assert.deepEqual(filterCandidates(candidates, evidence, false, { ...filters, keepUnknown: false }).map(row => row.index), [0, 1]);
+  assert.deepEqual(filterCandidates(candidates, evidence, false, initialResultFilters).map(row => row.index), [0, 1, 2, 3, 4, 5]);
 });

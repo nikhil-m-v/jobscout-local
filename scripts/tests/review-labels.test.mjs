@@ -138,3 +138,55 @@ test('all predeclared public cases match production engine queries without vault
   assert.deepEqual(report.proposed_comparison, ['software-india-remote-tools', 'software-india-remote']);
   assert.equal(report.comparison_request_ceiling, 10);
 });
+
+for (const caseId of ['quality-india-remote', 'analyst-canada-hybrid']) {
+  test(`${caseId} binds registered criteria, labels and its own synthetic tool reference`, () => {
+    const registry = JSON.parse(readFileSync(resolve(root, 'evaluation/search-quality-cases.json'), 'utf8'));
+    const item = registry.cases.find(value => value.id === caseId);
+    const title = caseId === 'quality-india-remote' ? 'Quality engineer' : 'Data analyst';
+    const country = caseId === 'quality-india-remote' ? 'India' : 'Canada';
+    const mode = item.criteria.arrangement;
+    // The tenth-boundary unknown moves forward only with this case's tools.
+    // A reused Python/SQL reference would favor the ten earlier candidates.
+    const candidates = Array.from({ length: 10 }, (_, index) => candidate(index, `Location: ${country}. Work mode: ${mode}. Python SQL.`, `${title} synthetic role ${index}`));
+    candidates.push(candidate(10, item.synthetic_reference, `${title} synthetic tool role`));
+    candidates.push(candidate(11, `Location: ${country}. Work mode: ${mode}.`, 'Software engineer other role'));
+    const labels = candidates.map((job, index) => ({ ...labelFor(index),
+      role: assess(index === 11 ? 'contradiction' : 'supported', 'title', index === 11 ? 'Software engineer' : title),
+      region: assess(index === 10 ? 'unknown' : 'supported', 'snippet', index === 10 ? null : country),
+      arrangement: assess(index === 10 ? 'unknown' : 'supported', 'snippet', index === 10 ? null : mode),
+      review_value: index === 11 ? 'mismatch' : index === 10 ? 'needs_review' : 'supported',
+    }));
+    const result = { ...resultFor([]), query: item.expected_query,
+      candidates: candidates.map(job => ({ ...job, source_index: 0 })),
+      coverage: { attempted: 5, completed: 5, max_requests: 5, stop_reason: 'complete', failures: [] } };
+    const bytes = Buffer.from(JSON.stringify(result));
+    const directory = mkdtempSync(resolve(root, '.local/quality-cli-'));
+    const inputPath = resolve(directory, 'result.json'), auditPath = resolve(directory, 'review.json');
+    try {
+      writeFileSync(inputPath, bytes); writeFileSync(auditPath, JSON.stringify(rawAudit(bytes, labels)));
+      const invoke = selected => spawnSync(process.execPath, ['--experimental-strip-types', resolve(root, 'scripts/review-search-quality.mjs'), inputPath, auditPath, '--case', selected], { cwd: root, encoding: 'utf8', timeout: 30000, windowsHide: true });
+      const reviewed = invoke(caseId);
+      assert.equal(reviewed.status, 0, reviewed.stderr);
+      const report = JSON.parse(reviewed.stdout);
+      assert.equal(report.review_case, caseId);
+      assert.deepEqual(report.criteria, item.criteria);
+      assert.deepEqual(report.frozen_review.label_counts, { supported: 10, needs_review: 1, mismatch: 1 });
+      const modes = report.frozen_review.modes;
+      assert.equal(modes.selected_manual.retained_links, 11);
+      assert.equal(modes.selected_manual.first_ten.primary_labels.supported, 10);
+      assert.equal(modes.selected_assisted.first_ten.primary_labels.supported, 9);
+      assert.equal(modes.selected_assisted.first_ten.primary_labels.needs_review, 1);
+      assert.deepEqual(modes.selected_assisted_strict.supported_link_retention, { retained: 10, total: 10 });
+      assert.equal(modes.selected_assisted_strict.retained_links, 10);
+      const rejected = invoke(caseId === 'quality-india-remote' ? 'analyst-canada-hybrid' : 'quality-india-remote');
+      assert.equal(rejected.status, 1);
+      assert.equal(rejected.stdout, '');
+      for (const marker of [directory, 'REVIEWER_PRIVATE_MARKER', 'RAW_REASON_MARKER', candidates[0].url]) {
+        assert.ok(!reviewed.stdout.includes(marker)); assert.ok(!rejected.stderr.includes(marker));
+      }
+    } finally {
+      unlinkSync(inputPath); unlinkSync(auditPath); rmdirSync(directory);
+    }
+  });
+}

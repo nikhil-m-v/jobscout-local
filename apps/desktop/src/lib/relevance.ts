@@ -6,6 +6,16 @@ export type Signal = Readonly<{ value: string; source: 'title' | 'snippet'; phra
 export type RelevanceStatus = 'supported' | 'contradiction' | 'conflict' | 'unknown';
 export type CandidateRelevance = Readonly<Record<'role' | 'region' | 'arrangement', readonly Signal[]>>;
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const countryIds = new Map(Object.entries(regions).filter(([value]) => value !== 'any').map(([value, label]) => [label.toLowerCase(), value]));
+const countryTerms = [...countryIds.keys()].map(escape).join('|');
+const standaloneLocation = new RegExp(`(?:^|\\[\\.\\.\\.\\])[\\t ]*((${countryTerms})[\\t ]*,[\\t ]*(Remote|Hybrid|On[ -]?site))[\\t ]*[.!]?(?=[\\t ]*(?:\\[\\.\\.\\.\\]|$))`, 'gim');
+const labelledLocation = /(?:^|[.!?][\t ]+)((?:job locations?|locations?)[\t ]*:[\t ]*([^\r\n.;|]{1,160}))(?=[.;|\r\n]|$)/gim;
+const leadingCountry = new RegExp(`^(${countryTerms})(?=[\\t ,(])`, 'i');
+const placeAndMode = /^(?:(.*?)[\t ]+)?(Remote|Hybrid|On[ -]?site|\([\t ]*(?:Remote|Hybrid|On[ -]?site)[\t ]*\))$/i;
+// Optional place words are opaque metadata, never geocoded. Prose-like tokens,
+// partial percentages and unfinished details cannot establish an arrangement.
+const placeWords = /^[\p{Lu}][\p{L}'’\-]{0,39}(?:[\t ]+[\p{Lu}][\p{L}'’\-]{0,39}){0,2}$/u;
+const nonPlaceWords = /\b(?:support|supports|team|teams|client|clients|customer|customers|office|offices|policy|culture|partial|partially|flexible|not|no|only|all|worldwide|global|can|may|must|prefer|prefers|allows|offers|is|are)\b/i;
 
 // Deliberately narrow source language. Unqualified snippet mentions, cities,
 // eligibility and global remote availability cannot establish a job location.
@@ -22,6 +32,31 @@ export function candidateRelevance(candidate: Candidate, mentions?: Mentions): C
   }
   for (const source of ['title', 'snippet'] as const) {
     const text = candidate[source];
+    if (source === 'snippet') {
+      const addLocation = (phrase: string, country: string, mode: string) => {
+        const countryId = countryIds.get(country.toLowerCase())!;
+        const modeId = mode.replace(/[()\t -]/g, '').toLowerCase();
+        for (const [output, value] of [[region, countryId], [arrangement, modeId]] as const) {
+          if (!output.some(signal => signal.value === value && signal.source === source && signal.phrase === phrase && signal.polarity === 'positive')) output.push({ value, source, phrase, polarity: 'positive' });
+        }
+      };
+      // Whole standalone lines/fragments only; provider [...] markers can
+      // separate repeated metadata without admitting surrounding company prose.
+      for (const hit of text.matchAll(standaloneLocation)) addLocation(hit[1], hit[2], hit[3]);
+      // A label must start a line or sentence. Its entire bounded value must
+      // contain an explicit country, optional place words and a terminal mode.
+      for (const hit of text.matchAll(labelledLocation)) {
+        const detail = hit[2].trim();
+        const country = leadingCountry.exec(detail);
+        if (!country) continue;
+        const tail = detail.slice(country[0].length).trim().replace(/^,[\t ]*/, '');
+        const mode = placeAndMode.exec(tail);
+        if (!mode) continue;
+        const place = mode[1]?.trim();
+        if (place && (!placeWords.test(place) || nonPlaceWords.test(place))) continue;
+        addLocation(hit[1].trim(), country[1], mode[2]);
+      }
+    }
     // Greenhouse-style application titles delimit country before the employer.
     // An employer name containing India or the same phrase in prose is not metadata.
     const applicationCountry = source === 'title'

@@ -32,5 +32,23 @@
       { "id": "partial-remote", "title": "Software engineer", "snippet": "remote type: Partially Remote. locations: Example City. Python SQL.", "relevant": true, "reason": "Partial arrangement and unsupported city remain unknown." },
       { "id": "area-conflict", "title": "Software engineer (Remote – EMEA)", "snippet": "Location: India. Python SQL.", "relevant": true, "reason": "Conflicting geography stays reviewable." }
     ]
+  }, {
+    "id": "compact-location-mode-metadata",
+    "review": "Software engineer using Python and SQL.",
+    "filters": { "role": "software-engineer", "region": "india", "arrangement": "remote" },
+    "candidates": [
+      { "id": "standalone", "title": "Software engineer", "snippet": "India, Remote\nPython SQL.", "relevant": true, "reason": "Standalone explicit country and work-mode metadata." },
+      { "id": "compact", "title": "Software engineer", "snippet": "Apply. locations: India Example City Remote ... Python SQL.", "relevant": true, "reason": "Bounded job location includes literal country and mode; city is not geocoded." },
+      { "id": "parentheses", "title": "Software engineer", "snippet": "Location: India (Remote). Python SQL.", "relevant": true, "reason": "Parenthesized mode belongs to the labelled job location." },
+      { "id": "other-country", "title": "Software engineer", "snippet": "Location: Canada Sample City Remote. Python SQL.", "relevant": false, "reason": "Explicit other advertised country." },
+      { "id": "hybrid", "title": "Software engineer", "snippet": "Location: India (Hybrid). Python SQL.", "relevant": false, "reason": "Explicit incompatible arrangement." },
+      { "id": "company-prose", "title": "Software engineer", "snippet": "Company locations: India Example City Remote. Python SQL.", "relevant": true, "reason": "Employer geography is insufficient job-specific metadata; retain for clarification." },
+      { "id": "city-only", "title": "Software engineer", "snippet": "locations: Example City Remote. Python SQL.", "relevant": true, "reason": "No country inference from the city; preserve unknowns." },
+      { "id": "negative", "title": "Software engineer", "snippet": "Not India, Remote. Not remote. Python SQL.", "relevant": false, "reason": "Explicit exclusions remain exclusions, not compact positive metadata." },
+      { "id": "conflict", "title": "Software engineer", "snippet": "India, Remote\nNot remote. Python SQL.", "relevant": true, "reason": "Competing explicit arrangement statements need review." },
+      { "id": "timezone", "title": "Software engineer", "snippet": "India, Remote\nMust physically reside in PST - EST timezones. Python SQL.", "relevant": true, "reason": "Advertised criteria and physical-timezone requirement stay separate; eligibility unverified." },
+      { "id": "excerpt", "title": "Software engineer", "snippet": "India, Remote [...] India, Remote\nPython SQL.", "relevant": true, "reason": "Provider excerpt markers separate explicit metadata fragments." },
+      { "id": "collection", "title": "Software engineer jobs directory", "snippet": "India, Remote\nPython SQL.", "relevant": false, "reason": "Collection text cannot support an individual vacancy." }
+    ]
   }]
 }

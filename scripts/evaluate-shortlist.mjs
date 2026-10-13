@@ -86,6 +86,10 @@ for (const [position, item] of fixture.cases.entries()) {
         assert.equal(relevantAtFive(shown), 5);
         assert.equal(filterCandidates(candidates, evidence, true, { ...filters, keepUnknown: false }, reviewedRole).length, 4);
       }
+      if (item.id === 'compact-location-mode-metadata') {
+        assert.equal(shown.length, 8, 'Compact metadata must reject explicit other-country/mode exclusions while keeping unknowns and conflicts');
+        assert.equal(filterCandidates(candidates, evidence, true, { ...filters, keepUnknown: false }, reviewedRole).length, 5);
+      }
     }
     const noise = shown.slice(0, 5).filter(row => !item.candidates[row.index].relevant).map(row => item.candidates[row.index].id).join(', ') || 'none';
     console.log(`| ${item.id} | ${mode} | ${shown.length} | ${precision(5)} | ${precision(10)} | ${retained}/${relevantTotal} | ${noise} |`);

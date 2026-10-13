@@ -2,6 +2,8 @@
 
 Date: 2026-10-13. Status: approved acquisition and frozen blinded comparison complete; aggregate evidence/tools published as `7032054`. The human explicitly approved [both exact queries, scopes and limits](21-provider-experiment-review.md) in this chat. That approval is consumed. This trial permits no further search, retry, account check, page fetch or purchase. Milestone 21 remains in progress.
 
+Continuation 2026-10-14: [21D compact metadata correction](search-quality-review.md#milestone-21d--compact-locationmode-correction) is implemented locally. The acquisition, frozen labels and baseline replay figures below remain the original 21C measurements; current-helper replay is reported separately in 21D.
+
 ## Acquisition and bounds
 
 Arm A sent `Software engineer jobs India Remote Python SQL`; B sent `Software engineer jobs India Remote`. Both used the same five production ATS source scopes, basic-search options and deterministic adapter. No provider option, product query/default, source scope, privacy boundary or budget was changed. Before dispatch, the one-use runner verified both exact engine plans without vault/network access and 94 mocked adapter/broader-discovery checks passed. An exclusive marker prevents replay after an uncertain outcome.

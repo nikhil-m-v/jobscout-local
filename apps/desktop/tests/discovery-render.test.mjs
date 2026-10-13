@@ -59,6 +59,21 @@ test('manual Results exposes exact location and work-mode sources without analys
   assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
 });
 
+test('manual Results quote compact metadata and separate physical requirements without loading resources', () => {
+  const candidates = [
+    { title: 'Software engineer', snippet: 'India, Remote\nMust physically reside in PST - EST timezones.\n<img src="https://tracker.example.com/pixel">', url: 'https://jobs.example.com/compact-1' },
+    { title: 'Software engineer', snippet: 'locations: Canada Sample City Hybrid ... <script>steal()</script>', url: 'https://jobs.example.com/compact-2' },
+  ];
+  const markup = render(true, false, true, false, { discovery: { result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-13T18:00:00Z', candidates, duplicates_removed: 0, discarded_results: 0 } } });
+  assert.ok(markup.includes('Advertised detail in snippet: <q>India, Remote</q>'));
+  assert.ok(markup.includes('Advertised detail in snippet: <q>locations: Canada Sample City Hybrid</q>'));
+  assert.ok(markup.includes('Physical location in snippet: <q>Must physically reside in PST - EST timezones.</q>'));
+  assert.ok(markup.includes('Supported text is not verified eligibility'));
+  assert.ok(markup.includes('&lt;img'));
+  assert.ok(markup.includes('&lt;script&gt;'));
+  assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
+});
+
 test('remote area restrictions remain source-linked review evidence in manual Results', () => {
   const candidate = { title: 'Software engineer (Remote – EMEA)', snippet: 'Location: India. <img src="https://tracker.example.com">', url: 'https://jobs.example.com/1' };
   const markup = render(true, false, true, false, { discovery: { result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-07T03:00:00Z', candidates: [candidate], duplicates_removed: 0, discarded_results: 0 } } });
