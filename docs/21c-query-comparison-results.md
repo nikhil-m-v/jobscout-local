@@ -1,6 +1,6 @@
 # Milestone 21C — bounded optional-tool-term comparison
 
-Date: 2026-10-13. Status: approved acquisition and frozen blinded comparison complete; local/unpublished. The human explicitly approved [both exact queries, scopes and limits](21-provider-experiment-review.md) in this chat. That approval is consumed. This trial permits no further search, retry, account check, page fetch or purchase. Milestone 21 remains in progress.
+Date: 2026-10-13. Status: approved acquisition and frozen blinded comparison complete; aggregate evidence/tools published as `7032054`. The human explicitly approved [both exact queries, scopes and limits](21-provider-experiment-review.md) in this chat. That approval is consumed. This trial permits no further search, retry, account check, page fetch or purchase. Milestone 21 remains in progress.
 
 ## Acquisition and bounds
 
@@ -71,7 +71,9 @@ Keep the current query and product behavior. B increases reviewer-supported crit
 
 The next small implementation candidate is **conservative recognition of compact, job-specific country/work-mode metadata**. First create independent synthetic positive and misleading/negated/company-policy cases, then assess any narrow rule against all three frozen pools and existing regressions. Preserve same-link evidence, restrictions, conflicts and unknowns; do not infer personal eligibility or current vacancy status. Missing source evidence, collection/closed-result noise and representative role/region coverage remain separate outstanding issues. The two additional registered cases remain unacquired and require their own exact reviewed acquisition scope.
 
-Verification: fifteen diagnostic/review/case tests, 126 existing frontend tests, nine diagnostic pools retaining 72/72 reviewable labels, clean-pool evaluation, exact-plan dry verification and 94 mocked engine preflight checks pass. Both fresh frozen reports reproduce the counts above. Full engine suite, build/package, native/installed interaction and resources were not rerun for this evaluation-only slice; prior evidence retains its scope. No product or dependency change, commit or push occurred.
+Verification: fifteen diagnostic/review/case tests, 126 existing frontend tests, nine diagnostic pools retaining 72/72 reviewable labels, clean-pool evaluation, exact-plan dry verification and 94 mocked engine preflight checks pass. Both fresh frozen reports reproduce the counts above. Full engine suite, build/package, native/installed interaction and resources were not rerun for this evaluation-only slice; prior evidence retains its scope. No product or dependency change occurred.
+
+Publication: the user explicitly authorized pushing the accumulated changes. Eighteen reviewed source/test/aggregate-documentation files were published as `7032054`; remote main was verified at the exact implementation commit. Raw responses/labels, the consumed marker, live runner, credentials and generated artifacts remain excluded. Publication adds no provider permission or acceptance claim. See [the dated checkpoint](progress/2026-10-13.md).
 
 ## Limits and release ownership
 

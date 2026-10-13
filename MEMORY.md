@@ -1,6 +1,6 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-13 (21A diagnosis, 21B frozen automated review and 21C approved A/B comparison complete, local/unpublished). This is project memory for contributors and future assistant sessions, not a store for user information.
+Last checkpoint: 2026-10-13 (21A diagnosis, 21B frozen automated review and 21C approved A/B comparison published). This is project memory for contributors and future assistant sessions, not a store for user information.
 
 ## Current checkpoint — 21B frozen review and 21C bounded query comparison
 
@@ -14,7 +14,9 @@ Both fresh complete reviews were frozen before parent comparison and validate ag
 
 Decision: keep the current query/product behavior. B's extra criteria support comes with more collections/mismatches/expired notices in a largely different pool; one sequential pair and one automated reviewer do not establish a quality winner or representative acceptance. Next concrete action: synthetic positive and misleading/negated/company-policy cases for compact job-specific country/work-mode metadata, then evaluate any conservative correction against all three frozen pools and existing regressions. Preserve source-linked unknowns/restrictions and separate freshness. Additional registered role/region cases remain unacquired and need fresh exact reviewed acquisition scope. Do not rerun the consumed trial. Milestone 21 stays open.
 
-Evidence: fifteen diagnostic/review/case tests pass; existing 126 frontend and nine-pool/clean-pool retention (72/72 labels) pass; 94 mocked engine preflight passes with the existing TestClient deprecation warning. No engine/runtime code changed; full engine suite/build/package/native/installed/resources not rerun. Current changes local/unpublished; version 0.1.0 and 17D core acceptance/owner 23 release limits unchanged. Only the separately approved provider trial plus public official-doc verification occurred; no source publication.
+Evidence: fifteen diagnostic/review/case tests pass; existing 126 frontend and nine-pool/clean-pool retention (72/72 labels) pass; 94 mocked engine preflight passes with the existing TestClient deprecation warning. No engine/runtime code changed; full engine suite/build/package/native/installed/resources not rerun. Version 0.1.0 and 17D core acceptance/owner 23 release limits are unchanged. The separately approved provider trial and public official-doc verification retain their recorded limits.
+
+Publication: on explicit user authorization, committed all eighteen reviewed tools/tests/aggregate-documentation files as `7032054` — Add frozen search-quality reviews and bounded query comparison. Pushed to main and verified the exact remote revision. Raw envelopes, reviewer labels/identities, consumed marker, one-use live runner, credentials, installers and caches were excluded. No new provider operation or product change occurred during publication. This publication checkpoint follows the implementation commit; earlier local/unpublished notes record session history.
 
 ## Previous checkpoint — 21A offline search-quality diagnosis
 
