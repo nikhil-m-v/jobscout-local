@@ -1,6 +1,6 @@
 # 0036 — Structured job-heading evidence
 
-Date: 2026-10-14. Status: 21F offline correction predeclared, implemented and verified; local/unpublished.
+Date: 2026-10-14. Status: 21F offline correction predeclared, implemented and verified; published as `aa0123a` on separate explicit user authorization.
 
 ## Evidence and bounded decision
 
@@ -19,6 +19,6 @@ Do not broaden general hiring prose or alter the two disputed quality-role exclu
 3. Replay all five original byte-bound frozen pools against published `daede22`, keeping labels/references/criteria fixed. Preserve all reviewer-supported candidates in selected pools; report first-ten/full retention, strict, field disagreements and any tradeoff. Do not silently retune labels or claim every disagreement is a defect.
 4. Record aggregate results, checkpoint and dated progress with privacy/publication/native/installed/freshness limits. Close this correction after the finite checks; representative milestone-21 acceptance remains open.
 
-No provider/page/vault/model/private-profile operation or new acquisition is part of this slice. The two consumed provider approvals cannot be reused. Raw historical reviews and comparison artifacts remain ignored/local; only synthetic examples and aggregates enter source control. Existing installations need a new frontend-containing desktop build for this correction; the prior installer is unchanged. Publication needs separate user authorization.
+No provider/page/vault/model/private-profile operation or new acquisition is part of this slice. The two consumed provider approvals cannot be reused. Raw historical reviews and comparison artifacts remain ignored/local; only synthetic examples and aggregates enter source control. Existing installations need a new frontend-containing desktop build for this correction; the prior installer is unchanged. The user separately authorized publication; implementation `aa0123a` is published and its remote revision verified. Publication adds no acquisition permission or acceptance claim.
 
 All four finite checks pass with their stated limits. [The aggregate replay record](../21f-structured-heading-results.md) documents the single corrected opening, unchanged pools and unresolved representative-quality shortfall. Predeclared positive/filter checks failed before implementation; adversarial headquarters and competing-mode checks exposed unsafe additions and passed after tightening. Original labels were not changed.
