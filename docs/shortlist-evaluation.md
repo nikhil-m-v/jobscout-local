@@ -1,6 +1,8 @@
 # Synthetic shortlist quality baseline
 
-## Current evaluation ownership — 2026-10-11
+## Current evaluation ownership — 2026-10-13
+
+[Milestone 21A/B](search-quality-review.md) implements aggregate source/ordering diagnosis and exact-input-bound frozen automated labels via `npm run review:quality -- <local-public-result-envelope.json> [local-frozen-review.json]`. [The approved paired query comparison (21C)](21c-query-comparison-results.md) reviewed all 97 fresh links: A has 5 supported/25 needs-review/18 mismatch judgments, B 7/16/26. Selected filters retain all supported labels; strict retains A 1/5 and B 0/7. B also returns more collections and five explicit expired notices, none among supported candidates. Fifteen diagnostic/review/case checks pass. First-ten groups/primary/alternative labels, unknowns, freshness and suitability remain separate. No default or product behavior changed; next is a conservative compact job-specific metadata correction evaluated against all three frozen pools. Representative quality remains open.
 
 [Decision 0031](architecture/0031-core-acceptance-and-deferred-release-gates.md) moves representative search-quality acceptance to **milestone 21**. Current synthetic evaluation remains a regression/retention check in the finite 17D core-development checklist; it is not representative quality evidence. Local saving can proceed after that checklist passes, without meeting a suitable-job quota.
 

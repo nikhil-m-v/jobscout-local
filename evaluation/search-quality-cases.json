@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "cases": [
+    {
+      "id": "software-india-remote-tools",
+      "criteria": { "role": "software-engineer", "region": "india", "arrangement": "remote", "seniority": "any", "skills": ["python", "sql"] },
+      "expected_query": "Software engineer jobs India Remote Python SQL",
+      "synthetic_reference": "Software engineer Python SQL"
+    },
+    {
+      "id": "software-india-remote",
+      "criteria": { "role": "software-engineer", "region": "india", "arrangement": "remote", "seniority": "any", "skills": [] },
+      "expected_query": "Software engineer jobs India Remote",
+      "synthetic_reference": "Software engineer Python SQL"
+    },
+    {
+      "id": "quality-india-remote",
+      "criteria": { "role": "quality-engineer", "region": "india", "arrangement": "remote", "seniority": "any", "skills": ["dotnet", "testing"] },
+      "expected_query": "Quality engineer jobs India Remote .NET Software testing",
+      "synthetic_reference": "Quality engineer .NET software testing"
+    },
+    {
+      "id": "analyst-canada-hybrid",
+      "criteria": { "role": "data-analyst", "region": "canada", "arrangement": "hybrid", "seniority": "any", "skills": ["analytics", "sql"] },
+      "expected_query": "Data analyst jobs Canada Hybrid Data analytics SQL",
+      "synthetic_reference": "Data analyst SQL data analytics"
+    }
+  ],
+  "proposed_comparison": ["software-india-remote-tools", "software-india-remote"]
+}
