@@ -1,6 +1,6 @@
 # 0035 — Compact job location and work-mode metadata
 
-Date: 2026-10-14. Status: implemented local milestone 21D correction; local/unpublished.
+Date: 2026-10-14. Status: milestone 21D correction implemented and published as `7dba0f9`; representative quality remains open.
 
 ## Evidence and decision
 
