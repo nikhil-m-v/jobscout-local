@@ -2,6 +2,8 @@
 
 Date: 2026-10-14. Status: finite offline correction implemented/verified; published as `aa0123a` on separate explicit user authorization. Baseline is published `daede22`. This follows [21E's frozen additional-case review](21e-quality-case-results.md); all five original inputs, criteria, references and reviewer judgments remain unchanged. No provider/page/vault/model/private-profile operation, spending during implementation. Publication followed on separate explicit user authorization. Earlier provider approvals remain consumed.
 
+Continuation: [21G quality exit and Workday diagnosis](21-quality-exit.md) completes the consolidation/source-selection action recorded below. All five 21F reports reproduce unchanged; the next action is exact Workday research-plan preparation. Milestone 21 stays open, with no further acquisition authorized.
+
 ## User outcome and bounded correction
 
 The existing Results source disclosure now recognizes canonical role headings, adjacent explicit employer/location headings and tightly bounded standalone posting work-mode tags under [decision 0036](architecture/0036-structured-job-heading-evidence.md). Recognition requires a known individual posting URL pattern, generic `Job Posting` title, exactly one complete primary role heading and a bounded adjacent location ending in a literal catalog region. Place words are opaque, never geocoded. Missing/ambiguous/malformed/prose/code-example structures, company geography and work-mode policy do not qualify. A standalone tag cannot override an incompatible existing positive work mode; explicit negatives still produce conflicts. Collections/resources keep their suppression.

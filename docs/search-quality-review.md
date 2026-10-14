@@ -8,6 +8,8 @@ Further coverage: [21E additional cases](21e-quality-case-results.md) records th
 
 Current correction: [21F structured job-heading evidence](21f-structured-heading-results.md) improves the analyst opening's recognition/visibility without changing any original labels or the other four pool reports. Earlier 21A/B/C/D/E figures retain their checkpoint meanings.
 
+Current consolidation: [21G finite quality exit checklist and Workday diagnosis](21-quality-exit.md) records eight exit items, all five unchanged production replays and opening-specific source evidence. Workday is the next single investigation; representative human acceptance and milestone 21 remain open. No new acquisition is authorized.
+
 ## Reproduce and interpret
 
 After the normal Node and `.venv` setup in [README](../README.md), run:
