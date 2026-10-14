@@ -1,6 +1,6 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-14 (21G finite quality exit checklist and Workday source diagnosis complete locally; milestone 21 remains open). This is project memory for contributors and future assistant sessions, not a store for user information.
+Last checkpoint: 2026-10-14 (21G finite quality exit checklist and Workday source diagnosis published as `953d8fd`; milestone 21 remains open). This is project memory for contributors and future assistant sessions, not a store for user information.
 
 ## Current checkpoint — 21G quality exit and Workday diagnosis
 
@@ -12,9 +12,13 @@ Selected Workday as the single next source investigation: 36/42 opening appearan
 
 Next concrete action: prepare one exact Workday returned-snippet versus posting-evidence public-research plan for the fixed analyst/Canada/hybrid case, with a separately reported supported software-case control. Freeze sampling/links, destination/data/fetch/byte/time/redirect/embedded-resource/retention/one-use bounds before fresh acquisition authorization. No page fetch or credential access is authorized now; both earlier approvals remain consumed. Product no-result-page-fetch behavior and privacy contract stay unchanged. Stop at the declared sample, including an inconclusive outcome, before considering any new rule/source/query slice.
 
-This documentation-only development slice is complete locally/unpublished; milestone 21 remains open. Latest published implementation `aa0123a`, checkpoint/local HEAD `d7b0f7b`; no commit or push this session. Version 0.1.0 and 17D core acceptance remain. No provider/page/vault/model/private-profile operation, spending, runtime/API/schema/dependency/setup/default change or new full suite/build/package/native/installed/accessibility/resource/CI acceptance. Local aggregate helper/report stay ignored. [Dated progress](docs/progress/2026-10-14.md#milestone-21g--finite-quality-exit-and-workday-source-diagnosis).
+This documentation-only development slice is published as `953d8fd`; exact remote main was verified against the documentation commit. Milestone 21 remains open. Product implementation remains `aa0123a`; preceding checkpoint `d7b0f7b`. Publication was separately authorized by the user. Version 0.1.0 and 17D core acceptance remain. No provider/page/vault/model/private-profile operation, spending, runtime/API/schema/dependency/setup/default change or new full suite/build/package/native/installed/accessibility/resource/CI acceptance. Local aggregate helper/report stay ignored. [Dated progress](docs/progress/2026-10-14.md#milestone-21g--finite-quality-exit-and-workday-source-diagnosis).
 
-Closeout: all 156 local Markdown targets/anchors in nine changed/new documentation files resolve; whitespace and scoped credential/private-machine-path/input-hash-pattern checks pass. All three new local artifacts remain ignored. Current summaries agree on finite 21G completion, open milestone-21 acceptance and exact Workday research-plan preparation next.
+Closeout: all 156 local Markdown targets/anchors in nine changed/new documentation files resolve; whitespace and scoped credential/private-machine-path/input-hash-pattern checks pass. All three new local artifacts remain ignored. Current summaries agree on finite 21G completion/publication, open milestone-21 acceptance and exact Workday research-plan preparation next.
+
+## Publication checkpoint — 21G, 2026-10-14
+
+On explicit user authorization, reviewed and published exactly nine aggregate-documentation files as `953d8fd` (finite quality exit checklist and Workday source diagnosis). Starting remote main matched `d7b0f7b`; after push, exact remote main matched the documentation commit. Raw public envelopes/reviews/identity/quotes/input hashes, generated local helpers/reports, credentials, private records, caches and installers remain excluded. All 156 local targets/anchors and staged whitespace checks pass; scoped private-pattern inspection finds no matches. The four local 21G helpers/reports, including the publication-update helper, remain ignored. No new product/provider/page/vault/model operation, spending, test expansion or acceptance claim. Updated current publication summaries; earlier local/unpublished notes remain historical. This checkpoint follows the verified documentation publication. Milestone 21 remains open, both acquisition approvals remain consumed and exact Workday research-plan preparation is next.
 
 ## Previous checkpoint — 21F structured job-heading evidence
 
