@@ -9,6 +9,7 @@ export type CandidateRelevance = Readonly<Record<'role' | 'region' | 'arrangemen
 const escape = (text: string) => text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const countryIds = new Map(Object.entries(regions).filter(([value]) => value !== 'any').map(([value, label]) => [label.toLowerCase(), value]));
 const countryTerms = [...countryIds.keys()].map(escape).join('|');
+const repeatedRemotePrefix = new RegExp(`^[\\t ]*(Remote,[\\t ]+(${countryTerms})[\\t ]+Remote)(?=[\\t ]*(?:,|\\r?\\n|$))`, 'i');
 const standaloneLocation = new RegExp(`(?:^|\\[\\.\\.\\.\\])[\\t ]*((${countryTerms})[\\t ]*,[\\t ]*(Remote|Hybrid|On[ -]?site))[\\t ]*[.!]?(?=[\\t ]*(?:\\[\\.\\.\\.\\]|$))`, 'gim');
 const labelledLocation = /(?:^|[.!?][\t ]+)((?:job locations?|locations?)[\t ]*:[\t ]*([^\r\n.;|]{1,160}))(?=[.;|\r\n]|$)/gim;
 const leadingCountry = new RegExp(`^(${countryTerms})(?=[\\t ,(])`, 'i');
@@ -52,6 +53,12 @@ export function candidateRelevance(candidate: Candidate, mentions?: Mentions): C
   if (mentions?.content?.status === 'collection' || mentions?.content?.status === 'resource') return { role, region, arrangement };
   const heading = structuredHeading(candidate);
   role.push(...heading.role); region.push(...heading.region);
+  // Workday sometimes repeats Remote around a literal country at the start of
+  // an individual posting snippet. A comma can then introduce ordinary job text.
+  // Do not recognize this unlabelled prefix on other sites or within prose.
+  const link = inspectCandidate(candidate);
+  const repeatedRemote = link.kind === 'posting' && link.host.endsWith('.myworkdayjobs.com') ? repeatedRemotePrefix.exec(candidate.snippet) : null;
+  if (repeatedRemote) region.push({ value: countryIds.get(repeatedRemote[2].toLowerCase())!, source: 'snippet', phrase: repeatedRemote[1], polarity: 'positive' });
   for (const entry of mentions?.shortlist?.roles ?? []) {
     const text = candidate[entry.source];
     const negatives = [...text.matchAll(new RegExp(`\\b(?:no|not) +${escape(entry.phrase)} +(positions|roles|jobs|openings)\\b`, 'gi'))];
@@ -141,6 +148,7 @@ export function candidateRelevance(candidate: Candidate, mentions?: Mentions): C
   // A work-mode tag may supplement an explicit matching detail, never replace
   // an incompatible existing positive mode. Explicit negatives still conflict.
   if (heading.arrangement.length && !arrangement.some(signal => signal.polarity === 'positive' && signal.value !== heading.arrangement[0].value)) arrangement.push(...heading.arrangement);
+  if (repeatedRemote && !arrangement.some(signal => signal.polarity === 'positive' && signal.value !== 'remote')) arrangement.push({ value: 'remote', source: 'snippet', phrase: repeatedRemote[1], polarity: 'positive' });
   return { role, region, arrangement };
 }
 

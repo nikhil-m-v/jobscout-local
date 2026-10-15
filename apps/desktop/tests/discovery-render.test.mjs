@@ -74,6 +74,14 @@ test('manual Results quote compact metadata and separate physical requirements w
   assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
 });
 
+test('manual Results quote repeated Workday metadata without loading appended resources', () => {
+  const candidates = [{ title: 'Software engineer', snippet: 'Remote, India Remote, <script>steal()</script>', url: 'https://synthetic.wd1.myworkdayjobs.com/en-US/Example/job/Software-Engineer_JR101', source_index: 3 }];
+  const markup = render(true, false, true, false, { discovery: { busy: false, error: '', result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-16T03:00:00Z', duplicates_removed: 0, discarded_results: 0, candidates } } });
+  assert.ok(markup.includes('<q>Remote, India Remote</q>'));
+  assert.ok(markup.includes('&lt;script&gt;steal()&lt;/script&gt;'));
+  assert.ok(!/<(script|img|iframe|a)\b/.test(markup));
+});
+
 test('manual Results quote structured posting role/location/tag metadata and escape unrelated markup', () => {
   const candidate = { title: 'Job Posting | Example Employer', url: 'https://job-boards.greenhouse.io/synthetic/jobs/101', snippet: '#LI-HYBRID #LI-EX1 [...] Other text.\n# Data analyst\n\n## Example Employer · Sample City, Example Province, Canada\n<img src="https://tracker.example.com/pixel"><script>steal()</script>' };
   const markup = render(true, false, true, false, { discovery: { result: { query: preview.query, provider: 'tavily', retrieved_at: '2026-10-14T03:00:00Z', candidates: [candidate], duplicates_removed: 0, discarded_results: 0 } } });

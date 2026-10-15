@@ -224,6 +224,67 @@ test('production analysis and compact filters retain unknowns/conflicts and reje
   assert.deepEqual(filterCandidates(candidates, evidence, false, initialResultFilters).map(row => row.index), [0, 1, 2, 3, 4, 5]);
 });
 
+const workdayJob = (snippet, url = 'https://synthetic.wd1.myworkdayjobs.com/en-US/Example/job/Software-Engineer_JR101') => ({ title: 'Software engineer', snippet, url, source_index: 3 });
+
+test('leading repeated Workday metadata quotes literal country and remote mode', () => {
+  for (const [snippet, country, phrase] of [
+    ['Remote, India Remote, Python SQL.', 'india', 'Remote, India Remote'],
+    ['Remote, Canada Remote', 'canada', 'Remote, Canada Remote'],
+    ['  Remote, Australia Remote\r\nAbout this role.', 'australia', 'Remote, Australia Remote'],
+    ['Remote, Canada Remote\nAbout this role.', 'canada', 'Remote, Canada Remote'],
+  ]) {
+    const candidate = workdayJob(snippet), evidence = candidateRelevance(candidate, mentions(true));
+    assert.equal(relevanceStatus(evidence.region, country), 'supported', snippet);
+    assert.equal(relevanceStatus(evidence.arrangement, 'remote'), 'supported', snippet);
+    for (const field of ['region', 'arrangement']) assert.ok(evidence[field].some(signal => signal.phrase === phrase));
+    for (const signals of Object.values(evidence)) for (const signal of signals) assert.ok(candidate[signal.source].includes(signal.phrase));
+  }
+});
+
+test('repeated Workday metadata rejects prose, malformed prefixes, other hosts and non-posting paths', () => {
+  const snippets = ['Our policy: Remote, Canada Remote', 'Company headquarters: Remote, Canada Remote',
+    'Remote, Canada Remote team', 'Remote, Canada Partially Remote', 'Remote, Canada Remote?',
+    'Remote, Canada Remote)', 'Remote, Montreal Remote', 'Remote, Canada 50% Remote',
+    'Remote,CanadaRemote', '```\nRemote, Canada Remote\n```', 'Tasks.\nRemote, Canada Remote'];
+  const candidates = [...snippets.map(snippet => workdayJob(snippet)),
+    workdayJob('Remote, Canada Remote', 'https://jobs.example.com/1'),
+    workdayJob('Remote, Canada Remote', 'https://synthetic.wd1.myworkdayjobs.com/en-US/Example'),
+    workdayJob('Remote, Canada Remote', 'https://synthetic.wd1.myworkdayjobs.com/en-US/Example/job/unknown'),
+    workdayJob('Remote, Canada Remote', 'https://jobs.lever.co/example/00000000-0000-4000-8000-000000000001')];
+  for (const candidate of candidates) {
+    const evidence = candidateRelevance(candidate);
+    assert.equal(relevanceStatus(evidence.region, 'canada'), 'unknown', candidate.snippet);
+    assert.equal(relevanceStatus(evidence.arrangement, 'remote'), 'unknown', candidate.snippet);
+  }
+  for (const status of ['collection', 'resource']) assert.ok(Object.values(candidateRelevance(workdayJob('Remote, Canada Remote'), { ...mentions(true), content: { status } })).every(signals => signals.length === 0));
+});
+
+test('repeated metadata preserves negatives and cannot replace an incompatible explicit mode', () => {
+  assert.equal(relevanceStatus(candidateRelevance(workdayJob('Remote, Canada Remote, Not remote.')).arrangement, 'remote'), 'conflict');
+  assert.equal(relevanceStatus(candidateRelevance(workdayJob('Remote, Canada Remote, Not Canada.')).region, 'canada'), 'conflict');
+  const incompatible = candidateRelevance(workdayJob('Remote, Canada Remote, Work mode: onsite.'));
+  assert.equal(relevanceStatus(incompatible.region, 'canada'), 'supported');
+  assert.equal(relevanceStatus(incompatible.arrangement, 'remote'), 'contradiction');
+});
+
+test('production analysis and repeated metadata filters retain unknowns, conflicts and reset order', () => {
+  const candidates = [workdayJob('Remote, India Remote, Python SQL.'), workdayJob('Python SQL.'),
+    workdayJob('Remote, Canada Remote, Python SQL.'), workdayJob('Remote, India Remote, Not remote. Python SQL.'),
+    workdayJob('Remote, India Remote, Work mode: onsite. Python SQL.'),
+    workdayJob('Remote, India Remote, Python SQL.', 'https://jobs.example.com/1'),
+    workdayJob('Remote, India Remote, Python SQL.', 'https://synthetic.wd1.myworkdayjobs.com/en-US/Example')];
+  const root = fileURLToPath(new URL('../../../', import.meta.url)), review = 'Software engineer Python SQL';
+  const analyzed = spawnSync(resolve(root, '.venv', process.platform === 'win32' ? 'Scripts/python.exe' : 'bin/python'), ['-c', 'import json,sys; from jobscout_engine.domain.assistance import analyze_review; print(json.dumps(analyze_review(json.load(sys.stdin))))'], {
+    cwd: root, input: JSON.stringify({ text: review, reviewed: true, candidates: candidates.map(({ title, snippet }) => ({ title, snippet })) }), encoding: 'utf8', timeout: 30000, windowsHide: true,
+  });
+  assert.equal(analyzed.status, 0);
+  const evidence = validateAssistance(JSON.parse(analyzed.stdout), candidates.length, review, candidates).matches;
+  const filters = { ...initialResultFilters, role: 'software-engineer', region: 'india', arrangement: 'remote', showCollections: false };
+  for (const rank of [false, true]) assert.deepEqual(filterCandidates(candidates, evidence, rank, filters, 'software-engineer').map(row => row.index), [0, 1, 3, 5]);
+  assert.deepEqual(filterCandidates(candidates, evidence, false, { ...filters, keepUnknown: false }).map(row => row.index), [0]);
+  assert.deepEqual(filterCandidates(candidates, evidence, false, initialResultFilters).map(row => row.index), [0, 1, 2, 3, 4, 5, 6]);
+});
+
 const headingJob = (snippet, title = 'Job Posting | Example Employer', url = 'https://job-boards.greenhouse.io/synthetic/jobs/101') => ({ title, snippet, url, source_index: 0 });
 const heading = (country = 'Canada', role = 'Data analyst') => `# ${role}\n\n## Example Employer · Sample City, Example Province, ${country}`;
 

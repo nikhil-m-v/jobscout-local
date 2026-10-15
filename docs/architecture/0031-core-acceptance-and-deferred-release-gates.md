@@ -6,6 +6,8 @@ Milestone 17D bundled search quality, installed Windows behavior, full accessibi
 
 This decision supersedes the saving/tracking prerequisites and acceptance sequencing in decisions [0027](0027-ten-to-twenty-shortlist.md), [0028](0028-release-based-delivery.md), [0029](0029-bounded-ats-title-evidence.md) and [0030](0030-work-requirement-review-notes.md), and earlier roadmap/checkpoint next actions. Their measurements, implementation boundaries and evidence limitations remain valid. It does not relax [the privacy contract](../privacy.md).
 
+Prospective refinement, 2026-10-16: [decision 0037](0037-finite-search-quality-delivery.md) replaces the unspecified representative-quality study requirement below with finite scoped named-human usefulness acceptance and four milestone-21 parts. It does not waive usefulness or owner 23 release gates; the original 17D closure and measurements remain historical.
+
 ## Finite closure and blockers
 
 Require reviewed generic queries with fixed request bounds, cancellation/partial recovery; safe rendering with source-linked evidence, reversible filters and retained alternatives; basic keyboard/compact/theme behavior; bounded installed first-use/profile restart/normal-close evidence; and passing current engine/frontend suites, shortlist evaluation, typecheck and build. No unresolved demonstrated privacy, data-loss or critical lifecycle defect may be waived to close 17D. Such a defect blocks affected functionality until fixed.
