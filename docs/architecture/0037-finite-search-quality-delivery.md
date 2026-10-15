@@ -27,7 +27,7 @@ If a family fails human usefulness review, choose explicitly between one separat
 
 ## Stop rule and next implementation
 
-Finish one coherent declared slice at a time, update the four-part ledger, and advance after its exit instead of adding new sources or rules. Retrospective precision thresholds and endless acquisition are excluded. The declared 21.1 software-A repeated remote/country metadata slice is now complete as [21J](../21j-repeated-metadata-results.md), with synthetic positive/adversarial checks and five unchanged frozen pools. No new ranking experiment is included. Then prepare the remaining disagreement dispositions and finite human review pack. Current version remains 0.1.0; publication remains separately authorized.
+Finish one coherent declared slice at a time, update the four-part ledger, and advance after its exit instead of adding new sources or rules. Retrospective precision thresholds and endless acquisition are excluded. The declared 21.1 software-A repeated remote/country metadata slice is now complete as [21J](../21j-repeated-metadata-results.md), with synthetic positive/adversarial checks and five unchanged frozen pools. No new ranking experiment is included. Then prepare the remaining disagreement dispositions and finite human review pack. Current version remains 0.1.0. The user separately authorized publication; this decision, research records and 21J correction are published as `965b520`, with exact remote main verified. Publication does not close milestone 21.
 
 ## Bounded coverage disposition — 21.3
 
