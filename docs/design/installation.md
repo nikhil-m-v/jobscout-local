@@ -4,6 +4,8 @@ Release boundary — 2026-10-10: [v1.0](../releases.md) guides application/perso
 
 Status: initial product design; this document describes the planned experience, not an implemented installer.
 
+Implemented first app slice, 2026-10-17: [22A optional setup guide](../architecture/0038-guided-core-setup.md) opens from the resume landing screen or Settings. Three steps cover local privacy/storage, optional Tavily setup and first use, with Back/Continue/Finish later and a step-only local progress marker/session fallback. Key controls remain closed until explicitly opened; no check/search or model download is automatic. Existing data locations are explained, not moved; folder/device/disk and installer work below remain planned. Existing installs keep the discovery landing page. This marker is retained with display preferences by career-data deletion and never represents provider readiness or authorization. Existing key-storage/review-send/external-link recovery applies without a new dependency or migration. Browser/mock evidence is not installed acceptance.
+
 ## Goal and scope
 
 Help a person reach their first useful resume analysis without a terminal or developer knowledge. Use two connected stages: the Windows installer handles the app location and shortcuts; the app's first-run wizard handles models, credentials, and personal settings under the user's own account. Both stages share the same visual identity. Keep API keys out of elevated installer processes.

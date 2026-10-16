@@ -8,7 +8,11 @@ Delivery reset adopted 2026-10-11: [decision 0031](architecture/0031-core-accept
 
 Current quality scope, 2026-10-16: [decision 0037](architecture/0037-finite-search-quality-delivery.md), explicitly requested by the user, supersedes the unspecified representative-study/third-party requirement with scoped usefulness acceptance by a named human (owner allowed), recording prior machine exposure. Four finite parts replace open-ended quality iteration; 21.3 diagnostic coverage is dispositioned, while fidelity/policy, ordering signoff and human acceptance remain. [21J](21j-repeated-metadata-results.md) is a verified frontend correction published with the 21H/21I research records and delivery reset as `965b520`, with exact remote main verified: strict software-A retention 3/5 to 4/5, no default membership/order change, 158 frontend/review checks and production build pass. Publication was explicitly authorized by the user; no new provider/page operation or release acceptance is implied. The earlier 21F evidence above retains its historical scope; all three acquisition approvals are now consumed.
 
+Current continuation: [21K dispositions and local review pack](21k-dispositions-and-human-review.md) are complete as a local/unpublished preparation slice. All five full reports equal 21J; original audit bytes remain unchanged. Maintainer dispositions cover role-policy exclusions, strict losses and requirement gaps; actual human usefulness, ordering and scope decisions remain pending. No product or release-acceptance change.
+
 ## Release boundaries
+
+2026-10-17 continuation: the owner requested automated diagnostic summaries and a return to feature work. The [delivery amendment](architecture/0037-finite-search-quality-delivery.md#delivery-amendment--2026-10-17) defers exhaustive manual grading while preserving pending human scope/quality gates. [22A](architecture/0038-guided-core-setup.md) implements an optional local three-step setup guide; full milestone 22, useful-scope acceptance and owner 23 gates remain. No version change, installer update or publication is implied.
 
 | Release | Useful outcome | Scope and entry gate |
 |---|---|---|

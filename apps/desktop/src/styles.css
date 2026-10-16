@@ -313,6 +313,15 @@ svg { flex-shrink: 0; }
 .query-preview, .results-panel { scroll-margin-top: 90px; }
 .focused-shell [hidden] { display: none !important; }
 
+.setup-entry { text-align: center; margin: -12px 0 24px; }
+.setup-guide .flow-steps { flex-wrap: wrap; }
+.setup-guide .settings-panel { margin-bottom: 20px; }
+.setup-guide .privacy-details dd { overflow-wrap: anywhere; }
+.setup-actions { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; border-top: 1px solid var(--line); margin-top: 28px; padding-top: 20px; }
+.setup-actions .criteria-actions { margin: 0; }
+.setup-progress-note { display: flex; align-items: flex-start; gap: 6px; margin-bottom: 0; }
+.setup-progress-note svg { flex-shrink: 0; margin-top: 3px; }
+
 /* The landing screen puts the resume action ahead of setup. */
 .search-intro { text-align: center; justify-content: center; margin: 28px 0 32px; }
 .search-intro h1 { font-size: clamp(32px, 5vw, 48px); letter-spacing: -.045em; }
