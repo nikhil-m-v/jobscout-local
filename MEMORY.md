@@ -1,8 +1,14 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-17 (22A optional setup guide implemented locally; automated quality summary replaces further mandatory item grading; milestone 21 acceptance pending). This is project memory for contributors and future assistant sessions, not a store for user information.
+Last checkpoint: 2026-10-17 (21K documentation, review-delivery amendment and 22A setup guide published as `957dc6c`; milestone 21 acceptance pending). This is project memory for contributors and future assistant sessions, not a store for user information.
 
-## Current checkpoint — 22A setup guide and automated review summary
+## Current publication checkpoint — 21K and 22A
+
+On explicit user authorization to push all accumulated changes, reviewed and published exactly eighteen source/test/aggregate-documentation files as `957dc6c` (Add optional setup guide and streamline quality review). Starting remote main matched `9ab6d2d`; exact remote main matched the implementation commit after push. The local tracking reference was stale and had no default fetch mapping; an explicit main-to-origin/main fetch refreshed it before publication. The committed payload matches the reviewed files, fourteen frozen input/source bindings remain unchanged, 224 local Markdown targets/anchors resolve, and whitespace/scoped credential/private-machine-path/raw-input-hash scans pass. Raw sources, detailed human answers, generated review/summary/helpers, screenshot, credentials, private records, caches and installers were excluded and remain local/ignored.
+
+Existing 146 frontend plus 17 report/audit tests, production typecheck/build and synthetic browser evidence retain their original scope; no new broader test/package/native/installed/accessibility/resource/CI or acquisition run occurred during publication. Version remains 0.1.0; existing installer lacks 22A; Q2/Q3/Q4/Q6/Q8 and milestone 21 remain open. All three acquisition approvals remain consumed. Do not restart exhaustive manual grading by default. Next is one finite milestone-22 storage/device-readiness slice with a declared data contract; later concise human scope/limitations acceptance remains separate. This documentation checkpoint follows the verified implementation publication. Earlier local/unpublished statements below describe their original checkpoints. [Dated progress](docs/progress/2026-10-17.md#publication-checkpoint).
+
+## Previous checkpoint — 22A setup guide and automated review summary
 
 The user explicitly requested automating the tedious manual review and returning to feature implementation. The [delivery amendment](docs/architecture/0037-finite-search-quality-delivery.md#delivery-amendment--2026-10-17) defers further mandatory card-by-card answers. Existing partial human decisions/reasons remain local; do not restart that queue by default. The ignored repeatable summary helper verifies fourteen existing input/source bindings and consolidates all five pools/235 appearances into a separate post-review machine summary. The unscored reader, original blank worksheet and frozen audits are unchanged. Automated diagnostics never fill human answers. Later collect one concise scope/limitations decision with actual inspected coverage/exposure; Q2/Q3/Q4/Q6/Q8 and milestone 21 remain open.
 

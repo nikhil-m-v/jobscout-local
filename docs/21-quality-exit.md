@@ -31,6 +31,8 @@ Strict historical includes one needs-review group. Empty strict precision is nul
 
 ## Finite milestone exit checklist
 
+Publication update, 2026-10-17: 21K aggregate dispositions, the delivery amendment and 22A setup are published as `957dc6c`, with exact remote main verified. Private/generated evidence remains ignored. Publication does not complete any open human gate or authorize further acquisition.
+
 2026-10-17 delivery amendment: the owner requested automation and a return to implementation. Further mandatory per-item grading is deferred. Existing offline checks/comparisons and a separate exception summary provide diagnostic evidence; partial human choices remain local. A later concise human scope/limitations decision must record actual inspected coverage and reasons, with source examples available, without claiming full-pool review or automated human signoff. Detailed pack-review instructions below describe the earlier preparation protocol; the [amendment](architecture/0037-finite-search-quality-delivery.md#delivery-amendment--2026-10-17) controls the revised workload. Q2/Q3/Q4/Q6/Q8 and milestone 21 remain open while 22A proceeds independently.
 
 All eight items must have recorded completion evidence before moving milestone 21 to complete. A development slice can finish while this checklist stays open. Do not add acceptance requirements after these items pass unless a demonstrated regression or newly approved requirement warrants it. [Decision 0031](architecture/0031-core-acceptance-and-deferred-release-gates.md) keeps Windows release gates with owner 23.

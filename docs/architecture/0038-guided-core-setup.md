@@ -1,6 +1,6 @@
 # 0038 — Optional guided core setup
 
-Date: 2026-10-17. Status: implemented locally as milestone 22A, following the owner's request to return to feature work. Milestone 21's human quality gates remain open under the [delivery amendment](0037-finite-search-quality-delivery.md#delivery-amendment--2026-10-17). This does not declare milestone 22 complete or release readiness.
+Date: 2026-10-17. Status: milestone 22A implemented and published as `957dc6c` on explicit user authorization; exact remote main matched that implementation revision. Milestone 21's human quality gates remain open under the [delivery amendment](0037-finite-search-quality-delivery.md#delivery-amendment--2026-10-17). This does not declare milestone 22 complete, update the existing installer or establish release readiness.
 
 ## Small first slice
 
