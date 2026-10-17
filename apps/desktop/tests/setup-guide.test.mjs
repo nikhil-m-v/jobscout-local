@@ -43,6 +43,10 @@ test('storage guidance preserves local deletion limits and does not promise a fo
   const markup = render('workspace');
   for (const text of ['Original resume files stay where you keep them', 'not automatically encrypted', 'does not guarantee secure disk erasure', 'existing storage location', 'No AI model download is needed', 'Finish later']) assert.ok(markup.includes(text), text);
   assert.equal((markup.match(/aria-current="step"/g) ?? []).length, 1);
+  assert.ok(markup.includes('Check storage'));
+  assert.ok(markup.includes('Not checked yet'));
+  assert.ok(markup.includes('does not test write access'));
+  assert.ok(!markup.includes('Space at last check'));
 });
 
 test('online setup starts closed and does not mount key controls; continuing can skip it', () => {
@@ -56,6 +60,8 @@ test('online setup starts closed and does not mount key controls; continuing can
 });
 
 test('first-use guidance distinguishes connected storage, storage failure and offline recovery from search readiness', () => {
+  assert.ok(render('start').includes('Run local check'));
+  assert.ok(!render('workspace').includes('Run local check'));
   assert.ok(render('start').includes('Connected. Local storage is responding.'));
   assert.ok(render('start').includes('does not check Tavily automatically'));
   assert.ok(render('start', { health: { ...health, database: 'error' } }).includes('Local storage needs attention'));

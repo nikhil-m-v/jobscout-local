@@ -22,6 +22,8 @@ from jobscout_engine.domain.search_plan import construct_search_plan
 from jobscout_engine.broader_discovery import BroaderDiscovery
 from jobscout_engine.domain.providers import MAX_PROVIDER_BODY_BYTES, validate_tavily_key, provider_status
 from jobscout_engine.config import Settings
+from jobscout_engine.setup_storage import inspect_storage
+from jobscout_engine.setup_check import CoreCheck
 from jobscout_engine.domain.contracts import EngineHealth, ModelProvider
 from jobscout_engine.storage import Database, DataReviewChanged
 from jobscout_engine.domain.saved_jobs import validate_snapshot, validate_tracking, SavedJobsFull, TrackingConflict, MAX_SAVED_JOB_BODY_BYTES, MAX_TRACKING_BODY_BYTES
@@ -39,6 +41,7 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
                provider_connection: TavilyConnection | None = None,
                search_provider: SearchProvider | None = None) -> FastAPI:
     database = Database(settings.data_dir)
+    core_check = CoreCheck(settings.data_dir)
     provider = model_provider or OllamaProvider(settings.ollama_url)
     bearer = HTTPBearer(auto_error=False)
     imports = import_service or ImportService()
@@ -111,6 +114,21 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
 
     def profile_response(value, status=200):
         return JSONResponse(value, status_code=status, headers={"Cache-Control": "no-store"})
+
+    @application.get("/api/v1/setup/storage", dependencies=[Depends(require_session)])
+    async def setup_storage(request: Request):
+        if request.query_params:
+            return profile_response({"error": "invalid_storage_request"}, 422)
+        return profile_response(await run_in_threadpool(inspect_storage, settings.data_dir))
+
+    @application.post("/api/v1/setup/check", dependencies=[Depends(require_session)])
+    async def setup_check(request: Request):
+        if request.query_params:
+            return profile_response({"error": "invalid_setup_request"}, 422)
+        async for chunk in request.stream():
+            if chunk:
+                return profile_response({"error": "invalid_setup_request"}, 422)
+        return profile_response(await run_in_threadpool(core_check.run))
 
     @application.get("/api/v1/providers/tavily", dependencies=[Depends(require_session)])
     async def load_search_provider():

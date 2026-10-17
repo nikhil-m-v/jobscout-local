@@ -23,6 +23,28 @@ async fn engine_health(state: tauri::State<'_, Arc<EngineState>>) -> Result<serd
 }
 
 #[tauri::command]
+async fn setup_storage(state: tauri::State<'_, Arc<EngineState>>) -> Result<serde_json::Value, String> {
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
+        .clone().ok_or("Workspace is starting")?;
+    state.client.get(format!("{endpoint}/api/v1/setup/storage"))
+        .timeout(Duration::from_secs(5)).bearer_auth(&state.token).send().await
+        .map_err(|_| "Storage check unavailable")?
+        .error_for_status().map_err(|_| "Storage check unavailable")?
+        .json().await.map_err(|_| "Storage check unavailable".into())
+}
+
+#[tauri::command]
+async fn setup_check(state: tauri::State<'_, Arc<EngineState>>) -> Result<serde_json::Value, String> {
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
+        .clone().ok_or("Workspace is starting")?;
+    state.client.post(format!("{endpoint}/api/v1/setup/check"))
+        .timeout(Duration::from_secs(8)).bearer_auth(&state.token).send().await
+        .map_err(|_| "Local check unavailable")?
+        .error_for_status().map_err(|_| "Local check unavailable")?
+        .json().await.map_err(|_| "Local check unavailable".into())
+}
+
+#[tauri::command]
 async fn resume_import(
     state: tauri::State<'_, Arc<EngineState>>, action: String,
     id: Option<String>, data: Option<String>, format: Option<String>,
@@ -266,7 +288,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .manage(state)
-        .invoke_handler(tauri::generate_handler![engine_health, resume_import, profile_record, career_data, saved_jobs, search_preview, search_plan, search_control, search_provider, provider_connection, job_search, local_assistance])
+        .invoke_handler(tauri::generate_handler![engine_health, setup_storage, setup_check, resume_import, profile_record, career_data, saved_jobs, search_preview, search_plan, search_control, search_provider, provider_connection, job_search, local_assistance])
         .setup(|app| {
             let state = app.state::<Arc<EngineState>>().inner().clone();
             let directory = app.path().app_data_dir()?;

@@ -3,6 +3,8 @@ import { LockKeyhole, Monitor, RefreshCw, Search, ShieldCheck } from 'lucide-rea
 import type { EngineHealth } from '../lib/engine';
 import { setupSteps, type SetupProgress, type SetupStep } from '../lib/setup-progress';
 import { SearchProviderSettings } from './SearchProviderSettings';
+import { SetupStorage } from './SetupStorage';
+import { SetupCheck } from './SetupCheck';
 
 type Props = {
   progress: SetupProgress;
@@ -30,6 +32,7 @@ export function SetupGuide({ progress, changeStep, health, checking, refresh, le
           <div><dt>Your choices</dt><dd>Review text before saving it. Settings → Your local data lets you review counts and delete app-owned career records. Local storage is not automatically encrypted; deletion does not guarantee secure disk erasure.</dd></div>
         </dl>
         <p className="criteria-help">This guide uses the existing storage location. Choosing or moving a personal-data folder is planned. Optional models belong to a later release.</p>
+        <SetupStorage />
       </>}
       {step === 'search' && <>
         <div className="settings-title"><span className="icon-tile peach"><Search size={20} /></span><div><h2 id="setup-step-title">Online search, when you want it.</h2><p>You can import, review and save resume text without configuring a provider.</p></div></div>
@@ -40,6 +43,7 @@ export function SetupGuide({ progress, changeStep, health, checking, refresh, le
       {step === 'start' && <>
         <div className="settings-title"><span className="icon-tile green"><Monitor size={20} /></span><div><h2 id="setup-step-title">Your next step is yours.</h2><p>Start with a resume, or choose job options manually.</p></div></div>
         <div className="status-row"><div><h3>Local workspace</h3><p role="status">{checking ? 'Checking your local workspace…' : health?.database === 'ready' ? 'Connected. Local storage is responding.' : health ? 'Local storage needs attention before saving records.' : 'Workspace unavailable. Check again before importing or saving.'}</p></div><button className="button secondary" disabled={checking} onClick={refresh}><RefreshCw size={14} className={checking ? 'spinning' : ''} />{checking ? 'Checking…' : 'Check again'}</button></div>
+        <SetupCheck />
         <p className="resume-guidance">Online search needs a saved Tavily key and a fresh review of the exact query. This guide does not check Tavily automatically or verify job availability.</p>
         <p className="criteria-help">A saved key or a successful connection check does not establish search readiness. Search quality is still being evaluated. You can return to this guide from Settings.</p>
       </>}
