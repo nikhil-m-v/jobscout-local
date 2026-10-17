@@ -1,8 +1,14 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-17 (22C local core checks implemented; paired Windows installer rebuilt and packaged engine verified; unpublished; milestone 21 acceptance pending). This is project memory for contributors and future assistant sessions, not a store for user information.
+Last checkpoint: 2026-10-17 (22B–22C source/test/documentation published as `9d14791`; paired installer remains local; milestone 21 acceptance pending). This is project memory for contributors and future assistant sessions, not a store for user information.
 
-## Current checkpoint — 22C local core checks and refreshed package
+## Current publication checkpoint — 22B–22C
+
+On explicit user authorization to push all accumulated changes, reviewed and published exactly 25 source/test/documentation files as `9d14791` (Add local storage inspection and optional core setup checks). Remote main started at `bde8974` and matched the exact implementation revision after push. All staged blobs matched the reviewed file bindings; thirteen product-source and three built-artifact bindings were unchanged. Whitespace checks, scoped private-path/credential scans and 123 local Markdown targets/anchors passed. Generated helpers, screenshot, manifest, installer, local data and private evidence remain ignored and were excluded from the Git publication.
+
+Existing 412 engine, 156 frontend and 17 report/audit tests, production build, offline Rust check, synthetic browser checks and packaged-engine smoke evidence retain their original scope; publication added no broader test, installed/native-UI/accessibility/resource/CI acceptance or acquisition. Version remains 0.1.0 and the rebuilt installer is local, not a published release asset. Milestone 21/Q2/Q3/Q4/Q6/Q8 and owner 23 gates remain open; all acquisition approvals remain consumed. Next: the finite data-folder selection/migration contract and later deliberate installed setup walkthrough. Do not restart exhaustive manual grading. This documentation checkpoint follows verified implementation publication; earlier local/unpublished statements below are historical. [Dated publication record](docs/progress/2026-10-17.md#22b22c-publication-checkpoint).
+
+## Previous checkpoint — 22C local core checks and refreshed package
 
 Continued the existing uncommitted 22B work with a larger coherent setup improvement: First use → Run local check explicitly reads bounded device facts and writes/reads/removes one tiny fixed-text file in the configured data folder. It does not touch career records, keys, models or providers. Success requires exact readback and cleanup; unavailable/cleanup-needed/busy have fixed recovery guidance. A per-app lock prevents overlapping probes. Explicit retry must clean its known leftover before creating a new file. Stop waiting/navigation discard transient results while OS cleanup finishes; abrupt exit may leave a nonpersonal file and there is no startup sweep. Results do not certify performance, Windows compatibility, database writes or future saves. [Decision 0040](docs/architecture/0040-local-core-readiness.md) records the predeclared contract and finite scope.
 

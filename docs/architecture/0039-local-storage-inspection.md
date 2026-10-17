@@ -1,6 +1,6 @@
 # 0039 — Explicit local storage inspection
 
-Date: 2026-10-17. Status: 22B implemented locally; contract declared before implementation. Not published or packaged.
+Date: 2026-10-17. Status: 22B implemented; contract declared before implementation. Source/tests/docs published in `9d14791` with 22C; included in the rebuilt local 0.1.0 package. Installed acceptance remains pending. Earlier verification below records the original 22B evidence.
 
 ## Contract and finite scope
 

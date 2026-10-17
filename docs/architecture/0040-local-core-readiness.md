@@ -1,6 +1,6 @@
 # 0040 — Optional local core checks
 
-Date: 2026-10-17. Status: 22C implemented and verified locally; contract declared before implementation. Included in the rebuilt local 0.1.0 package; unpublished and not installed for acceptance.
+Date: 2026-10-17. Status: 22C implemented and verified locally; contract declared before implementation. Source/tests/docs published as `9d14791`. Included in the rebuilt local 0.1.0 package; installer remains local and has not been installed for acceptance.
 
 ## User outcome and scope
 
