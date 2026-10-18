@@ -1,6 +1,6 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-18 (22D reviewed personal-data folder changes implemented; source publication authorized and pending final verification; paired native build blocked). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-10-18 (22D reviewed personal-data folder changes implemented; source/tests/docs published as `1c3bafb`; paired native build blocked). Project memory contains no personal career records or credentials.
 
 ## Current checkpoint — 22D reviewed folder changes
 
@@ -8,7 +8,7 @@ Implemented the larger coherent setup increment from yesterday: review a new loc
 
 Evidence: all 454 engine, 162 frontend and 17 report/audit tests pass; production typecheck/build and synthetic shortlist evaluation pass. Tests include real process interruption on either side of commit, populated records/tracking, restart, stale/expired/reused confirmation, invalid/replaced paths, hardlinks/reparse attributes, space/copy/config failures and concurrent work/engines. Browser keyboard, validation/focus recovery, successful change, retained-copy disclosure, navigation clearing and light/dark/560px layout checks pass. The actual freshly packaged engine passes synthetic profile/job/tracking copy, restart, new-save targeting and owner shutdown, without provider/vault/model routes.
 
-Unfinished-work audit: the remaining build blocker is missing Windows resource-compiler/SDK tooling. Engine packaging and frontend build succeeded, but the paired desktop build failed before native compilation/installer completion. The older local 0.1.0 installer still contains 22A–22C only; never describe it as 22D. No SDK installation, real career-record move, provider/page/vault/model operation, acquisition or spending. Current build logs/helper/screenshot/synthetic data stay ignored. User explicitly authorized pushing this session's changes; publication verification will be recorded after it succeeds.
+Unfinished-work audit: the remaining build blocker is missing Windows resource-compiler/SDK tooling. Engine packaging and frontend build succeeded, but the paired desktop build failed before native compilation/installer completion. The older local 0.1.0 installer still contains 22A–22C only; never describe it as 22D. No SDK installation, real career-record move, provider/page/vault/model operation, acquisition or spending. Current build logs/helper/screenshot/synthetic data stay ignored. On explicit user authorization, all 22 reviewed source/test/documentation files were published as `1c3bafb`; exact remote main matched that implementation revision. All staged blobs matched the reviewed payload, 172 local Markdown targets resolved and scoped credential/private-path and whitespace checks passed. No generated artifacts were published.
 
 Next concrete action: restore the Windows C++/SDK prerequisites, rebuild the paired desktop/engine package, then perform deliberate installed setup/migration acceptance. Native folder-dialog polish and automatic recovery-copy restoration/cleanup are not implemented. Milestone 21/Q2/Q3/Q4/Q6/Q8 and owner 23 installed/accessibility/resource/CI gates remain open. All acquisition approvals remain consumed; do not restart exhaustive manual grading. Older checkpoints below describe their original scope.
 

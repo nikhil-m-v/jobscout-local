@@ -1,6 +1,6 @@
 # 0041 — Reviewed personal-data folder changes
 
-Date: 2026-10-18. Status: 22D implemented and verified in source, synthetic browser and packaged engine; paired Windows package blocked by missing build tools. Contract declared before implementation.
+Date: 2026-10-18. Status: 22D implemented and verified in source, synthetic browser and packaged engine; paired Windows package blocked by missing build tools. Contract declared before implementation. Source/tests/docs published as `1c3bafb` on explicit user authorization.
 
 ## Outcome and boundary
 
