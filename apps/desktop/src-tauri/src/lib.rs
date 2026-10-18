@@ -45,6 +45,22 @@ async fn setup_check(state: tauri::State<'_, Arc<EngineState>>) -> Result<serde_
 }
 
 #[tauri::command]
+async fn setup_location(state: tauri::State<'_, Arc<EngineState>>, action: String, body: Option<serde_json::Value>) -> Result<serde_json::Value, String> {
+    let suffix = match action.as_str() { "status" => "", "review" => "/review", "apply" => "/apply", _ => return Err("Folder operation unavailable".into()) };
+    let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
+        .clone().ok_or("Workspace is starting")?;
+    let url = format!("{endpoint}/api/v1/setup/location{suffix}");
+    let request = if action == "status" { state.client.get(url) } else {
+        let value = body.ok_or("Folder operation unavailable")?;
+        if value.to_string().len() > 16384 { return Err("Folder operation unavailable".into()); }
+        state.client.post(url).json(&value)
+    };
+    request.timeout(Duration::from_secs(if action == "apply" { 45 } else { 8 }))
+        .bearer_auth(&state.token).send().await.map_err(|_| "Folder operation unavailable")?
+        .json().await.map_err(|_| "Folder operation unavailable".into())
+}
+
+#[tauri::command]
 async fn resume_import(
     state: tauri::State<'_, Arc<EngineState>>, action: String,
     id: Option<String>, data: Option<String>, format: Option<String>,
@@ -288,7 +304,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_opener::init())
         .manage(state)
-        .invoke_handler(tauri::generate_handler![engine_health, setup_storage, setup_check, resume_import, profile_record, career_data, saved_jobs, search_preview, search_plan, search_control, search_provider, provider_connection, job_search, local_assistance])
+        .invoke_handler(tauri::generate_handler![engine_health, setup_storage, setup_check, setup_location, resume_import, profile_record, career_data, saved_jobs, search_preview, search_plan, search_control, search_provider, provider_connection, job_search, local_assistance])
         .setup(|app| {
             let state = app.state::<Arc<EngineState>>().inner().clone();
             let directory = app.path().app_data_dir()?;

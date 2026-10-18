@@ -137,7 +137,9 @@ def test_authenticated_api_extracts_in_worker_without_persisting(tmp_path):
         assert client.delete(path, headers=headers).status_code == 200
         assert client.get("/api/v1/health", headers=headers).status_code == 200
     for item in tmp_path.iterdir():
-        assert item.name in {"jobscout.db", "jobscout.db-shm", "jobscout.db-wal"}
+        assert item.name in {"jobscout.db", "jobscout.db-shm", "jobscout.db-wal", "workspace-location.json", ".workspace-routing-required", ".workspace.lock"}
+        if item.name != 'jobscout.db':
+            assert b'SYNTHETIC RESUME' not in item.read_bytes()
         assert b"SYNTHETIC RESUME" not in item.read_bytes()
 
 

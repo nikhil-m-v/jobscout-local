@@ -24,6 +24,7 @@ from jobscout_engine.domain.providers import MAX_PROVIDER_BODY_BYTES, validate_t
 from jobscout_engine.config import Settings
 from jobscout_engine.setup_storage import inspect_storage
 from jobscout_engine.setup_check import CoreCheck
+from jobscout_engine.workspace_location import WorkspaceLocation, WorkspaceLease, LocationFailure
 from jobscout_engine.domain.contracts import EngineHealth, ModelProvider
 from jobscout_engine.storage import Database, DataReviewChanged
 from jobscout_engine.domain.saved_jobs import validate_snapshot, validate_tracking, SavedJobsFull, TrackingConflict, MAX_SAVED_JOB_BODY_BYTES, MAX_TRACKING_BODY_BYTES
@@ -42,6 +43,10 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
                search_provider: SearchProvider | None = None) -> FastAPI:
     database = Database(settings.data_dir)
     core_check = CoreCheck(settings.data_dir)
+    location = WorkspaceLocation(settings.data_dir, settings.session_token)
+    lease = WorkspaceLease(settings.data_dir)
+    location_switching = False
+    active_requests = 0
     provider = model_provider or OllamaProvider(settings.ollama_url)
     bearer = HTTPBearer(auto_error=False)
     imports = import_service or ImportService()
@@ -57,17 +62,38 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
 
     @asynccontextmanager
     async def lifespan(_: FastAPI):
-        await run_in_threadpool(database.initialize)
-        yield
-        if imports.task:
-            imports.cancel(imports.task.id)
-        if broader.current_id:
-            broader.cancel(broader.current_id)
+        lease.acquire()
+        try:
+            await run_in_threadpool(location.load)
+            database.path = location.active / 'jobscout.db'
+            core_check.data_dir = location.active
+            await run_in_threadpool(database.initialize)
+            yield
+        finally:
+            if imports.task:
+                imports.cancel(imports.task.id)
+            if broader.current_id:
+                broader.cancel(broader.current_id)
+            lease.release()
 
     application = FastAPI(
         title="JobScout local engine", version=__version__, lifespan=lifespan,
         docs_url=None, redoc_url=None, openapi_url=None,
     )
+
+    @application.middleware('http')
+    async def location_boundary(request: Request, call_next):
+        nonlocal active_requests
+        if location_switching:
+            scheme, _, token = request.headers.get('authorization', '').partition(' ')
+            if scheme.lower() != 'bearer' or not secrets.compare_digest(token.encode(), settings.session_token.encode()):
+                return JSONResponse({'detail': 'A valid app session is required.'}, status_code=401)
+            return JSONResponse({'error': 'location_busy'}, status_code=409, headers={'Cache-Control': 'no-store'})
+        active_requests += 1
+        try:
+            return await call_next(request)
+        finally:
+            active_requests -= 1
 
     @application.middleware('http')
     async def data_operation_boundary(request: Request, call_next):
@@ -119,7 +145,57 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
     async def setup_storage(request: Request):
         if request.query_params:
             return profile_response({"error": "invalid_storage_request"}, 422)
-        return profile_response(await run_in_threadpool(inspect_storage, settings.data_dir))
+        return profile_response(await run_in_threadpool(inspect_storage, location.active))
+
+    @application.get('/api/v1/setup/location', dependencies=[Depends(require_session)])
+    async def location_status(request: Request):
+        if request.query_params:
+            return profile_response({'error': 'invalid_location_request'}, 422)
+        return profile_response(location.status())
+
+    @application.post('/api/v1/setup/location/{action}', dependencies=[Depends(require_session)])
+    async def change_location(action: Literal['review', 'apply'], request: Request):
+        nonlocal location_switching
+        async def read_body():
+            body = bytearray()
+            async for chunk in request.stream():
+                if len(body) + len(chunk) > 16384:
+                    raise ValueError()
+                body.extend(chunk)
+            return json.loads(body, object_pairs_hook=reject_duplicate_keys)
+        try:
+            if request.query_params or request.headers.get('content-type') != 'application/json':
+                raise ValueError()
+            value = await asyncio.wait_for(read_body(), timeout=5)
+            if type(value) is not dict:
+                raise ValueError()
+            if action == 'review':
+                if set(value) != {'destination'} or type(value['destination']) is not str:
+                    raise ValueError()
+            elif (set(value) != {'review_token', 'confirmed'} or value['confirmed'] is not True or
+                  type(value['review_token']) is not str or len(value['review_token']) != 64 or
+                  any(c not in '0123456789abcdef' for c in value['review_token'])):
+                raise ValueError()
+        except (ValueError, UnicodeError, RecursionError, asyncio.TimeoutError, ClientDisconnect):
+            return profile_response({'error': 'invalid_location_request'}, 422)
+        if (active_requests > 1 or location_switching or data_deleting or active_data_operations or
+                search_lock.locked() or (imports.task and imports.task.running)):
+            return profile_response({'error': 'location_busy'}, 409)
+        location_switching = True
+        try:
+            if action == 'review':
+                result = await run_in_threadpool(location.review, value['destination'])
+            else:
+                result = await run_in_threadpool(location.apply, value['review_token'])
+                database.path = location.active / 'jobscout.db'
+                core_check.data_dir = location.active
+            return profile_response(result)
+        except LocationFailure as error:
+            return profile_response({'error': error.code}, 409)
+        except (OSError, sqlite3.Error, ValueError):
+            return profile_response({'error': 'location_unavailable'}, 503)
+        finally:
+            location_switching = False
 
     @application.post("/api/v1/setup/check", dependencies=[Depends(require_session)])
     async def setup_check(request: Request):

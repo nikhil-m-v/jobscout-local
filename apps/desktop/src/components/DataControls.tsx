@@ -22,5 +22,6 @@ export function DataControls({ controls, workBusy }: { controls: ReturnType<type
       <div className="criteria-actions"><button className="button secondary" type="button" autoFocus onClick={() => { returnFocus.current = true; controls.cancel(); }}>Keep my data</button><button className="button secondary" type="button" disabled={workBusy || !controls.connected} onClick={() => { void controls.remove(); }}>Confirm deletion</button></div>
     </div> : <button ref={button => { reviewButton.current = button; if (button && returnFocus.current) { button.focus(); returnFocus.current = false; } }} className="button secondary" type="button" disabled={!controls.connected || workBusy || busy} onClick={() => void controls.reviewData()}>{controls.phase === 'unknown' ? 'Review remaining local data' : 'Review local data to delete'}</button>}
     <p className="criteria-help">To remove one item instead, use Delete saved profile in Resume or Remove saved candidate in Saved jobs. Deleting a profile alone keeps saved jobs and notes; deleting a candidate includes its stage and notes.</p>
+    <p className="criteria-help">If you changed personal-data folders, deletion affects only the active folder. Previous recovery copies and interrupted copies are retained. Open the setup guide to inspect previous folder locations.</p>
   </section>;
 }

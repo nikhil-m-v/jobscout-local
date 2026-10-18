@@ -1,0 +1,35 @@
+# 0041 — Reviewed personal-data folder changes
+
+Date: 2026-10-18. Status: 22D implemented and verified in source, synthetic browser and packaged engine; paired Windows package blocked by missing build tools. Contract declared before implementation.
+
+## Outcome and boundary
+
+Setup offers a local-only review and explicit **Copy and use this folder** action. The user enters an absolute, new folder whose parent already exists on a local fixed drive. Existing destinations, network locations, symbolic links/junctions and overlapping workspace locations are rejected. No recursive enumeration, overwrite or automatic deletion is allowed. Models, original resumes, application files and provider credentials are not copied.
+
+The original launch directory remains the stable workspace identity, credential namespace and small routing-config location. The database alone changes location. An exclusive process lease prevents two current engines from opening the same workspace concurrently. Older builds that do not understand routing must not run against a relocated workspace.
+
+Startup creates a small initial routing file and a routing-required marker for existing/default workspaces. Subsequent loss of the routing file fails closed. Each copied folder carries an owner marker; launching it as an unrelated workspace is refused. Keep the original launch directory even after switching. There is no database schema change. The supported bounded operation allows databases up to 256 MiB and twelve folder changes, requiring twice the current database size plus 16 MiB free. These are safety bounds, not performance recommendations. Partial copies are not automatically inventoried or cleaned up.
+
+## Review, commit and recovery
+
+Authenticated, no-store fixed review/apply/status routes accept bounded exact JSON. Review returns current/new folder, database size, available bytes, a session-only expiring token and retained recovery locations. It checks path structure and space; it does not promise write access. Confirmation requires the exact token, unchanged source records and directory identity, fresh space checks, and no active import/search/data work. The engine blocks other requests during the switch; UI stays responsive and clearly describes uncertain completion after a connection loss.
+
+Apply exclusively creates the new folder and uses SQLite backup to copy the current database. It verifies integrity and the complete logical record fingerprint, flushes the copy, then atomically replaces a bounded routing file before switching the in-process database reference. The original database is retained as a disclosed recovery copy; later saves and deletion affect only the active database. Recovery folders are listed in setup. No automatic rollback to stale records occurs. Provider keys retain their original OS-vault identity without reading or rewriting secrets.
+
+Interruption before routing commit leaves the original active; the selected folder can contain a partial/private copy. Interruption after commit selects the verified copy on restart. Failed/ambiguous operations require reading current status before a fresh review; never auto-retry apply. Startup validates selected storage and fails closed on missing/invalid config or database instead of creating empty records. Routing replacement is an OS atomic rename with file synchronization, not a guarantee against power loss or external modification. Original and interrupted copies, external backups and filesystem remnants are outside current-record deletion; deletion is not secure erasure.
+
+Paths stay local and never enter provider requests, logs, committed fixtures or setup-progress storage. UI clears path/review state on leaving. No network, model, download, dependency, schema or version change. A reviewed copy can take time; leaving does not cancel an already-started commit. Supporting network/removable/cloud-managed folders, automatic backup cleanup and recovery-copy restoration are outside this increment. The app cannot reliably detect every cloud-sync agent; users must choose a folder they keep local.
+
+## Exit evidence
+
+Exercise populated migration/restart, record/stage/note identity, stable secret namespace, repeated changes, stale/expired/reused reviews, bad paths, disk/write/verification/config failures, startup fail-closed and concurrent work/instances. Run complete engine/frontend/report suites, shortlist evaluation, production build and paired Windows package. Inspect synthetic browser review, confirmation, error/recovery, keyboard and compact/theme states. Record installed/native/accessibility/resource and human-quality gaps separately.
+
+## Evidence and remaining work
+
+All 454 engine tests, 162 frontend tests and 17 report/audit tests pass. The 42 new engine cases include real child-process exits immediately before/after routing commit, restart target selection, populated profile/jobs/stages/notes, original-copy retention, deletion and later saves in the active folder, expired/reused/stale tokens, changed destination/parent identity, hardlinks/reparse attributes, malformed requests, free-space/copy/verification/config errors, missing selected storage/config/owner, concurrent writes and a second engine. Six new frontend cases cover exact transport/validation, reviewed confirmation, uncertain outcomes without automatic retry, duplicate actions and late completions, transient state and escaped display. Existing import/probe tests were adapted to the new non-career routing files and scoped failure injection.
+
+Production frontend typecheck/build and synthetic shortlist evaluation pass. Browser checks cover keyboard entry/review/confirmation, invalid-path focus recovery, successful copy/current-folder recovery, retained-copy disclosure, stale inspection clearing, navigation clearing the draft, and light/dark layouts. At a 560px viewport, client and content width both measure 545px (scrollbar excluded). Browser review corrected a database-size label that initially used free-space wording. Screenshot stays local/ignored.
+
+The fresh frozen engine passes authenticated/no-store copy, tracking, restart, new-save target, retained-original and owner-shutdown smoke checks with disposable synthetic data. A Windows-specific read-only fsync failure found by tests was fixed by flushing through a writable handle. No real provider/vault/model/private-profile operation occurs. Tests retain one existing Starlette/httpx deprecation warning.
+
+The paired desktop build reaches successful engine packaging and frontend build, then fails in the Windows resource step because RC.EXE is unavailable; the installed Windows Kits location lacks its compiler/bin files. No SDK or system-tool installation was attempted. The existing 0.1.0 installer remains the earlier 22A–22C artifact and does not include 22D. Restore the Windows C++/SDK prerequisites, rebuild paired components, then perform deliberate installed setup acceptance. This increment does not establish native command compilation, installed/accessibility/resource/CI or milestone-21 human acceptance. See [progress](../progress/2026-10-18.md).

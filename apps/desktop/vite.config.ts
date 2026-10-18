@@ -24,7 +24,7 @@ export default defineConfig({
     watch: { ignored: ['**/src-tauri/target/**', '**/src-tauri/binaries/**'] },
     proxy: process.env.JOBSCOUT_ENGINE_URL ? {
       // Expose only fixed local routes, never a general engine/network proxy.
-      '^/engine/(health|setup/(storage|check)|data|profile|jobs(/[0-9a-f-]{36})?|assistance|search(/(preview|plan|[0-9a-f-]{36}(/cancel)?))?|providers/tavily(/check)?|imports(/[0-9a-f-]{36}(/(pdf|docx))?)?)$': {
+      '^/engine/(health|setup/(storage|check|location(/(review|apply))?)|data|profile|jobs(/[0-9a-f-]{36})?|assistance|search(/(preview|plan|[0-9a-f-]{36}(/cancel)?))?|providers/tavily(/check)?|imports(/[0-9a-f-]{36}(/(pdf|docx))?)?)$': {
         target: process.env.JOBSCOUT_ENGINE_URL,
         rewrite: path => path.replace(/^\/engine/, '/api/v1'),
         headers: { Authorization: `Bearer ${process.env.JOBSCOUT_SESSION_TOKEN}` },

@@ -113,9 +113,9 @@ def test_inflight_probe_is_bounded_and_event_loop_remains_responsive(tmp_path, m
         entered.set()
         assert release.wait(5)
         original(descriptor)
-    monkeypatch.setattr(module.os, 'fsync', slow_sync)
     token = 'synthetic-session-' + 'c' * 32
     with TestClient(create_app(Settings(tmp_path, token))) as client, ThreadPoolExecutor() as pool:
+        monkeypatch.setattr(module.os, 'fsync', slow_sync)
         headers = {'Authorization': f'Bearer {token}'}
         run = pool.submit(client.post, '/api/v1/setup/check', headers=headers)
         try:

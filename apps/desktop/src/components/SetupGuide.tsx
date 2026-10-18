@@ -5,6 +5,7 @@ import { setupSteps, type SetupProgress, type SetupStep } from '../lib/setup-pro
 import { SearchProviderSettings } from './SearchProviderSettings';
 import { SetupStorage } from './SetupStorage';
 import { SetupCheck } from './SetupCheck';
+import { SetupLocation } from './SetupLocation';
 
 type Props = {
   progress: SetupProgress;
@@ -13,12 +14,14 @@ type Props = {
   checking: boolean;
   refresh: () => void;
   leave: () => void;
+  workBusy?: boolean;
 };
 const labels = { workspace: 'Your workspace', search: 'Online search', start: 'First use' };
 
-export function SetupGuide({ progress, changeStep, health, checking, refresh, leave }: Props) {
+export function SetupGuide({ progress, changeStep, health, checking, refresh, leave, workBusy }: Props) {
   const { step, remembered } = progress;
   const [showProvider, setShowProvider] = useState(false);
+  const [storageRevision, setStorageRevision] = useState(0);
   const move = (next: SetupStep) => { setShowProvider(false); changeStep(next); };
   return <div className="setup-guide">
     <div className="page-heading"><div><p className="eyebrow">GET STARTED</p><h1>A little setup. Your own pace.</h1><p className="muted">Keep your personal story on this computer. No AI model download is needed.</p></div></div>
@@ -31,8 +34,9 @@ export function SetupGuide({ progress, changeStep, health, checking, refresh, le
           <div><dt>Your career records</dt><dd>Saved profile text, saved jobs, application stages and notes live in this workspace’s local database. Original resume files stay where you keep them.</dd></div>
           <div><dt>Your choices</dt><dd>Review text before saving it. Settings → Your local data lets you review counts and delete app-owned career records. Local storage is not automatically encrypted; deletion does not guarantee secure disk erasure.</dd></div>
         </dl>
-        <p className="criteria-help">This guide uses the existing storage location. Choosing or moving a personal-data folder is planned. Optional models belong to a later release.</p>
-        <SetupStorage />
+        <p className="criteria-help">Keep the existing storage location or review a new personal-data folder below. Optional models belong to a later release.</p>
+        <SetupStorage key={storageRevision} />
+        <SetupLocation workBusy={workBusy} changed={() => { setStorageRevision(value => value + 1); refresh(); }} />
       </>}
       {step === 'search' && <>
         <div className="settings-title"><span className="icon-tile peach"><Search size={20} /></span><div><h2 id="setup-step-title">Online search, when you want it.</h2><p>You can import, review and save resume text without configuring a provider.</p></div></div>

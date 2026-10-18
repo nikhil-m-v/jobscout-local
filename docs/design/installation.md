@@ -8,6 +8,8 @@ Implemented first app slice, 2026-10-17: [22A optional setup guide](../architect
 
 ## Goal and scope
 
+Implemented continuation, 2026-10-18: 22B/22C provide explicit storage/device checks, and [22D](../architecture/0041-personal-data-folder.md) adds full-path entry, destination review and verified database copying. Default remains the existing folder; existing users are never moved automatically. No new dependency, model, provider permission or schema is required. The stable launch directory now stores small routing/ownership metadata, and the same vault namespace is retained. Review checks path/space; copying validates SQLite before switching. Stop waiting/navigation cannot recall an in-flight copy, and uncertain results require checking the current folder. Original and interrupted copies remain private-data copies outside active-record deletion. Upgrades must preserve routing files and the original launch directory; older builds cannot safely use a relocated workspace. A native folder dialog, automatic restoration/backup cleanup and installed setup acceptance remain outstanding. Current paired packaging is blocked by unavailable Windows resource-compiler tooling; the previous installer excludes 22D.
+
 Help a person reach their first useful resume analysis without a terminal or developer knowledge. Use two connected stages: the Windows installer handles the app location and shortcuts; the app's first-run wizard handles models, credentials, and personal settings under the user's own account. Both stages share the same visual identity. Keep API keys out of elevated installer processes.
 
 ## Visual direction

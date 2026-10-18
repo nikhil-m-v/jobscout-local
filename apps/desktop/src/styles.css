@@ -402,3 +402,11 @@ svg { flex-shrink: 0; }
 .job-tracking-editor textarea { resize: vertical; }
 .job-tracking-editor textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 .job-tracking-editor textarea, .job-tracking-editor .discovery-snippet, .job-tracking .discovery-snippet { white-space: pre-wrap; overflow-wrap: anywhere; user-select: text; }
+
+.setup-location h3 { margin-bottom: 8px; }
+.location-label { display: block; margin: 20px 0 8px; font-weight: 600; }
+.location-input { width: 100%; min-width: 0; padding: 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); color: var(--ink); font: inherit; }
+.location-path, .location-retained li { overflow-wrap: anywhere; }
+.location-retained { margin: 16px 0; }
+.location-retained summary { cursor: pointer; }
+.setup-location .criteria-actions { flex-wrap: wrap; margin-top: 16px; }
