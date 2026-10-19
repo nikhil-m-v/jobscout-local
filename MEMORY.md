@@ -1,6 +1,10 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-20 (22D paired Windows package and finite installed folder-change walkthrough complete; ten evidence/guidance documents published as `cac0e6e`). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-10-20 (README refreshed to the verified application state; 22D paired package/installed walkthrough complete; prior evidence/guidance publication `cac0e6e`). Project memory contains no personal career records or credentials.
+
+## README refresh — 2026-10-20
+
+Updated README against the current implementation, privacy contract, roadmap and installed evidence: version 0.1.0; setup 22A–22D packaged; bounded installed walkthrough complete; optional guide, explicit local checks and reviewed folder-copy behavior; current source-based ordering, saved jobs/tracking and active-only deletion. Removed stale missing-SDK/installer exclusions, future-saving/tracking descriptions, old progress link and historical quality test totals. Kept planned model features and open human-quality/Windows release gates explicit. All 51 README local file/image targets and fragments resolve; whitespace checks pass. Documentation only; existing regression/package evidence is cited with its original date/scope, with no product test rerun or new installed/live verification. README and session notes are included in the user-requested local documentation commit; no push or release publication. Next implementation action remains one finite milestone-23 synthetic CI/Windows packaging slice. See [dated progress](docs/progress/2026-10-20.md#readme-refresh).
 
 ## Current checkpoint — 22D packaged and installed walkthrough verified
 
