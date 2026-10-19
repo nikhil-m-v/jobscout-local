@@ -1,6 +1,6 @@
 # 0041 — Reviewed personal-data folder changes
 
-Date: 2026-10-18. Status: 22D implemented and verified in source, synthetic browser and packaged engine; paired Windows package blocked by missing build tools. Contract declared before implementation. Source/tests/docs published as `1c3bafb` on explicit user authorization.
+Date: 2026-10-18; evidence updated 2026-10-20. Status: 22D implemented, paired Windows packaging and finite installed folder-change walkthrough verified. Contract declared before implementation. Source/tests/docs published as `1c3bafb` on explicit user authorization; latest verification is recorded below.
 
 ## Outcome and boundary
 
@@ -33,3 +33,9 @@ Production frontend typecheck/build and synthetic shortlist evaluation pass. Bro
 The fresh frozen engine passes authenticated/no-store copy, tracking, restart, new-save target, retained-original and owner-shutdown smoke checks with disposable synthetic data. A Windows-specific read-only fsync failure found by tests was fixed by flushing through a writable handle. No real provider/vault/model/private-profile operation occurs. Tests retain one existing Starlette/httpx deprecation warning.
 
 The paired desktop build reaches successful engine packaging and frontend build, then fails in the Windows resource step because RC.EXE is unavailable; the installed Windows Kits location lacks its compiler/bin files. No SDK or system-tool installation was attempted. The existing 0.1.0 installer remains the earlier 22A–22C artifact and does not include 22D. Restore the Windows C++/SDK prerequisites, rebuild paired components, then perform deliberate installed setup acceptance. This increment does not establish native command compilation, installed/accessibility/resource/CI or milestone-21 human acceptance. See [progress](../progress/2026-10-18.md).
+
+### Paired package and installed follow-up — 2026-10-20
+
+The paragraph above records the original 2026-10-18 blocker. Official Microsoft C++ Build Tools/Windows SDK restoration and the paired engine/frontend/native/NSIS build succeeded on 2026-10-19. The local production 0.1.0 installer now includes 22A–22D (22.19 MiB). A separate-identity production-code acceptance package preserved exact production artifact hashes.
+
+The [finite installed walkthrough](../22d-installed-acceptance.md) passed on 2026-10-20: synthetic populated copy, invalid-path guidance/focus recovery, reviewed retained-copy disclosure, stale-storage reset, local probe, saved candidate/stage/note preservation, normal shutdown/restart, selected-folder persistence and later UI save. Read-only comparisons confirm unchanged recovery records and the new note only in active storage. Guarded test uninstall and dedicated identity cleanup passed; production database fingerprints stayed unchanged. No provider/page/key-byte/model or real career-record operation occurred. This closes the bounded installed follow-up, while full owner-23 accessibility/OS/themes, installer wizard/upgrade/fresh-user/runtime, active-work/abrupt-exit, workload resources and CI gates remain open. Milestone-21 human usefulness remains separate. [Detailed evidence](../progress/2026-10-20.md).

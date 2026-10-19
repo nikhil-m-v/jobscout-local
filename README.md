@@ -49,7 +49,11 @@ Ollama is optional; its availability check does not enable model inference. When
 
 ## Run as a Windows desktop app
 
-Install the official [Tauri Windows prerequisites](https://v2.tauri.app/start/prerequisites/): Rust with the MSVC toolchain, Microsoft C++ Build Tools, and WebView2 where needed. Then:
+Install the official [Tauri Windows prerequisites](https://v2.tauri.app/start/prerequisites/): Rust with the MSVC toolchain, Microsoft C++ Build Tools, and WebView2 where needed.
+
+In the Microsoft installer, select **Desktop development with C++**, including the MSVC x64/x86 tools and a Windows SDK. Rust alone is insufficient. If packaging reports that `RC.EXE` is missing, use Visual Studio Installer to install or repair the Windows SDK and C++ tools, then reopen your terminal and retry. A leftover Windows Kits folder does not prove the resource compiler or SDK libraries are installed. Do not replace a missing compiler with an older JobScout executable; rebuild the paired package below.
+
+With these prerequisites ready:
 
 ```powershell
 .\.venv\Scripts\python.exe -m pip install -e ".[desktop]"
@@ -68,9 +72,11 @@ npm run desktop:build
 
 With the default target directory, the build creates a Windows NSIS installer under `apps/desktop/src-tauri/target/release/bundle/`. A `CARGO_TARGET_DIR` override moves the release executable and bundles to that directory. Reopen the fresh executable or update the installed app to use new code; an already-running or installed copy is separate. Rebuild/restart frontend and bundled engine together when their strict API contracts change.
 
+For the bounded synthetic installed folder-copy check, follow [the acceptance walkthrough](docs/22d-installed-acceptance.md). It uses a separate application identity and preserves the normal installation; successful packaging alone does not complete installed acceptance.
+
 The guided installer/onboarding design is in [installation.md](docs/design/installation.md). In-app Tavily key setup is implemented; the complete guided first-run wizard, model selection, custom model storage and download recovery remain planned. The initial installer is configured for the current Windows user.
 
-Production engine packaging, Rust compilation and NSIS generation pass for the current code (latest installer approximately 22.11 MiB). This verifies packaging, not installer execution or current native interactions. Clean install, upgrade, uninstall, accessibility, themes and narrow-window behavior remain release checks.
+Production engine packaging, Rust compilation and NSIS generation pass for the current code (latest local installer approximately 22.19 MiB, including 22A–22D). The separate-identity synthetic folder-copy, restart, later-save, normal-close and guarded uninstall walkthrough also passes; see [the observed results](docs/progress/2026-10-20.md). Broader installer wizard, upgrade/fresh-user/runtime, accessibility, OS/theme, active-work and workload-resource checks remain release gates.
 
 ## Structure
 

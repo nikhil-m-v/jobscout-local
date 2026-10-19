@@ -35,7 +35,7 @@ The main journey is **local resume review or manual preferences → reviewed pub
 - Guided Windows core setup, Light/Dark/System, keyboard access, compact layout, reduced effects and readable error recovery. No model/runtime download prerequisite.
 - Reproducible checks, Windows packaging, contributor/setup documentation and a synthetic end-to-end demo. CI stays the dedicated milestone 23 increment.
 
-These are requirements, not claims of implementation. Saving jobs and basic tracking are implemented with bounded evidence; current data controls are implemented with bounded evidence; guided setup remains planned. The application stays version 0.1.0 until an intentional version/release change is requested after acceptance.
+These are requirements, not claims of complete release acceptance. Saving jobs, basic tracking, current data controls and the optional 22A–22D core setup guide are implemented with bounded evidence. Current paired Windows packaging and [finite installed folder-change checks](22d-installed-acceptance.md) pass; broader owner-23 installer/accessibility/OS/workload-resource/CI checks and owner-21 human usefulness acceptance remain open. The application stays version 0.1.0 until an intentional version/release change is requested after acceptance.
 
 ## v1.0 completion gates
 
@@ -59,7 +59,7 @@ Privacy, data-loss and critical lifecycle defects block affected functionality. 
 | 3 | 19 — Basic tracker — implemented | Reversible stages and bounded private notes; restart/delete/upgrade/conflict and synthetic browser evidence. Native/installed follow-up owned by 23 |
 | 4 | 20 — Data controls — implemented | Count-only review, atomic profile/jobs/notes deletion, session clearing and explicit retained-data limits; native/installed follow-up remains owner 23 |
 | 5 | 21 — Quality review — in progress | [Four finite parts](architecture/0037-finite-search-quality-delivery.md). 21.1: 21J correction complete, remaining policy/requirement dispositions next. 21.2: 21I ranking change remains rejected; tradeoff signoff pending. 21.3: bounded diagnostic coverage assessment complete. 21.4: named-human usefulness/accepted scope/handoff open. No new acquisition required by this reset; release still needs useful accepted scope and owner 23 checks |
-| 6 | 22 — Guided core setup | Storage/provider/skip/recovery without a model prerequisite |
+| 6 | 22 — Guided core setup — implemented | Storage/provider/skip/recovery without a model prerequisite; current paired package and bounded synthetic installed folder-change follow-up pass; wider release acceptance remains owner 23 |
 | 7 | 23 — v1.0 release candidate | Own deferred installed active-work/abrupt-exit, fresh-user/wizard/runtime/upgrade, full accessibility/OS and production-resource checks; CI/Windows packaging, demo/docs and all release gates |
 
 Keep milestone identifiers and evidence history. Advance one coherent feature, fix or acceptance slice per session; update [MEMORY.md](../MEMORY.md) and dated progress. Revisit optional release scope after v1.0 instead of pulling future features into the core.
