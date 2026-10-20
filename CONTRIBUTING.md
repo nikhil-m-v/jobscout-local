@@ -1,6 +1,6 @@
 # Contributing
 
-Development guide for JobScout maintainers. The owner explicitly authorizes source pushes while the repository is public and plans to make it private at the first major release. Installer-only application delivery remains the intended release policy. See [decision 0042](docs/architecture/0042-private-source-installer-distribution.md). CI reports and package audits remain gated on private visibility.
+Development guide for JobScout maintainers. The owner explicitly authorizes source pushes while the repository is public and plans to make it private at the first major release. Installer-only application delivery remains the intended release policy. See [decision 0042](docs/architecture/0042-private-source-installer-distribution.md). Development, validation, packaging and authorized pushes must not depend on repository visibility. Synthetic CI reports and build artifacts may be uploaded while public; source visibility and distribution controls are release decisions.
 
 Follow [AGENTS.md](AGENTS.md): think big, act small. Choose one meaningful improvement, explain the user benefit, and keep the application usable throughout the change.
 

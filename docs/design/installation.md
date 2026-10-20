@@ -1,6 +1,6 @@
 # Installation and first-run design
 
-Distribution update — 2026-10-20: the installer is the public application deliverable; source and development materials remain private under [decision 0042](../architecture/0042-private-source-installer-distribution.md). Package only reviewed runtime assets and required legal notices. End-user terms and the bundled dependency-notice inventory must be completed before public release. This changes distribution policy, not local-data behavior or setup permissions.
+Distribution update — 2026-10-20: the installer is the public application deliverable; source visibility will be reviewed at the first major release under [decision 0042](../architecture/0042-private-source-installer-distribution.md). Package only reviewed runtime assets and required legal notices. End-user terms and the bundled dependency-notice inventory must be completed before public release. This changes distribution policy, not local-data behavior or setup permissions.
 
 Release boundary — 2026-10-10: [v1.0](../releases.md) guides application/personal storage, provider configuration, local verification, setup-later and first use. A local model/runtime is not required or downloaded by v1.0 setup. Model/runtime sections below remain the brief for later optional matching/AI releases; apply their licence, size, hardware, cancellation, reuse and recovery rules when introduced. This planning decision does not change the installer or complete acceptance.
 

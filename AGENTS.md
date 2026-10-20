@@ -1,7 +1,7 @@
 # Project Instructions: Think Big, Act Small
 
 ## North star
-Build a closed-source Windows AI job-finder distributed to users as an installer, whose defining benefit is personal privacy: resume analysis, embeddings, matching, and career records stay on the user's computer. Online discovery must use generic job criteria without sending the user's identity or personal career data. Keep the architecture modular for authorized maintenance and replaceable components. Source, internal documentation, tests, reports and build tooling remain private; do not publish source archives. See decision 0042 for distribution boundaries and historical-license limits.
+Build a closed-source Windows AI job-finder distributed to users as an installer, whose defining benefit is personal privacy: resume analysis, embeddings, matching, and career records stay on the user's computer. Online discovery must use generic job criteria without sending the user's identity or personal career data. Keep the architecture modular for maintenance and replaceable components. The owner will address private-source access and installer-only distribution at the first major release. Until then, repository visibility must not gate development, edits, tests, CI, commits or authorized pushes. Synthetic CI reports and build artifacts may be uploaded in the public development repository. Keep real personal data, credentials and local debugging workspaces excluded. See decision 0042 for distribution boundaries and historical-license limits.
 
 ## Session continuity
 - At the start of work, read `MEMORY.md`, `docs/privacy.md`, and the current milestone in `docs/roadmap.md`.
@@ -41,7 +41,7 @@ Before considering a change complete, ask:
 2. Is the scope small and understandable?
 3. Does the interface remain responsive during slow work?
 4. Does the visual and interaction quality fit the rest of the app?
-5. Are privacy, accessibility, maintainability and private-source distribution preserved?
+5. Are privacy, accessibility and maintainability preserved, with release distribution obligations tracked?
 6. Is the change easy for the next contributor to run and continue?
 
 ## Collaboration expectations

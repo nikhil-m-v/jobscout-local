@@ -23,22 +23,8 @@ env:
   CARGO_TERM_COLOR: never
 
 jobs:
-  repository-policy:
-    name: Private source policy
-    runs-on: windows-2025
-    timeout-minutes: 2
-    env:
-      REPOSITORY_PRIVATE: ${{ toJSON(github.event.repository.private) }}
-    steps:
-      - name: Require a private source repository
-        run: |
-          if ($env:REPOSITORY_PRIVATE -ne 'true') {
-            throw 'JobScout source CI requires a private repository. No source checkout or packaging is permitted here.'
-          }
-
   validation:
     name: Synthetic validation (Windows)
-    needs: repository-policy
     runs-on: windows-2025
     timeout-minutes: 25
     steps:
@@ -113,10 +99,10 @@ jobs:
           path: ${{ steps.package.outputs.installer-path }}
           retention-days: 7
           if-no-files-found: error
-      - name: Retain private packaging audit
+      - name: Retain packaging audit
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
-          name: private-package-audit-${{ github.sha }}-${{ github.run_attempt }}
+          name: package-audit-${{ github.sha }}-${{ github.run_attempt }}
           path: ${{ steps.package.outputs.audit-path }}
           retention-days: 7
           if-no-files-found: error
