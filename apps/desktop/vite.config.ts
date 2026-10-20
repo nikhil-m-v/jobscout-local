@@ -2,6 +2,8 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
 export default defineConfig({
+  // Source maps must not enter the installer payload.
+  build: { sourcemap: false },
   plugins: [react(), {
     name: 'local-import-boundary',
     configureServer(server) {

@@ -1,0 +1,2 @@
+# Exact upstream notice bytes are checksum-bound across Windows checkouts.
+packaging/licenses/*.txt text eol=lf

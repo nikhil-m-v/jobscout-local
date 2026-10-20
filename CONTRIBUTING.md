@@ -1,8 +1,12 @@
 # Contributing
 
+Internal guide for authorized maintainers of the private JobScout source. Public distribution is limited to approved installers; source, development documentation, tests and CI reports are not public deliverables. See [decision 0042](docs/architecture/0042-private-source-installer-distribution.md). Do not push further source while the remote is public.
+
 Follow [AGENTS.md](AGENTS.md): think big, act small. Choose one meaningful improvement, explain the user benefit, and keep the application usable throughout the change.
 
 Start with [README.md](README.md). Check frontend changes with type checking and a production build. Run the engine checks for API, persistence, or provider changes. Native changes also need a Windows desktop build.
+
+Run the complete synthetic CI checks locally with `npm.cmd run validate:ci` after development setup. Each run retains separate ignored reports and exits unsuccessfully if any check fails. The [Windows CI contract](docs/23-ci.md) describes validation, dependent unsigned-installer packaging, seven-day artifacts, and the still-pending hosted-run/required-check acceptance. Do not add private fixtures, provider secrets or live discovery to CI.
 
 Keep provider integrations behind domain interfaces. Use synthetic resume/job fixtures for development and avoid committing personal data, credentials, caches, model weights, or generated binaries.
 

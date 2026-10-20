@@ -11,6 +11,7 @@ export function buildEngine() {
   mkdirSync(destination, { recursive: true });
   const result = spawnSync(pythonExecutable(), [
     '-m', 'PyInstaller', '--noconfirm', '--clean', '--onefile', '--name', 'jobscout-engine',
+    '--exclude-module', 'pytest', '--exclude-module', '_pytest',
     '--distpath', destination, '--workpath', path.join(root, 'work/pyinstaller'),
     '--specpath', path.join(root, 'work'), path.join(root, 'apps/engine/launcher.py'),
   ], { cwd: root, stdio: 'inherit', windowsHide: true });

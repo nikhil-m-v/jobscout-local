@@ -4,7 +4,13 @@ Release scope adopted 2026-10-10: **v1.0 is the model-free Windows core through 
 
 Baseline: 2026-09-29. Rows remain small meaningful deliveries; difficult milestones can span several sessions. Reorder when evidence warrants it and preserve a working app. No deadline, automation or reminder is implied.
 
-## Current milestone — search-quality review, 2026-10-16
+## Current implementation — milestone 23 hardening, 2026-10-20
+
+Owner-directed distribution change: future JobScout source is private; users receive the installer. [Decision 0042](architecture/0042-private-source-installer-distribution.md) preserves historical/third-party licenses and adds private-source CI plus a guarded installer-only export. The owner chose to change repository visibility personally. Keep all source changes local until private visibility is verified; public installer licensing/notices and release review remain open.
+
+Guided core setup 22A–22D is packaged and its bounded installed walkthrough is complete. [23A synthetic CI and Windows packaging](23-ci.md) now has a local implementation: full synthetic suites/evaluations, typecheck/build, dependent unsigned Windows installer and seven-day report/package artifacts. Hosted pull-request/main runs, artifact verification and required merge checks remain pending. The broader milestone-23 release gates and milestone-21 human usefulness/scope decisions remain open; no live acquisition is authorized.
+
+## Search-quality checkpoint — 2026-10-16 and 2026-10-17
 
 Active implementation, 2026-10-17: on the owner's explicit request to automate tedious review and return to features, the [delivery amendment](architecture/0037-finite-search-quality-delivery.md#delivery-amendment--2026-10-17) defers exhaustive manual-card grading. An ignored repeatable summary checks existing input/source bindings and consolidates the five pools without new human judgments or acquisition. Human quality gates stay open for a later concise scope/limitations decision with actual inspected coverage recorded. Feature work advances independently: [22A](architecture/0038-guided-core-setup.md) adds an optional three-step setup guide, reopening/progress, provider skip/explicit key setup and honest local readiness. Folder/device/installer work and milestone 22 completion remain pending. 21K documentation, the amendment and 22A are published as `957dc6c` on explicit user authorization, with exact remote main verified; the existing installer lacks 22A and version remains 0.1.0.
 
@@ -173,9 +179,9 @@ The revised sequence below preserves increments 1–7 and moves resource measure
 
 17B identifies candidate groups, not verified distinct jobs. Its implementation and the later title correction used no new live requests; the separately approved 2026-10-10 trial is recorded above. The 10–20 suitable-opportunity target remains an aspiration when available, not a universal milestone pass condition. Do not broaden criteria or spend extra requests automatically. The [deferred quality/release checks](milestone17-acceptance.md#remaining-17d-slices) assign owners 21 and 23, including CI. Stop extending 17D after its finite checklist passes; reopen only for a demonstrated regression or newly approved requirement.
 
-## Deferred milestone within 23 — GitHub Actions CI and Windows packaging
+## Milestone 23A — GitHub Actions CI and Windows packaging
 
-Status: planned, not implemented. Take this up during core alpha hardening after core acceptance, local saving, application tracking, data controls, search-quality review and guided setup (milestones 17–22). Local saving, application tracking and current privacy/data controls are implemented; search-quality review is in progress.
+Status: [implemented locally](23-ci.md), with hosted acceptance pending. Local saving, application tracking, current privacy/data controls and core guided setup are implemented; human search-quality acceptance remains open independently.
 
 - Run the complete engine and frontend suites, synthetic shortlist evaluations, typechecking and frontend builds on pull requests and pushes to `main`. Test counts follow the current suites rather than a fixed historical total.
 - Generate Windows installers only after validation passes, using GitHub-hosted Windows runners to exercise Windows-specific checks and packaging.
@@ -183,9 +189,11 @@ Status: planned, not implemented. Take this up during core alpha hardening after
 - Use only checked-in synthetic inputs and mocked providers. Do not introduce personal resumes, provider credentials or live searches into routine CI.
 - Defer automatic release publishing and signing to subsequent release work. CI packaging does not replace interactive installation, accessibility or native lifecycle verification.
 
-Completion evidence: a pull request and a `main` push produce successful validation and Windows packaging runs, downloadable reports/installers with explicit retention, and enforced merge checks. No pipeline, repository setting or release automation is enabled by scheduling this milestone.
+Completion evidence still required: a pull request and a `main` push produce successful validation and Windows packaging runs, downloadable reports/installers with explicit retention, and enforced merge checks. Workflow source exists locally; this session does not publish it, change repository settings or enable release automation.
 
 ## Scope controls
+
+Milestone 23C adds [installer dependency notices](23-dependency-notices.md), version-bound notice overrides and a private inventory. It removes pytest from the packaged engine. Package-level notice collection does not close source-availability/native-license review, signing, hosted CI or installed acceptance.
 
 - [Release boundaries](releases.md) govern scope: 1–23 belong to v1.0, 24–26 to optional semantic matching, 27–30 to optional local AI assistance. Later backlog items need a narrow release definition before implementation.
 - The import/review/save workflow is implemented; remaining native checks continue alongside discovery. Search quality and a useful no-model core now take priority over generative AI setup.

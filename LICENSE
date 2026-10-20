@@ -1,21 +1,18 @@
-MIT License
+JobScout source and distribution notice
 
-Copyright (c) 2026 JobScout contributors
+Copyright (c) 2026 JobScout contributors.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+Effective 2026-10-20, new original JobScout material is reserved by its
+respective rights holders. No open-source license is granted for that new
+material by this repository. Access to the private source does not by itself
+grant permission to publish, redistribute or sublicense that material.
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+This notice does not revoke or replace licenses already granted for earlier
+material. The previous MIT license is preserved in LICENSE-LEGACY and
+continues to apply to material provided under it. Third-party components
+remain subject to their own licenses and notices.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+Public distribution is intended to consist of authorized Windows installers,
+subject to separately established end-user terms and applicable dependency
+obligations. This repository notice is not an end-user license agreement and
+does not assert exclusive rights over previously MIT-licensed material.

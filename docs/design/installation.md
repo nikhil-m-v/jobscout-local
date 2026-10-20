@@ -1,5 +1,7 @@
 # Installation and first-run design
 
+Distribution update — 2026-10-20: the installer is the public application deliverable; source and development materials remain private under [decision 0042](../architecture/0042-private-source-installer-distribution.md). Package only reviewed runtime assets and required legal notices. End-user terms and the bundled dependency-notice inventory must be completed before public release. This changes distribution policy, not local-data behavior or setup permissions.
+
 Release boundary — 2026-10-10: [v1.0](../releases.md) guides application/personal storage, provider configuration, local verification, setup-later and first use. A local model/runtime is not required or downloaded by v1.0 setup. Model/runtime sections below remain the brief for later optional matching/AI releases; apply their licence, size, hardware, cancellation, reuse and recovery rules when introduced. This planning decision does not change the installer or complete acceptance.
 
 Status: initial product design; this document describes the planned experience, not an implemented installer.
@@ -63,7 +65,7 @@ Core discovery now has two model-free entry paths: reviewed resume text produces
 
 Each model card displays the exact model/version, license link, download size, recommended memory guidance, supported languages, and a plain explanation of the quality/speed tradeoff. Suggested groups are Lightweight and Balanced; the final default depends on measured device compatibility. CPU use must remain possible when supported, with an honest notice that analysis may take longer.
 
-Maintain a versioned, reviewed model catalog. Verify licenses before labeling a model open source; distinguish open weights when its license does not meet the project's open-source policy. Do not promise unlimited redistribution. Provide separate chat and embedding selections, with a sensible embedding default and an explanation: "This smaller model helps find relevant parts of your resume and job descriptions."
+Maintain a versioned, reviewed model catalog. Verify licenses before labeling a model open source; distinguish open weights when its license does not meet the reviewed model-license criteria. Do not promise unlimited redistribution. Provide separate chat and embedding selections, with a sensible embedding default and an explanation: "This smaller model helps find relevant parts of your resume and job descriptions."
 
 Allow reuse of installed models and setup later. Show total disk requirements before download, including temporary files and runtime requirements. Ask before acquiring a new runtime or model and make its source and license visible. Avoid fixed model sizes or hardcoded hardware promises in help text.
 

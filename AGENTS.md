@@ -1,7 +1,7 @@
 # Project Instructions: Think Big, Act Small
 
 ## North star
-Build an open-source Windows AI job-finder whose defining benefit is personal privacy: resume analysis, embeddings, matching, and career records stay on the user's computer. Online discovery must use generic job criteria without sending the user's identity or personal career data. Keep the architecture modular so people can fork it, configure it with minimal effort, and replace components without rewriting the product.
+Build a closed-source Windows AI job-finder distributed to users as an installer, whose defining benefit is personal privacy: resume analysis, embeddings, matching, and career records stay on the user's computer. Online discovery must use generic job criteria without sending the user's identity or personal career data. Keep the architecture modular for authorized maintenance and replaceable components. Source, internal documentation, tests, reports and build tooling remain private; do not publish source archives. See decision 0042 for distribution boundaries and historical-license limits.
 
 ## Session continuity
 - At the start of work, read `MEMORY.md`, `docs/privacy.md`, and the current milestone in `docs/roadmap.md`.
@@ -31,7 +31,7 @@ Build an open-source Windows AI job-finder whose defining benefit is personal pr
 - Clearly disclose provider-visible queries, network metadata, and API-account association. Do not promise complete anonymity or zero outbound data for online search.
 - Keep model, search, parsing, vector storage, and persistence behind small replaceable interfaces.
 - Treat extracted resume details and generated match assessments as suggestions. Let users review profile data and show evidence for match explanations.
-- Keep provider credentials out of source control and logs. Provide setup guidance and safe example configuration for forks.
+- Keep provider credentials out of source control and logs. Provide installer setup guidance for users and safe example configuration for authorized developers.
 - Favor a modular monolith for the personal application. Introduce workers, hosted services, or distributed infrastructure only when a real workload or product need justifies them.
 - Keep Windows personal use straightforward, while documenting clean extension points for other platforms and optional hosted deployments.
 
@@ -41,7 +41,7 @@ Before considering a change complete, ask:
 2. Is the scope small and understandable?
 3. Does the interface remain responsive during slow work?
 4. Does the visual and interaction quality fit the rest of the app?
-5. Are privacy, accessibility, and forkability preserved?
+5. Are privacy, accessibility, maintainability and private-source distribution preserved?
 6. Is the change easy for the next contributor to run and continue?
 
 ## Collaboration expectations
