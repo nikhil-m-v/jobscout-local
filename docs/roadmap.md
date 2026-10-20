@@ -6,7 +6,7 @@ Baseline: 2026-09-29. Rows remain small meaningful deliveries; difficult milesto
 
 ## Current implementation — milestone 23 hardening, 2026-10-20
 
-Owner-directed distribution change: future JobScout source is private; users receive the installer. [Decision 0042](architecture/0042-private-source-installer-distribution.md) preserves historical/third-party licenses and adds private-source CI plus a guarded installer-only export. The owner chose to change repository visibility personally. Keep all source changes local until private visibility is verified; public installer licensing/notices and release review remain open.
+Owner-directed distribution change: future JobScout source is private; users receive the installer. [Decision 0042](architecture/0042-private-source-installer-distribution.md) preserves historical/third-party licenses and adds private-source CI plus a guarded installer-only export. Amendment 2026-10-21: the owner permits source pushes regardless of visibility and will make the repository private at the first major release. CI validation/packaging remains gated on private visibility; public installer licensing/notices and release review remain open.
 
 Guided core setup 22A–22D is packaged and its bounded installed walkthrough is complete. [23A synthetic CI and Windows packaging](23-ci.md) now has a local implementation: full synthetic suites/evaluations, typecheck/build, dependent unsigned Windows installer and seven-day report/package artifacts. Hosted pull-request/main runs, artifact verification and required merge checks remain pending. The broader milestone-23 release gates and milestone-21 human usefulness/scope decisions remain open; no live acquisition is authorized.
 

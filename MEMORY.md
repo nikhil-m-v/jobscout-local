@@ -2,7 +2,11 @@
 
 Last checkpoint: 2026-10-21 (dependency notices bundled; pytest excluded from the engine; regression, paired packaging and synthetic packaged-engine checks pass). Project memory contains no personal career records or credentials.
 
-## Publication checkpoint — private visibility required
+## Current publication authorization — visibility change deferred
+
+The owner explicitly authorizes pushing source regardless of repository visibility and will make the repository private when the first major release is achieved. This supersedes prior no-push-while-public restrictions below and in earlier notes. Commit `c0cd1ab` contains the reviewed 23A–23C implementation; this follow-up records the authorization and carries out the ordinary push. Source and checked-in documentation are publicly accessible during this transition. Do not change repository settings. Generated installers, reports, audits, credentials and synthetic workspaces remain excluded. The unchanged CI privacy gate blocks hosted validation/packaging/artifact uploads while public. Existing product validation retains its recorded scope.
+
+## Previous publication checkpoint — private visibility required
 
 On the owner's explicit push request, live GitHub metadata still reports the source repository public; remote main remains `153b5f3`. This checkpoint accompanies the reviewed local commit for 23A–23C. Do not push that source while the repository is public. The owner retains responsibility for settings; no visibility change or push was performed. Source/tests/docs and pinned dependency notices are the commit payload; generated installers, reports, private audits and synthetic workspaces remain ignored. Existing validation/package evidence above retains its recorded scope; no additional product change or acceptance is claimed. Next: owner makes the repository private, verify current visibility and remote state, then execute the already-authorized push without force.
 

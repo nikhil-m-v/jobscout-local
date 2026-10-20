@@ -1,6 +1,6 @@
 # Contributing
 
-Internal guide for authorized maintainers of the private JobScout source. Public distribution is limited to approved installers; source, development documentation, tests and CI reports are not public deliverables. See [decision 0042](docs/architecture/0042-private-source-installer-distribution.md). Do not push further source while the remote is public.
+Development guide for JobScout maintainers. The owner explicitly authorizes source pushes while the repository is public and plans to make it private at the first major release. Installer-only application delivery remains the intended release policy. See [decision 0042](docs/architecture/0042-private-source-installer-distribution.md). CI reports and package audits remain gated on private visibility.
 
 Follow [AGENTS.md](AGENTS.md): think big, act small. Choose one meaningful improvement, explain the user benefit, and keep the application usable throughout the change.
 

@@ -2,6 +2,10 @@
 
 Adopted 2026-10-20 on the owner's explicit direction. Supersedes the original open-source/forkability objective for future JobScout development. Privacy, local processing and replaceable internal interfaces remain unchanged.
 
+## Owner amendment — 2026-10-21
+
+The owner explicitly authorizes source pushes regardless of repository visibility and plans to make the repository private when the first major release is achieved. This supersedes earlier instructions requiring private visibility before source publication. The repository remains public during this transition; do not describe its source or checked-in documentation as access-restricted during that period. Do not change repository settings on the owner's behalf. Installer-only application delivery remains the intended release policy; historical and third-party rights retain their existing treatment. The CI privacy gate remains unchanged, so public pushes stop before checkout, validation, packaging and artifact uploads.
+
 ## Decision
 
 Users receive the Windows installer. First-party source, Git history, internal architecture/progress documents, fixtures, tests, CI reports, symbols, source maps and build tools remain restricted to authorized maintainers. There is no public source archive or automatic release publication. Keep the app usable locally; this policy does not authorize a hosted-model fallback, telemetry, DRM, accounts or provider requests.

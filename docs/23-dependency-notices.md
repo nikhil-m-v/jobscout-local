@@ -28,4 +28,4 @@ The collector establishes that named package-level texts were found, not that ev
 3. Finish first-party ownership/historical-grant review and end-user terms. The [PyInstaller exception](https://pyinstaller.org/en/stable/license.html) allows commercial bundles but does not remove dependent-library obligations.
 4. Inspect the final installed payload and notice accessibility, sign and verify the intended release artifact, and complete the remaining milestone-23 acceptance gates.
 
-No automated step claims legal clearance, publishes source or creates a public download. Repository visibility remains the owner's task. Hosted CI acceptance still requires verified private visibility and an authorized source push.
+No automated step claims legal clearance, publishes source or creates a public download. Repository visibility remains the owner's task. Source pushes are authorized regardless of visibility under the owner's 2026-10-21 amendment; private visibility is deferred until the first major release. Hosted CI validation/packaging still requires private visibility.
