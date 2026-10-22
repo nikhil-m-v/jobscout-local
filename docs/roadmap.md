@@ -181,7 +181,7 @@ The revised sequence below preserves increments 1–7 and moves resource measure
 
 ## Milestone 23A — GitHub Actions CI and Windows packaging
 
-Status: [implemented locally](23-ci.md), with hosted acceptance pending. Local saving, application tracking, current privacy/data controls and core guided setup are implemented; human search-quality acceptance remains open independently.
+Status: [implemented](23-ci.md), with successful hosted main-push validation, packaging, frozen lifecycle and downloaded-artifact verification at `7746686`. Hosted pull-request and required-check acceptance remain pending. Local saving, application tracking, current privacy/data controls and core guided setup are implemented; human search-quality acceptance remains open independently.
 
 - Run the complete engine and frontend suites, synthetic shortlist evaluations, typechecking and frontend builds on pull requests and pushes to `main`. Test counts follow the current suites rather than a fixed historical total.
 - Generate Windows installers only after validation passes, using GitHub-hosted Windows runners to exercise Windows-specific checks and packaging.
@@ -189,11 +189,15 @@ Status: [implemented locally](23-ci.md), with hosted acceptance pending. Local s
 - Use only checked-in synthetic inputs and mocked providers. Do not introduce personal resumes, provider credentials or live searches into routine CI.
 - Defer automatic release publishing and signing to subsequent release work. CI packaging does not replace interactive installation, accessibility or native lifecycle verification.
 
-Completion evidence still required: a pull request and a `main` push produce successful validation and Windows packaging runs, downloadable reports/installers with explicit retention, and enforced merge checks. Workflow source exists locally; this session does not publish it, change repository settings or enable release automation.
+Completion evidence still required: a pull request produces successful validation and Windows packaging, plus enforced merge checks. The main-push/artifact subset passed in run `39815979991`; newer 23E changes have local evidence only. This session does not change repository settings or enable release automation.
 
 ## Milestone 23D — stop active work before engine shutdown
 
-Implemented locally: [event-loop cancellation before HTTP draining](23-lifecycle.md), closing checks around credential reads, bounded online-wait cancellation and preservation of accepted storage writes. Nine focused regressions and the complete 463-test engine suite pass. The frozen engine passes synthetic parsing, active-upload cancellation on normal/forced owner exit, listener closure and saved-profile restart/integrity checks. CI packaging now runs that frozen-sidecar check; hosted execution remains unverified. Installed desktop/WebView, active frozen-parser interruption and broader milestone-23 release gates remain open. See [2026-10-22 progress](progress/2026-10-22.md).
+Implemented: [event-loop cancellation before HTTP draining](23-lifecycle.md), closing checks around credential reads, bounded online-wait cancellation and preservation of accepted storage writes. Nine focused regressions and the complete 463-test engine suite pass. The frozen engine passes synthetic parsing, active-upload cancellation on normal/forced owner exit, listener closure and saved-profile restart/integrity checks. CI packaging runs that frozen-sidecar check; hosted main-push execution at `7746686` passes. Broader release gates remain open. See [2026-10-22 progress](progress/2026-10-22.md).
+
+## Milestone 23E — installed active-import closure and frozen readiness
+
+Completed bounded [installed normal/forced desktop closure during real parsing](23-installed-lifecycle.md), owned engine/parser/WebView exit, saved-record restart/integrity and guarded uninstall, preserving production data fingerprints. The walkthrough uncovered and corrected [missing build-runtime SSL data](architecture/0044-preserve-python-ssl-runtime-data.md); frozen smoke now verifies actual health as well. Full local validation passes, including 32 report/packaging tests. The acceptance build includes dependency notices with hash verification. Hosted execution of this follow-up, active-search closure, arbitrary engine termination and broader release gates remain open.
 
 ## Scope controls
 

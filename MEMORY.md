@@ -1,6 +1,20 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-22 (23D engine shutdown cancellation and frozen-sidecar restart checks). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-10-22 (23E frozen SSL runtime-data fix, installed active-import closure and hosted main-push evidence). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — 23E installed active-import lifecycle
+
+Publication follow-up: the owner requested pushing the reviewed fifteen-file 23E source/test/documentation payload to the existing remote. Generated installers, certificate-policy runtime data, private audits, logs and synthetic workspaces remain excluded from source publication. The local/uncommitted statements below describe the implementation checkpoint; this authorization changes no repository settings or acceptance scope.
+
+23D was published as `7746686` on the owner's push request, with exact remote main verified. Hosted main-push run `39815979991` passes validation, Windows packaging and frozen lifecycle. All three artifacts were downloaded: nine validation outcomes pass (463 engine, 162 frontend, 30 report/audit, 12 notice tests); the 21,354,039-byte hosted installer hash matches its audit. Pull-request and enforced-merge-check acceptance remain open. This hosted evidence covers 7746686, not the local follow-up below.
+
+Installed acceptance exposed missing data required by the build runtime's patched SSL module: optional loopback Ollama health raised FileNotFoundError and the desktop stayed offline. Packaging now includes the referenced 906-byte certificate-policy file only for runtimes that require it, fails when missing/empty and preserves existing TLS behavior. Stock Python adds no file. The frozen smoke now checks real workspace health before parsing/shutdown. [Decision 0044](docs/architecture/0044-preserve-python-ssl-runtime-data.md) records the cause and boundary.
+
+The corrected production/acceptance builds and frozen checks pass. Final shared validation: 463 engine, 162 frontend, 32 report/packaging and 12 notice tests, both synthetic evaluations, public-plan verification, typecheck and frontend build. Installer staging passes: 23,447,298 bytes; hash and exact payload are recorded in [today's progress](docs/progress/2026-10-22.md). The acceptance helper includes/hash-checks dependency notices, respects the production target directory and preserves production artifact hashes. Its process guard compares exact UTC ticks across PowerShell timestamp representations.
+
+Finite installed checks pass using the real engine and separate initially empty synthetic identity: connected startup, actual PDF extraction, normal close and forced desktop termination while an additional parser process was present, zero recorded owned processes (including six WebViews), connected restart with unsaved import cleared, unchanged profile/candidate/interview stage/note and SQLite integrity. The helper killed only the verified test desktop during the forced case; descendants exited themselves. Guarded uninstall removed test files/registration/dedicated identity storage. Production data fingerprints stayed unchanged. No runtime download, key readback/provider/search/page request, inference, settings change, commit or push of this follow-up. The existing automatic local-runtime status probe is included in health; it is not model inference. Generated artifacts/logs/records remain ignored.
+
+Next concrete action: finite native/runtime/nested-vendor license review and covered-source delivery plan. Remaining release gates include ownership/end-user terms, signing/download destination, hosted acceptance of this new follow-up, pull-request/required-check evidence, active-search closure, arbitrary engine termination, wizard/fresh-user/runtime/upgrade, full accessibility/OS/themes, representative workload resources and named-human search-quality acceptance. Do not reopen completed 23E active-import checks without a changed binary or demonstrated regression. See [23E procedure](docs/23-installed-lifecycle.md).
 
 ## Current checkpoint — 23D stop active work before HTTP draining
 

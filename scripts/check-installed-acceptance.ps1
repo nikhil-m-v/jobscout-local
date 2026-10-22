@@ -1,5 +1,5 @@
 # Isolated release-mode installation lifecycle. UI input uses Computer Use separately.
-param([Parameter(Mandatory=$true)][ValidateSet('Install','Snapshot','Closed','Uninstall')][string]$Action)
+param([Parameter(Mandatory=$true)][ValidateSet('Install','Snapshot','Terminate','Closed','Uninstall')][string]$Action)
 $ErrorActionPreference = 'Stop'
 $root = [IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent))
 $directory = [IO.Path]::GetFullPath((Join-Path $root '.local/installed-acceptance'))
@@ -42,10 +42,17 @@ function Assert-Registration($destination) {
     $entry = Get-ItemProperty -LiteralPath $registration
     if ([IO.Path]::GetFullPath($entry.InstallLocation.Trim('"')) -ne $destination -or $entry.DisplayVersion -ne '0.1.0') { throw 'Unexpected test installation registration.' }
 }
+function Start-Ticks($value) {
+    # PowerShell 7 can deserialize ISO JSON timestamps to DateTime, while
+    # Windows PowerShell preserves strings. Compare exact instants, not coercions.
+    if ($value -is [DateTime]) { return $value.ToUniversalTime().Ticks }
+    if ($value -is [DateTimeOffset]) { return $value.UtcDateTime.Ticks }
+    return [DateTimeOffset]::Parse($value, [Globalization.CultureInfo]::InvariantCulture).UtcDateTime.Ticks
+}
 function Owned-Processes($state) {
     return @($state.owned | Where-Object {
         $member = Get-Process -Id $_.id -ErrorAction SilentlyContinue
-        $member -and $member.StartTime.ToUniversalTime().ToString('o') -eq $_.started
+        $member -and $member.StartTime.ToUniversalTime().Ticks -eq (Start-Ticks $_.started)
     })
 }
 if ($Action -eq 'Install') {
@@ -81,8 +88,9 @@ if ($Action -eq 'Install') {
     Assert-Registration $destination
     if ((Get-FileHash -LiteralPath (Join-Path $destination 'jobscout-desktop.exe')).Hash -ne (Expected-DesktopHash)) { throw 'Installed desktop differs from the acceptance build.' }
     if ((Get-FileHash -LiteralPath (Join-Path $destination 'jobscout-engine.exe')).Hash.ToLowerInvariant() -ne $build.engine_sha256) { throw 'Installed sidecar differs from production.' }
+    if (!$build.notice_sha256 -or (Get-FileHash -LiteralPath (Join-Path $destination 'licenses/THIRD-PARTY-NOTICES.txt')).Hash.ToLowerInvariant() -ne $build.notice_sha256) { throw 'Installed dependency notices differ from the reviewed bundle.' }
     Assert-ProductionUnchanged $state.before
-    [pscustomobject]@{ installed='pass'; exact_desktop_and_production_engine='pass'; empty_data_and_vault_namespaces='pass'; production_profiles_unchanged='pass'; installed_bytes=(Get-ChildItem -LiteralPath $destination -File -Recurse | Measure-Object Length -Sum).Sum } | ConvertTo-Json
+    [pscustomobject]@{ installed='pass'; exact_desktop_and_production_engine='pass'; dependency_notices='pass'; empty_data_and_vault_namespaces='pass'; production_profiles_unchanged='pass'; installed_bytes=(Get-ChildItem -LiteralPath $destination -File -Recurse | Measure-Object Length -Sum).Sum } | ConvertTo-Json
     exit
 }
 $state = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
@@ -112,6 +120,17 @@ if ($Action -eq 'Snapshot') {
     exit
 }
 $remaining = Owned-Processes $state
+if ($Action -eq 'Terminate') {
+    $desktop = @($remaining | Where-Object name -eq 'jobscout-desktop')
+    if ($desktop.Count -ne 1) { throw 'Snapshot must identify exactly one live owned desktop.' }
+    $member = Get-Process -Id $desktop[0].id
+    if ($member.Path -ne (Join-Path $destination 'jobscout-desktop.exe') -or $member.StartTime.ToUniversalTime().Ticks -ne (Start-Ticks $desktop[0].started)) { throw 'Owned desktop identity changed.' }
+    if ((Get-FileHash -LiteralPath $member.Path).Hash -ne (Expected-DesktopHash)) { throw 'Owned desktop executable changed.' }
+    $member.Kill()
+    if (!$member.WaitForExit(10000)) { throw 'Owned desktop termination did not finish.' }
+    [pscustomobject]@{ owned_desktop_terminated='pass'; descendants_terminated_by_helper=$false; production_profiles_unchanged='pass' } | ConvertTo-Json
+    exit
+}
 if ($remaining.Count -or (Get-CimInstance Win32_Process -Property ExecutablePath | Where-Object { $_.ExecutablePath -eq (Join-Path $destination 'jobscout-desktop.exe') -or $_.ExecutablePath -eq (Join-Path $destination 'jobscout-engine.exe') })) { throw 'Owned test processes remain; no process will be killed.' }
 if ($Action -eq 'Closed') {
     if (!$state.owned.Count) { throw 'Take an owned-process snapshot before closing.' }

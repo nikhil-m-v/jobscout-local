@@ -2,6 +2,7 @@ import { spawnSync } from 'node:child_process';
 import { mkdirSync, renameSync } from 'node:fs';
 import path from 'node:path';
 import { root, pythonExecutable } from './python.mjs';
+import { sslRuntimeDataArgs } from './engine-runtime-data.mjs';
 
 export function buildEngine() {
   const rust = spawnSync('rustc', ['-vV'], { encoding: 'utf8', windowsHide: true });
@@ -9,9 +10,14 @@ export function buildEngine() {
   if (!target) throw new Error('Rust is required to identify the desktop target. Install the Tauri prerequisites from README.md.');
   const destination = path.join(root, 'apps/desktop/src-tauri/binaries');
   mkdirSync(destination, { recursive: true });
+  const ssl = spawnSync(pythonExecutable(), ['-c', 'import ssl; print(ssl.__file__)'],
+    { encoding: 'utf8', windowsHide: true });
+  if (ssl.error || ssl.status !== 0 || !ssl.stdout?.trim()) throw new Error('Cannot inspect the build Python SSL runtime.');
+  const runtimeData = sslRuntimeDataArgs(ssl.stdout.trim());
   const result = spawnSync(pythonExecutable(), [
     '-m', 'PyInstaller', '--noconfirm', '--clean', '--onefile', '--name', 'jobscout-engine',
     '--exclude-module', 'pytest', '--exclude-module', '_pytest',
+    ...runtimeData,
     '--distpath', destination, '--workpath', path.join(root, 'work/pyinstaller'),
     '--specpath', path.join(root, 'work'), path.join(root, 'apps/engine/launcher.py'),
   ], { cwd: root, stdio: 'inherit', windowsHide: true });

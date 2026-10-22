@@ -7,7 +7,7 @@ Status — 2026-10-20: this finite walkthrough passed with the current paired pr
 ## Preparation
 
 1. Build the engine, frontend, native bridge and NSIS installer together using `npm run desktop:build`. A previous installer is not evidence for current source.
-2. Run `node scripts/build-installed-acceptance.mjs`. This creates a separate acceptance installer and records executable hashes while preserving the production artifacts.
+2. Run `npm run acceptance:installed:build` with the same `CARGO_TARGET_DIR` used for production packaging, if set. This creates a separate acceptance installer with the current dependency notices and records executable/notice hashes while preserving the production artifacts.
 3. Use `scripts/check-installed-acceptance.ps1 -Action Install` only after its existing-installation, identity and runtime guards pass. Do not replace the user's normal installation or download WebView2 as part of this check.
 4. Seed only the initially empty acceptance identity with a clearly synthetic profile and one saved candidate with an interview stage and synthetic note. Record the seed and artifact bindings in ignored local evidence. Keep all providers and optional models unused.
 5. Choose a new destination inside an owned ignored test directory. Do not copy real career records, open job links, configure keys or send searches.

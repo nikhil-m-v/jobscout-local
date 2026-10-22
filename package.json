@@ -13,6 +13,7 @@
     "package:installer": "node scripts/package-installer.mjs",
     "acceptance:preview": "node scripts/acceptance-preview.mjs",
     "acceptance:native": "node scripts/native-acceptance.mjs",
+    "acceptance:installed:build": "node scripts/build-installed-acceptance.mjs",
     "dev": "node scripts/dev.mjs",
     "desktop:dev": "node scripts/desktop.mjs dev",
     "desktop:build": "node scripts/desktop.mjs build",

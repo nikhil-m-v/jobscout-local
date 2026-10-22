@@ -5,10 +5,12 @@ import { createHash } from 'node:crypto';
 import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { root } from './python.mjs';
+import { generateNotices, checkNoticeInventory } from './generate-notices.mjs';
 
 if (process.platform !== 'win32' || process.argv.length !== 2) throw new Error('Windows only; no arguments or live-provider options.');
 const directory = path.join(root, '.local/installed-acceptance');
-const release = path.join(root, 'apps/desktop/src-tauri/target/release');
+if (!process.env.npm_execpath) throw new Error('Run npm run acceptance:installed:build so dependency notices can be collected.');
+const release = path.join(path.resolve(root, process.env.CARGO_TARGET_DIR ?? 'apps/desktop/src-tauri/target'), 'release');
 const desktop = path.join(release, 'jobscout-desktop.exe');
 const engine = path.join(root, 'apps/desktop/src-tauri/binaries/jobscout-engine-x86_64-pc-windows-msvc.exe');
 const normalInstaller = path.join(release, 'bundle/nsis/JobScout_0.1.0_x64-setup.exe');
@@ -16,12 +18,15 @@ const sha = file => createHash('sha256').update(readFileSync(file)).digest('hex'
 for (const file of [desktop, engine, normalInstaller]) if (!existsSync(file)) throw new Error('Build the paired production release first.');
 if (existsSync(path.join(directory, 'installation.json'))) throw new Error('Finish the previous isolated installation before rebuilding.');
 mkdirSync(directory, { recursive: true });
+const notices = generateNotices();
+const noticeConfig = JSON.parse(readFileSync(notices.overlay, 'utf8'));
 const before = { desktop: sha(desktop), engine: sha(engine), installer: sha(normalInstaller) };
 const backup = path.join(directory, 'production-desktop.backup');
 copyFileSync(desktop, backup);
 const config = path.join(directory, 'tauri.json');
 writeFileSync(config, JSON.stringify({
   productName: 'JobScout acceptance', identifier: 'app.jobscout.installedacceptance',
+  bundle: noticeConfig.bundle,
   app: { windows: [{ label: 'main', title: 'JobScout — Installed acceptance', width: 1280, height: 900, minWidth: 760, minHeight: 640, backgroundColor: '#fafbf7' }] },
 }, null, 2));
 const require = createRequire(import.meta.url);
@@ -31,12 +36,14 @@ try {
     cwd: path.join(root, 'apps/desktop'), stdio: 'inherit', windowsHide: true,
   });
   if (result.error || result.status !== 0) throw new Error('Isolated release packaging failed; production desktop is restored.');
+  const noticeInventory = checkNoticeInventory(notices.directory);
   const installer = path.join(release, 'bundle/nsis/JobScout acceptance_0.1.0_x64-setup.exe');
   copyFileSync(desktop, path.join(directory, 'jobscout-desktop.exe'));
   copyFileSync(installer, path.join(directory, 'setup.exe'));
   writeFileSync(path.join(directory, 'build.json'), JSON.stringify({
     identifier: 'app.jobscout.installedacceptance', product: 'JobScout acceptance', version: '0.1.0',
     engine_sha256: before.engine, desktop_sha256: sha(desktop), installer_sha256: sha(installer),
+    notice_sha256: noticeInventory.sha256,
     production_before: before,
   }, null, 2));
   completed = true;

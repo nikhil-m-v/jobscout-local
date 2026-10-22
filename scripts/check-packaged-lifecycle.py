@@ -1,6 +1,7 @@
 """Windows frozen-sidecar smoke checks using fresh synthetic storage only.
 
-No health/model, provider, credential, result-page or download routes are used.
+The normal health route probes optional Ollama status on loopback only. No
+inference, provider, credential, result-page or download routes are used.
 This does not launch the desktop or establish installed/WebView acceptance.
 """
 import argparse
@@ -71,6 +72,13 @@ def run_case(engine, directory, abrupt):
             else:
                 require(profile.json()['profile']['text'] == 'SYNTHETIC SAVED PROFILE', 'Saved profile changed after restart')
 
+            # Unlike a mocked health provider, this catches missing frozen TLS
+            # runtime data even when the optional local runtime is unavailable.
+            health = client.get('/api/v1/health')
+            require(health.status_code == 200, 'Frozen workspace health failed')
+            require(health.json()['status'] == 'ready' and health.json()['database'] == 'ready',
+                    'Frozen workspace did not report ready')
+
             # Exercise the actual frozen parser before the interrupted upload.
             reservation = client.post('/api/v1/imports')
             require(reservation.status_code == 200, 'Import reservation failed')
@@ -118,6 +126,7 @@ def run_case(engine, directory, abrupt):
             probe.settimeout(1)
             require(probe.connect_ex(('127.0.0.1', port)) != 0, 'Engine listener survived owner exit')
         return {'owner_exit': 'forced' if abrupt else 'normal', 'passed': True,
+                'workspace_health_verified': True,
                 'frozen_parser': True, 'active_upload_cancelled': True, 'listener_closed': True,
                 'shutdown_seconds': elapsed}
     finally:
