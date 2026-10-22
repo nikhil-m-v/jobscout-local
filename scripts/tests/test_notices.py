@@ -16,7 +16,9 @@ class NoticeTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix='jobscout-notices-')
         self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
+        # Windows CI can spell TEMP with an 8.3 alias (RUNNER~1). The collector
+        # resolves paths, so expected fixture paths must use the same identity.
+        self.root = Path(self.temp.name).resolve()
         (self.root / 'packaging/licenses').mkdir(parents=True)
         (self.root / 'packaging/license-overrides.json').write_text('{}')
         (self.root / 'LICENSE-LEGACY').write_text('Synthetic legacy grant\n')
@@ -70,6 +72,11 @@ class NoticeTests(unittest.TestCase):
         (self.package / 'node_modules').mkdir()
         (self.package / 'node_modules/LICENSE').write_text('not this package')
         self.assertEqual(notices.notice_files(self.package), [self.package / 'vendor/LICENSE-MIT'])
+
+    def test_notice_discovery_canonicalizes_noncanonical_input(self):
+        (self.package / 'LICENSE').write_text('Synthetic license')
+        alternate = self.package / '..' / 'package'
+        self.assertEqual(notices.notice_files(alternate), [self.package / 'LICENSE'])
 
     def test_binary_license_document_is_rejected(self):
         file = self.package / 'LICENSE'

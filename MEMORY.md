@@ -1,6 +1,18 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-21 (removed repository-visibility gates from development and CI; source privacy and distribution are first-major-release checkpoints). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-10-22 (23D engine shutdown cancellation and frozen-sidecar restart checks). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — 23D stop active work before HTTP draining
+
+Publication follow-up: the owner explicitly requested pushing this reviewed 23D source/test/documentation payload to the existing remote. Generated installers, audits, logs and synthetic workspaces remain excluded. Prior local/unpublished statements below describe the implementation checkpoint; this authorization does not change repository settings or release-acceptance scope.
+
+Completed the unfinished shutdown slice found in the working tree. EngineServer notifies the app on the event loop before Uvicorn drains requests. Shutdown cancels active imports, broader discovery and single-search/connection waits, rejects new authenticated work before reading bodies, and rechecks closing after credential reads. Already accepted local storage writes can finish within the existing shutdown bound. No new dependency, schema, version, provider permission, setup requirement or automatic retry.
+
+Final engine suite: 463 passing tests, including nine shutdown regressions. Shared validation also passes 162 frontend, 30 report/audit and 12 notice tests, both synthetic evaluations, public-plan verification, typecheck and frontend build. Preserved the pending clean-checkout test-fixture fixes for absent ignored folders and canonical Windows TEMP paths. Frozen-sidecar checks pass for normal/forced owner exit during an incomplete upload, actual frozen DOCX parsing, listener closure, saved-profile restart and database integrity. The CI packaging job now runs the hash-bound smoke check and retains its synthetic report. Hosted execution of these changes remains unverified.
+
+Paired packaging and exact installer export pass using the dedicated CI target: unsigned 0.1.0 installer, 23,445,023 bytes; independent size/hash verification matches the audit. The final frozen binary passes lifecycle checks and contains the new compiled server module, with 32 first-party modules and no pytest/_pytest. Package identity is recorded in [today's progress](docs/progress/2026-10-22.md). The first paired build succeeded but export refused an older acceptance installer sharing its output folder; the dedicated target preserves that artifact and keeps the exact-one-installer guard. Source/frozen checks do not establish installed desktop/WebView, active frozen-parser interruption, arbitrary engine termination or extraction cleanup acceptance. See [23D contract](docs/23-lifecycle.md) and [decision 0043](docs/architecture/0043-stop-work-before-engine-shutdown.md).
+
+Next concrete action: isolated installed active-work normal/abrupt-close and descendant-cleanup acceptance, plus the separate native/runtime/nested-vendor license and covered-source plan. Ownership/end-user terms, signing/download destination, hosted pull-request/main/artifact/required-check evidence, broader accessibility/resource checks and human search-quality acceptance remain open. Repository visibility does not gate development or authorized pushes. No settings change, commit/push, real career-record access or live provider/page/credential/model operation in this session; prior acquisition approvals remain consumed.
 
 ## Current checkpoint — visibility does not gate development
 

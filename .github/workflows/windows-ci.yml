@@ -90,6 +90,11 @@ jobs:
       - name: Build and stage installer-only export
         id: package
         run: npm run package:installer
+      - name: Verify frozen-engine shutdown and restart
+        run: >-
+          .venv/Scripts/python.exe scripts/check-packaged-lifecycle.py
+          --engine apps/desktop/src-tauri/binaries/jobscout-engine-x86_64-pc-windows-msvc.exe
+          --report work/ci/packaged-lifecycle.json
       - name: Check lockfile stability
         run: git diff --exit-code -- package-lock.json apps/desktop/src-tauri/Cargo.lock
       - name: Retain unsigned installer
@@ -100,9 +105,12 @@ jobs:
           retention-days: 7
           if-no-files-found: error
       - name: Retain packaging audit
+        if: ${{ always() && steps.package.outcome == 'success' }}
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6.0.0
         with:
           name: package-audit-${{ github.sha }}-${{ github.run_attempt }}
-          path: ${{ steps.package.outputs.audit-path }}
+          path: |
+            ${{ steps.package.outputs.audit-path }}
+            work/ci/packaged-lifecycle.json
           retention-days: 7
           if-no-files-found: error

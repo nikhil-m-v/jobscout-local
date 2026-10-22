@@ -28,7 +28,7 @@ def watch_owner(pid: int, server) -> threading.Event:
                 if status == 0x102:  # WAIT_TIMEOUT: desktop is still alive
                     continue
                 # Owner exited (or waiting failed). Stop accepting work, cancel
-                # active imports through lifespan shutdown, then let the frozen
+                # active work before HTTP draining, then let the frozen
                 # launcher clean its temporary files. Bound a stalled shutdown.
                 server.should_exit = True
                 if not finished.wait(5):

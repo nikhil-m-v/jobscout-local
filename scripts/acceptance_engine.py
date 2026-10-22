@@ -10,6 +10,7 @@ import httpx
 import uvicorn
 from jobscout_engine.app import create_app
 from jobscout_engine.config import Settings
+from jobscout_engine.server import EngineServer
 from jobscout_engine.adapters.tavily import TavilyConnection
 from jobscout_engine.adapters.tavily_search import TavilySearch, SEARCH_ENDPOINT
 from jobscout_engine.domain.contracts import ModelStatus
@@ -108,8 +109,8 @@ def serve_synthetic(owner_pid, scenario='complete'):
             listener.bind(('127.0.0.1', 0))
             listener.listen(128)
             listener.setblocking(False)
-            server = uvicorn.Server(uvicorn.Config(application, log_level='warning', access_log=False,
-                                                  timeout_graceful_shutdown=3))
+            server = EngineServer(uvicorn.Config(application, log_level='warning', access_log=False,
+                                                  timeout_graceful_shutdown=3), application.state.begin_shutdown)
             from jobscout_engine.owner import watch_owner
             finished = watch_owner(owner_pid, server)
             try:

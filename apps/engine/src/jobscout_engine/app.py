@@ -59,6 +59,37 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
     broader = BroaderDiscovery(discovery)
     active_data_operations = 0
     data_deleting = False
+    closing = False
+    online_tasks = set()
+
+    class WorkspaceClosing(Exception):
+        pass
+
+    def begin_shutdown():
+        # Called on the server event loop, before its graceful-request wait.
+        # Finish accepted storage writes normally; cancel only disposable work.
+        nonlocal closing
+        closing = True
+        if imports.task:
+            imports.cancel(imports.task.id)
+        if broader.current_id:
+            broader.cancel(broader.current_id)
+        for task in online_tasks:
+            task.cancel()
+
+    async def run_online(operation):
+        if closing:
+            raise WorkspaceClosing()
+        task = asyncio.create_task(operation())
+        online_tasks.add(task)
+        try:
+            return await task
+        except asyncio.CancelledError:
+            if closing:
+                raise WorkspaceClosing() from None
+            raise
+        finally:
+            online_tasks.discard(task)
 
     @asynccontextmanager
     async def lifespan(_: FastAPI):
@@ -70,25 +101,29 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
             await run_in_threadpool(database.initialize)
             yield
         finally:
-            if imports.task:
-                imports.cancel(imports.task.id)
-            if broader.current_id:
-                broader.cancel(broader.current_id)
+            begin_shutdown()
             lease.release()
 
     application = FastAPI(
         title="JobScout local engine", version=__version__, lifespan=lifespan,
         docs_url=None, redoc_url=None, openapi_url=None,
     )
+    application.state.begin_shutdown = begin_shutdown
+
+    @application.exception_handler(WorkspaceClosing)
+    async def workspace_closing(_: Request, __: WorkspaceClosing):
+        return JSONResponse({'error': 'workspace_closing'}, status_code=503,
+                            headers={'Cache-Control': 'no-store'})
 
     @application.middleware('http')
     async def location_boundary(request: Request, call_next):
         nonlocal active_requests
-        if location_switching:
+        if closing or location_switching:
             scheme, _, token = request.headers.get('authorization', '').partition(' ')
             if scheme.lower() != 'bearer' or not secrets.compare_digest(token.encode(), settings.session_token.encode()):
                 return JSONResponse({'detail': 'A valid app session is required.'}, status_code=401)
-            return JSONResponse({'error': 'location_busy'}, status_code=409, headers={'Cache-Control': 'no-store'})
+            return JSONResponse({'error': 'workspace_closing' if closing else 'location_busy'},
+                                status_code=503 if closing else 409, headers={'Cache-Control': 'no-store'})
         active_requests += 1
         try:
             return await call_next(request)
@@ -268,10 +303,14 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
         try:
             async with connection_lock:
                 async with secret_lock:
+                    if closing:
+                        raise WorkspaceClosing()
                     key = await run_in_threadpool(provider_secrets.read)
+                if closing:
+                    raise WorkspaceClosing()
                 if key is None:
                     return profile_response({"error": "provider_key_missing"}, 409)
-                await connection.check(key)
+                await run_online(lambda: connection.check(key))
             # Transient evidence only. No account details or verification persistence.
             return profile_response({"provider": "tavily", "connection_verified": True,
                                      "dispatch_available": False})
@@ -361,12 +400,16 @@ def create_app(settings: Settings, model_provider: ModelProvider | None = None,
         try:
             async with search_lock:
                 async with secret_lock:
+                    if closing:
+                        raise WorkspaceClosing()
                     key = await run_in_threadpool(provider_secrets.read)
+                if closing:
+                    raise WorkspaceClosing()
                 if key is None:
                     return profile_response({'error': 'provider_key_missing'}, 409)
                 if is_broader:
                     return profile_response(await broader.run(value['criteria'], key, value['run_id']))
-                result = await discovery.search(value['criteria'], key=key, reviewed_query=query)
+                result = await run_online(lambda: discovery.search(value['criteria'], key=key, reviewed_query=query))
                 return profile_response(asdict(result))
         except SecretStoreUnavailable:
             return profile_response({'error': 'secret_store_unavailable'}, 503)

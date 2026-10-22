@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, writeFileSync, mkdtempSync, unlinkSync, rmdirSync } from 'node:fs';
 import { spawnSync } from 'node:child_process';
 import { resolve } from 'node:path';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { reviewInputHash, validateReviewLabels, compareReviewLabels } from '../review-labels.mjs';
 import { validateSearchResult } from '../../apps/desktop/src/lib/discovery-state.ts';
@@ -103,7 +104,8 @@ test('empty-pool scores stay unmeasured and zero support has a zero denominator'
 });
 
 test('the approved no-tools arm binds its exact query and frozen labels through the CLI', () => {
-  const directory = mkdtempSync(resolve(root, '.local/quality-cli-'));
+  // A clean checkout has no ignored .local folder; own only this fresh fixture.
+  const directory = mkdtempSync(resolve(tmpdir(), 'jobscout-quality-cli-'));
   const inputPath = resolve(directory, 'result.json'), auditPath = resolve(directory, 'review.json');
   try {
     const result = { ...resultFor([candidate(1, 'Location: India. Work mode: remote.')]), query: 'Software engineer jobs India Remote' };
@@ -161,7 +163,7 @@ for (const caseId of ['quality-india-remote', 'analyst-canada-hybrid']) {
       candidates: candidates.map(job => ({ ...job, source_index: 0 })),
       coverage: { attempted: 5, completed: 5, max_requests: 5, stop_reason: 'complete', failures: [] } };
     const bytes = Buffer.from(JSON.stringify(result));
-    const directory = mkdtempSync(resolve(root, '.local/quality-cli-'));
+    const directory = mkdtempSync(resolve(tmpdir(), 'jobscout-quality-cli-'));
     const inputPath = resolve(directory, 'result.json'), auditPath = resolve(directory, 'review.json');
     try {
       writeFileSync(inputPath, bytes); writeFileSync(auditPath, JSON.stringify(rawAudit(bytes, labels)));

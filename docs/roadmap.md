@@ -191,6 +191,10 @@ Status: [implemented locally](23-ci.md), with hosted acceptance pending. Local s
 
 Completion evidence still required: a pull request and a `main` push produce successful validation and Windows packaging runs, downloadable reports/installers with explicit retention, and enforced merge checks. Workflow source exists locally; this session does not publish it, change repository settings or enable release automation.
 
+## Milestone 23D — stop active work before engine shutdown
+
+Implemented locally: [event-loop cancellation before HTTP draining](23-lifecycle.md), closing checks around credential reads, bounded online-wait cancellation and preservation of accepted storage writes. Nine focused regressions and the complete 463-test engine suite pass. The frozen engine passes synthetic parsing, active-upload cancellation on normal/forced owner exit, listener closure and saved-profile restart/integrity checks. CI packaging now runs that frozen-sidecar check; hosted execution remains unverified. Installed desktop/WebView, active frozen-parser interruption and broader milestone-23 release gates remain open. See [2026-10-22 progress](progress/2026-10-22.md).
+
 ## Scope controls
 
 Milestone 23C adds [installer dependency notices](23-dependency-notices.md), version-bound notice overrides and a private inventory. It removes pytest from the packaged engine. Package-level notice collection does not close source-availability/native-license review, signing, hosted CI or installed acceptance.

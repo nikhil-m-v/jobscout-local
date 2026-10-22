@@ -5,6 +5,7 @@ import socket
 import uvicorn
 from jobscout_engine.app import create_app
 from jobscout_engine.config import Settings
+from jobscout_engine.server import EngineServer
 
 
 def main() -> None:
@@ -21,7 +22,7 @@ def main() -> None:
         listener.setblocking(False)
         configuration = uvicorn.Config(application, log_level="warning", access_log=False,
                                        timeout_graceful_shutdown=3)
-        server = uvicorn.Server(configuration)
+        server = EngineServer(configuration, application.state.begin_shutdown)
         finished = None
         if arguments.owner_pid is not None:
             from jobscout_engine.owner import watch_owner
