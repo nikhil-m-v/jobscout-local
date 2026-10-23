@@ -45,8 +45,51 @@ class NoticeTests(unittest.TestCase):
         report = json.loads((self.output / 'inventory.json').read_text())
         self.assertFalse(report['releaseApproved'])
         self.assertTrue(report['manualReview'])
+        self.assertEqual(report['nativeBinaryInputs'], [])
+        self.assertIn('excludes native desktop', report['nativeBinaryScope'])
         self.assertEqual(report['noticeBundleSha256'], hashlib.sha256(
             (self.output / 'THIRD-PARTY-NOTICES.txt').read_bytes()).hexdigest())
+
+    def test_native_inventory_preserves_collisions_and_omits_paths(self):
+        first = self.root / 'one'
+        second = self.root / 'two'
+        first.mkdir()
+        second.mkdir()
+        a, b = first / 'vendor.dll', second / 'vendor.dll'
+        a.write_bytes(b'first native binary')
+        b.write_bytes(b'second native binary')
+        ignored = first / 'private.py'
+        ignored.write_text('excluded')
+        with patch.object(notices, 'distribution_owners', return_value={}):
+            records = notices.native_binary_inventory([str(a), str(b), str(a), str(ignored)])
+            reverse = notices.native_binary_inventory([str(b), str(a)])
+        self.assertEqual(records, reverse)
+        self.assertEqual(len(records), 2)
+        self.assertEqual({r['sha256'] for r in records}, {
+            hashlib.sha256(a.read_bytes()).hexdigest(), hashlib.sha256(b.read_bytes()).hexdigest()})
+        self.assertNotIn(str(self.root), json.dumps(records))
+        self.assertTrue(all(r['distribution'] is None and r['reviewStatus'] == 'pending' for r in records))
+
+    def test_native_inventory_includes_wheel_owner_and_executable(self):
+        from types import SimpleNamespace
+        import os
+        binary = self.package / 'helper.EXE'
+        binary.write_bytes(b'synthetic executable')
+        owner = SimpleNamespace(metadata={'Name': 'synthetic-wheel'}, version='2.3')
+        owners = {os.path.normcase(str(binary.resolve())): owner}
+        with patch.object(notices, 'distribution_owners', return_value=owners):
+            record, = notices.native_binary_inventory([str(binary)])
+        self.assertEqual(record['distribution'], {'name': 'synthetic-wheel', 'version': '2.3'})
+        self.assertEqual(record['sizeBytes'], binary.stat().st_size)
+
+    def test_native_inventory_rejects_empty_or_missing_binary(self):
+        binary = self.package / 'empty.pyd'
+        binary.touch()
+        with patch.object(notices, 'distribution_owners', return_value={}):
+            with self.assertRaisesRegex(ValueError, 'Empty native'):
+                notices.native_binary_inventory([str(binary)])
+            with self.assertRaises(OSError):
+                notices.native_binary_inventory([str(self.package / 'missing.dll')])
 
     def test_missing_notice_blocks_new_bundle_and_records_gap(self):
         with self.assertRaisesRegex(ValueError, '1 missing texts'):

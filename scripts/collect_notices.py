@@ -88,11 +88,46 @@ def analysis_files(toc):
                    and isinstance(entry[1], str) and Path(entry[1]).is_file()})
 
 
-def python_components(files):
+def distribution_owners():
     owners = {}
     for distribution in metadata.distributions():
         for file in distribution.files or []:
             owners[os.path.normcase(str(distribution.locate_file(file).resolve()))] = distribution
+    return owners
+
+
+def native_binary_inventory(files):
+    """Bind frozen native inputs to bytes and metadata owners, never clearance.
+
+    Names alone can collide across runtime and wheel directories. Retain each
+    distinct content/owner identity without exporting machine-specific paths.
+    A distribution owner does not identify its nested statically linked vendors.
+    """
+    files = [file for file in files if Path(file).suffix.lower() in {'.dll', '.pyd', '.exe'}]
+    if not files:
+        return []
+    owners = distribution_owners()
+    records = {}
+    for file in files:
+        path = Path(file)
+        if path.suffix.lower() not in {'.dll', '.pyd', '.exe'}:
+            continue
+        owner = owners.get(os.path.normcase(str(path.resolve())))
+        data = path.read_bytes()
+        if not data:
+            raise ValueError('Empty native binary input')
+        record = {'name': path.name, 'sha256': hashlib.sha256(data).hexdigest(),
+                  'sizeBytes': len(data),
+                  'distribution': ({'name': owner.metadata['Name'], 'version': owner.version}
+                                   if owner else None),
+                  'reviewStatus': 'pending'}
+        records[json.dumps(record, sort_keys=True)] = record
+    return sorted(records.values(), key=lambda item: (
+        item['name'], item['sha256'], json.dumps(item['distribution'], sort_keys=True)))
+
+
+def python_components(files):
+    owners = distribution_owners()
     found = {}
     unresolved = []
     for file in files:
@@ -157,6 +192,8 @@ def collect(root, npm, cargo, toc, output):
     report = {'schemaVersion': 1, 'releaseApproved': False, 'components': components,
               'missingNotices': sorted(missing), 'unmappedPythonInputs': unresolved,
               'runtimeBinariesForReview': runtime_binaries, 'manualReview': review,
+              'nativeBinaryInputs': native_binary_inventory(files),
+              'nativeBinaryScope': 'PyInstaller analysis inputs only; excludes native desktop, installer and WebView runtime',
               'scope': 'npm runtime graph; conservative Windows Cargo build graph; frozen Python inputs and CPython'}
     lines = ['JobScout - collected dependency notices', '',
              'This document preserves collected third-party and historical notices.',

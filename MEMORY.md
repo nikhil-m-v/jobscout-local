@@ -1,6 +1,14 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-22 (23E frozen SSL runtime-data fix, installed active-import closure and hosted main-push evidence). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-10-23 (23F native dependency evidence). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — 23F native dependency evidence
+
+Added SHA-256, byte size and known distribution ownership for frozen DLL/PYD/EXE inputs, including wheel-owned binaries absent from the older runtime-only list. Colliding names preserve distinct content identities; records omit local paths and remain pending review. Installer notice content/resource mapping and application behavior are unchanged.
+
+Offline collection from existing metadata/analysis passes: 342 component entries, 254 notice texts and 70 native identities (one wheel-owned extension, 69 without distribution ownership). Generated notice hash validation passes. All 15 notice tests and 32 report/packaging tests pass. Initial default-TEMP tests hit sandbox permissions; ignored workspace TEMP resolved this. No installer rebuild or new installed/hosted acceptance claimed.
+
+[Review queue and source-delivery plan](docs/23-native-dependency-review.md) identifies exact-version MPL candidates and remaining native/vendor evidence. Next: reconcile native hashes against runtime provenance and shipped components, then prepare covered-source archives and recipient notice. Component clearance, source delivery and other release gates remain open. No commit/push, settings change, personal-data access or live provider/model operation. See [progress](docs/progress/2026-10-23.md).
 
 ## Current checkpoint — 23E installed active-import lifecycle
 

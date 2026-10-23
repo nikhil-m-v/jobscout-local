@@ -199,6 +199,10 @@ Implemented: [event-loop cancellation before HTTP draining](23-lifecycle.md), cl
 
 Completed bounded [installed normal/forced desktop closure during real parsing](23-installed-lifecycle.md), owned engine/parser/WebView exit, saved-record restart/integrity and guarded uninstall, preserving production data fingerprints. The walkthrough uncovered and corrected [missing build-runtime SSL data](architecture/0044-preserve-python-ssl-runtime-data.md); frozen smoke now verifies actual health as well. Full local validation passes, including 32 report/packaging tests. The acceptance build includes dependency notices with hash verification. Hosted execution of this follow-up, active-search closure, arbitrary engine termination and broader release gates remain open.
 
+## Milestone 23F — native dependency inventory
+
+[Exact frozen native-input evidence and source-delivery plan](23-native-dependency-review.md) implemented. Offline collection identifies 70 binary inputs, including wheel-owned extensions, with hashes, sizes and pending dispositions. Runtime/vendor provenance, final-payload reconciliation and source delivery remain open.
+
 ## Scope controls
 
 Milestone 23C adds [installer dependency notices](23-dependency-notices.md), version-bound notice overrides and a private inventory. It removes pytest from the packaged engine. Package-level notice collection does not close source-availability/native-license review, signing, hosted CI or installed acceptance.

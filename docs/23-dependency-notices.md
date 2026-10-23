@@ -19,6 +19,10 @@ Production builds add exactly that text through a generated Tauri configuration 
 
 PyInstaller now explicitly excludes `pytest` and `_pytest`. This removes development test tooling discovered in the previous local build; engine behavior must remain covered by the engine suite and synthetic packaged-engine smoke checks.
 
+## Native-input evidence
+
+[Milestone 23F](23-native-dependency-review.md) adds exact native-input hashes, sizes and known wheel ownership to the private inventory, including package-owned binaries omitted by the older runtime-only name list. It records a finite review queue and covered-source delivery plan. No component is automatically cleared.
+
 ## Remaining release review
 
 The collector establishes that named package-level texts were found, not that every embedded dependency's obligations have been discharged. Before public distribution:
