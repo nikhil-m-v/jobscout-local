@@ -18,7 +18,7 @@ const sha = file => createHash('sha256').update(readFileSync(file)).digest('hex'
 for (const file of [desktop, engine, normalInstaller]) if (!existsSync(file)) throw new Error('Build the paired production release first.');
 if (existsSync(path.join(directory, 'installation.json'))) throw new Error('Finish the previous isolated installation before rebuilding.');
 mkdirSync(directory, { recursive: true });
-const notices = generateNotices();
+const notices = generateNotices(engine);
 const noticeConfig = JSON.parse(readFileSync(notices.overlay, 'utf8'));
 const before = { desktop: sha(desktop), engine: sha(engine), installer: sha(normalInstaller) };
 const backup = path.join(directory, 'production-desktop.backup');
@@ -36,7 +36,7 @@ try {
     cwd: path.join(root, 'apps/desktop'), stdio: 'inherit', windowsHide: true,
   });
   if (result.error || result.status !== 0) throw new Error('Isolated release packaging failed; production desktop is restored.');
-  const noticeInventory = checkNoticeInventory(notices.directory);
+  const noticeInventory = checkNoticeInventory(notices.directory, engine);
   const installer = path.join(release, 'bundle/nsis/JobScout acceptance_0.1.0_x64-setup.exe');
   copyFileSync(desktop, path.join(directory, 'jobscout-desktop.exe'));
   copyFileSync(installer, path.join(directory, 'setup.exe'));

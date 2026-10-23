@@ -15,14 +15,14 @@ if (mode === 'dev' && !environment.CARGO_TARGET_DIR) {
   environment.CARGO_TARGET_DIR = path.join(root, 'work/desktop-dev');
 }
 try {
-  buildEngine();
-  const notices = mode === 'build' ? generateNotices() : null;
+  const engine = buildEngine();
+  const notices = mode === 'build' ? generateNotices(engine) : null;
   const result = spawnSync(process.execPath, [require.resolve('@tauri-apps/cli/tauri.js'), mode,
     ...(notices ? ['--config', notices.overlay] : [])], {
     cwd: path.join(root, 'apps/desktop'), stdio: 'inherit', windowsHide: true, env: environment,
   });
   if (result.status === 0 && notices) {
-    checkNoticeInventory(notices.directory);
+    checkNoticeInventory(notices.directory, engine);
     if (process.env.JOBSCOUT_NOTICE_RECEIPT) {
       copyFileSync(path.join(notices.directory, 'inventory.json'), process.env.JOBSCOUT_NOTICE_RECEIPT);
     }

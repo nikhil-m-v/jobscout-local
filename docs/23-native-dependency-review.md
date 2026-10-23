@@ -1,14 +1,22 @@
 # Milestone 23F — native dependency review evidence
 
-Status: exact frozen-input inventory implemented; component clearance and source delivery remain open. No new dependency, application behavior, setup step or installer resource.
+Status: exact frozen-input inventory and embedded-native-byte verification implemented; component clearance and source delivery remain open. No new dependency, application behavior, setup step or installer resource.
 
 ## Reproducible inventory
 
 The normal notice collector now adds `nativeBinaryInputs` to its private inventory: filename, SHA-256, byte size, distribution name/version where metadata owns the file, and `reviewStatus: pending`. It covers DLL, PYD and EXE inputs present in PyInstaller analysis, including wheel-owned extensions. Different contents sharing a filename remain distinct. Machine-specific paths are omitted. Unknown ownership stays null; the collector never guesses a license from a filename. Empty or unreadable selected binaries fail collection.
 
-`runtimeBinariesForReview` remains for compatibility. The new field is additive to inventory schema 1. The installed notice text and bundle resource mapping are unchanged. The hashes describe files at collection time, not independently extracted final-installer bytes. PyInstaller analysis is an input inventory, not proof of final inclusion. Native desktop linkage, bootloader, NSIS and installed/shared WebView runtime need separate review.
+`runtimeBinariesForReview` remains for compatibility. The new field is additive to inventory schema 1. The installed notice text and bundle resource mapping are unchanged. The hashes describe files at collection time; the additional archive check below proves inclusion in the selected engine. Native desktop linkage, bootloader, NSIS and installed/shared WebView runtime need separate review.
 
 On 2026-10-23, offline collection using existing local npm/Cargo metadata and frozen analysis produced 342 component entries, 254 distinct notice texts and 70 native binary identities. One has wheel metadata ownership: pydantic_core 2.46.5. The other 69 require runtime/vendor provenance. This is local evidence, not a rebuilt or hosted installer result.
+
+## Embedded native-byte verification
+
+Production and installed-acceptance packaging now pass the exact sidecar path to notice collection. The collector reads its PyInstaller archive without executing the engine or writing extracted files. Every embedded DLL/PYD/EXE identity must match an analysis input by filename, SHA-256 and size, and every input identity must appear. Missing, additional or changed identities stop the build. Same-content copies in multiple archive directories are counted separately but share one identity. Destination layout is outside this identity check. Missing native paths in the analysis can no longer silently disappear from the input inventory.
+
+`nativeArchiveVerification` binds the result to the complete engine hash and records identity/entry counts and scope. The engine hash is checked again after reading and by the JavaScript packaging guard before and after the native build. Older inventories without this evidence are rejected by packaging and must be regenerated. Standalone inventory collection can omit `--engine` for diagnosis, but that output cannot pass the packaging guard.
+
+This verifies native bytes in the sidecar being supplied to packaging. It does not extract the final NSIS installer, identify upstream build provenance, verify licenses, or inspect statically linked libraries. PyInstaller transformations that change native input bytes intentionally fail this Windows comparison; any future strip/UPX or other transformation needs an explicit provenance design before use.
 
 ## Finite review queue
 

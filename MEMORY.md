@@ -1,6 +1,16 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-23 (23F native dependency evidence). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-10-23 (23F embedded native-byte verification). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — 23F embedded native-byte verification
+
+The original 23F inventory was pushed as `2e72c35`, with exact remote main verified. This follow-up makes production/acceptance packaging compare every embedded DLL/PYD/EXE identity with the analysis inventory by filename, hash and size. It rejects missing/extra/changed identities, missing native analysis files, and stale engine receipts before/after native packaging. Archive reads do not execute the engine or extract files to disk. No application behavior, dependencies, setup requirement or installer resource changed.
+
+The pre-existing sidecar differed from current on-disk inputs in 24 identities; the new guard rejected it. A fresh engine rebuild passes all 70 identities. This demonstrates a real stale-artifact/input mismatch, not its historical cause. Runtime/vendor provenance, static libraries, final NSIS contents and source delivery remain separate review work. See [contract](docs/23-native-dependency-review.md) and [progress](docs/progress/2026-10-23.md).
+
+Final verification passes: 463 engine, 162 frontend, 32 report/packaging and 19 notice tests; both evaluations, public-plan verification, typecheck and frontend build. Paired packaging/export succeeds (23,445,549-byte unsigned installer; exact hashes in progress). The same engine passes synthetic health, real frozen parsing, normal/forced-owner active-upload shutdown, listener closure, saved-profile restart and database integrity. Restricted engine testing timed out; the normal-environment retry passes. A prior acceptance installer sharing the bundle folder was retained separately with identical hash, preserving the exact-one-installer guard. No files were deleted.
+
+Next: runtime/vendor build provenance and nested/static components, final-installer reconciliation, then covered-source archives and recipient notice. This follow-up is uncommitted; no new hosted/installed-desktop/release acceptance, provider/credential/model operation or repository-setting change.
 
 ## Current checkpoint — 23F native dependency evidence
 

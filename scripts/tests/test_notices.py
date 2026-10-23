@@ -91,6 +91,49 @@ class NoticeTests(unittest.TestCase):
             with self.assertRaises(OSError):
                 notices.native_binary_inventory([str(self.package / 'missing.dll')])
 
+    def verify_archive(self, payloads, inputs=None, mutate=False):
+        from types import SimpleNamespace
+        engine = self.root / 'engine.exe'
+        engine.write_bytes(b'synthetic frozen engine')
+        if inputs is None:
+            inputs = [{'name': 'vendor.dll', 'sha256': hashlib.sha256(b'native bytes').hexdigest(),
+                       'sizeBytes': len(b'native bytes')}]
+        def extract(name):
+            if mutate:
+                engine.write_bytes(b'changed engine')
+            return payloads[name]
+        archive = SimpleNamespace(toc=payloads, extract=extract)
+        with patch.object(notices, 'open_frozen_archive', return_value=archive):
+            return notices.verify_native_archive(engine, inputs)
+
+    def test_archive_verifies_embedded_bytes_and_counts_duplicate_locations(self):
+        report = self.verify_archive({'vendor.dll': b'native bytes',
+                                      'nested\\vendor.dll': b'native bytes',
+                                      'private-data.txt': b'excluded'})
+        self.assertTrue(report['verified'])
+        self.assertEqual(report['identityCount'], 1)
+        self.assertEqual(report['archiveEntryCount'], 2)
+        self.assertNotIn(str(self.root), json.dumps(report))
+        self.assertEqual(report['engineSha256'], hashlib.sha256(b'synthetic frozen engine').hexdigest())
+
+    def test_archive_rejects_missing_extra_changed_and_empty_inventory(self):
+        for payloads, inputs in [({}, None), ({'vendor.dll': b'changed'}, None),
+                                 ({'vendor.dll': b'native bytes', 'extra.PYD': b'extra'}, None),
+                                 ({'vendor.dll': b'native bytes'}, [])]:
+            with self.subTest(payloads=payloads, inputs=inputs):
+                with self.assertRaisesRegex(ValueError, 'payload mismatch'):
+                    self.verify_archive(payloads, inputs)
+
+    def test_archive_rejects_engine_mutation_during_read(self):
+        with self.assertRaisesRegex(ValueError, 'changed during'):
+            self.verify_archive({'vendor.dll': b'native bytes'}, mutate=True)
+
+    def test_analysis_does_not_silently_drop_missing_native_inputs(self):
+        toc = self.root / 'Analysis-00.toc'
+        toc.write_text(repr(([('vendor.dll', str(self.root / 'missing.dll'), 'BINARY')],)))
+        with self.assertRaisesRegex(ValueError, 'Missing native input'):
+            notices.analysis_files(toc)
+
     def test_missing_notice_blocks_new_bundle_and_records_gap(self):
         with self.assertRaisesRegex(ValueError, '1 missing texts'):
             self.collect()

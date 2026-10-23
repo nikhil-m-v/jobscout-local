@@ -201,7 +201,7 @@ Completed bounded [installed normal/forced desktop closure during real parsing](
 
 ## Milestone 23F — native dependency inventory
 
-[Exact frozen native-input evidence and source-delivery plan](23-native-dependency-review.md) implemented. Offline collection identifies 70 binary inputs, including wheel-owned extensions, with hashes, sizes and pending dispositions. Runtime/vendor provenance, final-payload reconciliation and source delivery remain open.
+[Exact frozen native-input evidence and source-delivery plan](23-native-dependency-review.md) implemented. Packaging now reconciles embedded native bytes with the analysis inventory and binds the check to the exact engine hash. Runtime/vendor provenance, final-installer reconciliation and source delivery remain open.
 
 ## Scope controls
 

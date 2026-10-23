@@ -83,9 +83,13 @@ def analysis_files(toc):
     value = ast.literal_eval(toc.read_text(encoding='utf-8'))
     if not isinstance(value, tuple):
         raise ValueError('Unrecognized PyInstaller analysis')
-    return sorted({entry[1] for group in value if isinstance(group, list)
-                   for entry in group if isinstance(entry, tuple) and len(entry) == 3
-                   and isinstance(entry[1], str) and Path(entry[1]).is_file()})
+    candidates = {entry[1] for group in value if isinstance(group, list)
+                  for entry in group if isinstance(entry, tuple) and len(entry) == 3
+                  and isinstance(entry[1], str)}
+    for file in candidates:
+        if Path(file).suffix.lower() in {'.dll', '.pyd', '.exe'} and not Path(file).is_file():
+            raise ValueError('Missing native input in PyInstaller analysis')
+    return sorted(file for file in candidates if Path(file).is_file())
 
 
 def distribution_owners():
@@ -110,8 +114,6 @@ def native_binary_inventory(files):
     records = {}
     for file in files:
         path = Path(file)
-        if path.suffix.lower() not in {'.dll', '.pyd', '.exe'}:
-            continue
         owner = owners.get(os.path.normcase(str(path.resolve())))
         data = path.read_bytes()
         if not data:
@@ -124,6 +126,38 @@ def native_binary_inventory(files):
         records[json.dumps(record, sort_keys=True)] = record
     return sorted(records.values(), key=lambda item: (
         item['name'], item['sha256'], json.dumps(item['distribution'], sort_keys=True)))
+
+
+def open_frozen_archive(engine):
+    # Packaging-only dependency; synthetic validation does not need PyInstaller.
+    from PyInstaller.archive.readers import CArchiveReader
+    return CArchiveReader(str(engine))
+
+
+def verify_native_archive(engine, inputs):
+    """Read embedded bytes without executing the engine or extracting to disk."""
+    before = hashlib.sha256(engine.read_bytes()).hexdigest()
+    archive = open_frozen_archive(engine)
+    expected = {(r['name'], r['sha256'], r['sizeBytes']) for r in inputs}
+    actual = set()
+    count = 0
+    for name in archive.toc:
+        # Archive paths may use Windows separators even on another build host.
+        basename = name.replace('\\', '/').rsplit('/', 1)[-1]
+        if Path(basename).suffix.lower() not in {'.dll', '.pyd', '.exe'}:
+            continue
+        data = archive.extract(name)
+        actual.add((basename, hashlib.sha256(data).hexdigest(), len(data)))
+        count += 1
+    if not expected or expected != actual:
+        raise ValueError('Frozen native payload mismatch: '
+                         f'{len(expected - actual)} missing/changed identities, '
+                         f'{len(actual - expected)} unexpected/changed identities')
+    if hashlib.sha256(engine.read_bytes()).hexdigest() != before:
+        raise ValueError('Frozen engine changed during native verification')
+    return {'engineSha256': before, 'verified': True,
+            'identityCount': len(actual), 'archiveEntryCount': count,
+            'scope': 'Embedded DLL/PYD/EXE bytes only; excludes bootloader, desktop, installer and runtime provenance'}
 
 
 def python_components(files):
@@ -153,7 +187,7 @@ def python_components(files):
     return result, sorted(set(unresolved))
 
 
-def collect(root, npm, cargo, toc, output):
+def collect(root, npm, cargo, toc, output, engine=None):
     components = []
     texts = {}
     missing = []
@@ -195,6 +229,8 @@ def collect(root, npm, cargo, toc, output):
               'nativeBinaryInputs': native_binary_inventory(files),
               'nativeBinaryScope': 'PyInstaller analysis inputs only; excludes native desktop, installer and WebView runtime',
               'scope': 'npm runtime graph; conservative Windows Cargo build graph; frozen Python inputs and CPython'}
+    if engine is not None:
+        report['nativeArchiveVerification'] = verify_native_archive(engine, report['nativeBinaryInputs'])
     lines = ['JobScout - collected dependency notices', '',
              'This document preserves collected third-party and historical notices.',
              'Cargo coverage includes build-time dependencies, not a claim that every component is linked.',
@@ -224,9 +260,10 @@ if __name__ == '__main__':
     parser.add_argument('--cargo', type=Path, required=True)
     parser.add_argument('--analysis', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--engine', type=Path, help='Verify embedded native bytes against the analysis inputs')
     args = parser.parse_args()
     try:
         collect(Path(__file__).resolve().parents[1], json.loads(args.npm.read_text(encoding='utf-8-sig')),
-                json.loads(args.cargo.read_text(encoding='utf-8-sig')), args.analysis, args.output)
+                json.loads(args.cargo.read_text(encoding='utf-8-sig')), args.analysis, args.output, args.engine)
     except (ValueError, OSError, KeyError) as error:
         raise SystemExit(f'Notice collection failed: {error}') from None

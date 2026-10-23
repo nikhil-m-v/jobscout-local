@@ -16,19 +16,31 @@ test('notice inventory binds exact bytes and rejects incomplete or approved-rele
     rmSync(directory, { recursive: true, force: true });
   });
   const bytes = Buffer.from('Synthetic notice');
+  const engine = path.join(directory, 'engine.exe');
+  const engineBytes = Buffer.from('Synthetic frozen engine');
+  writeFileSync(engine, engineBytes);
   writeFileSync(path.join(directory, 'THIRD-PARTY-NOTICES.txt'), bytes);
   const inventory = { schemaVersion: 1, releaseApproved: false, components: [{ name: 'synthetic' }],
     missingNotices: [], unmappedPythonInputs: [], manualReview: ['Review remains open'],
+    nativeArchiveVerification: { verified: true, identityCount: 1, archiveEntryCount: 1,
+      engineSha256: createHash('sha256').update(engineBytes).digest('hex') },
     noticeBundleSha256: createHash('sha256').update(bytes).digest('hex') };
   const save = value => writeFileSync(path.join(directory, 'inventory.json'), JSON.stringify(value));
   save(inventory);
-  assert.equal(checkNoticeInventory(directory).componentCount, 1);
+  assert.equal(checkNoticeInventory(directory, engine).componentCount, 1);
+  assert.throws(() => checkNoticeInventory(directory), /incomplete or changed/);
   for (const change of [{ missingNotices: ['missing'] }, { unmappedPythonInputs: ['unknown'] },
-    { releaseApproved: true }, { noticeBundleSha256: 'wrong' }, { components: [] }, { manualReview: [] }]) {
+    { releaseApproved: true }, { noticeBundleSha256: 'wrong' }, { components: [] }, { manualReview: [] },
+    { nativeArchiveVerification: undefined },
+    ...[{ verified: false }, { identityCount: 0 }, { archiveEntryCount: 0 }, { engineSha256: 'stale' }]
+      .map(change => ({ nativeArchiveVerification: { ...inventory.nativeArchiveVerification, ...change } }))]) {
     save({ ...inventory, ...change });
-    assert.throws(() => checkNoticeInventory(directory), /incomplete or changed/);
+    assert.throws(() => checkNoticeInventory(directory, engine), /incomplete or changed/);
   }
   save(inventory);
+  writeFileSync(engine, 'Replaced frozen engine');
+  assert.throws(() => checkNoticeInventory(directory, engine), /incomplete or changed/);
+  writeFileSync(engine, engineBytes);
   writeFileSync(path.join(directory, 'THIRD-PARTY-NOTICES.txt'), 'Changed notice');
-  assert.throws(() => checkNoticeInventory(directory), /incomplete or changed/);
+  assert.throws(() => checkNoticeInventory(directory, engine), /incomplete or changed/);
 });
