@@ -201,7 +201,7 @@ Completed bounded [installed normal/forced desktop closure during real parsing](
 
 ## Milestone 23F — native dependency inventory
 
-[Exact frozen native-input evidence and source-delivery plan](23-native-dependency-review.md) implemented. Packaging now reconciles embedded native bytes with the analysis inventory and binds the check to the exact engine hash. Runtime/vendor provenance, final-installer reconciliation and source delivery remain open.
+[Exact frozen native-input evidence and source-delivery plan](23-native-dependency-review.md) implemented. Packaging reconciles embedded native bytes with the analysis inventory and binds the check to the exact engine hash. Offline source preparation now retains five lockfile-verified Cargo archives and compares their cached source contents; the Python source candidate remains unresolved. Runtime/vendor provenance, shipped-component dispositions, final-installer reconciliation and recipient source delivery remain open.
 
 ## Scope controls
 

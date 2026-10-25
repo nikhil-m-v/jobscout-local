@@ -17,7 +17,7 @@ const steps = [
     `--basetemp=${path.join(output, 'pytest-tmp')}`, `--junitxml=${path.join(output, 'engine.xml')}`]],
   ['frontend', process.execPath, ['--experimental-strip-types', '--test', '--test-reporter=tap', 'apps/desktop/tests/*.test.mjs']],
   ['reports', process.execPath, ['--experimental-strip-types', '--test', '--test-reporter=tap', 'scripts/tests/*.test.mjs']],
-  ['notices', python, ['-m', 'unittest', 'discover', '-s', 'scripts/tests', '-p', 'test_notices.py', '-v']],
+  ['notices', python, ['-m', 'unittest', 'discover', '-s', 'scripts/tests', '-p', 'test_*.py', '-v']],
   ['shortlist', process.execPath, ['--experimental-strip-types', 'scripts/evaluate-shortlist.mjs']],
   ['candidate-pool', process.execPath, ['--experimental-strip-types', 'scripts/evaluate-candidate-pool.mjs']],
   ['quality-plans', python, ['scripts/verify-quality-cases.py', '--verify-only']],

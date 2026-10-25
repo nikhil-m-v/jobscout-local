@@ -32,6 +32,25 @@ Python documents incorporated software separately and calls its online list inco
 
 ## Covered-source delivery plan
 
+### Offline archive preparation
+
+`scripts/prepare_covered_sources.py` prepares evidence for MPL-2.0 candidates in a selected notice inventory. It uses the accompanying Cargo metadata, current lockfile and existing local crate cache. It never downloads sources or extracts archives. Run it with a fresh ignored output directory:
+
+```powershell
+.venv\Scripts\python.exe scripts/prepare_covered_sources.py `
+  --inventory work/notices/<selected-build>/inventory.json `
+  --cargo work/notices/<selected-build>/cargo.json `
+  --lock apps/desktop/src-tauri/Cargo.lock `
+  --cache "$env:USERPROFILE/.cargo/registry/cache" `
+  --output work/covered-sources/<new-review>
+```
+
+For supported crates.io candidates, it requires an unambiguous exact name/version in metadata and the lockfile, verifies the archive SHA-256 against Cargo.lock, and compares every archived file with the cached source directory identified by that metadata. Missing, changed or additional source files fail; only Cargo's two cache markers are excluded. Unsafe paths, archive links, duplicate paths, corrupt duplicate cache entries and oversized archives fail before output is created. Existing output directories are never overwritten. This comparison describes cached source at review time; it cannot prove historical compiler inputs or the absence of external build-script inputs.
+
+The resulting `source-review.json` binds the input inventory and lockfile by hash, records retained archive hashes, sizes and compared-file counts, and leaves shipped-component disposition/review pending. Its records omit machine-specific source paths. Missing archives and unsupported ecosystems remain explicit unresolved entries; a successful command does not mean all candidates are resolved. Archives and reports stay in ignored `work/`, outside installer resources and source-control publication.
+
+The 2026-10-25 offline run retained five exact Cargo archives and compared all 66 archived files successfully. The sixth candidate, certifi, remains unresolved because this tool does not provide a Python source-archive collector. The selected inventory was from the existing 23F build; no new installer was built. Runtime provenance, nested/static vendors, recipient delivery and final-installer mapping are still separate gates. There was no runtime build-provenance manifest in the inspected local Python installation, so runtime attribution has not advanced to clearance.
+
 The observed metadata flags MPL-2.0 candidates cssparser 0.37.0, cssparser-macros 0.7.1, dtoa-short 0.3.5, option-ext 0.2.0, selectors 0.38.0 and certifi 2026.7.22. Cargo coverage is conservative and includes build tools; these are review candidates, not confirmed shipped components. Recompute the list after dependency changes.
 
 1. Resolve each candidate to shipped material or documented build-only exclusion using the final build and archive/link evidence.

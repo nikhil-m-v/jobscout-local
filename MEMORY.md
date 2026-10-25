@@ -1,6 +1,16 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-23 (23F embedded native-byte verification). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-10-25 (23F offline covered-source preparation). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — 23F offline covered-source preparation
+
+Resumed from clean commit `4f2ed67`, which already contains the embedded native-byte verification described below. Added an offline source-evidence tool that selects MPL-2.0 metadata candidates, retains cached crates.io archives only after Cargo.lock checksum verification, and compares every archived file with the metadata-selected cached source tree. Modified/missing/extra files, unsafe archives, ambiguous package identities and corrupt cache copies fail before output. Existing evidence directories are preserved. Unsupported ecosystems and missing archives stay explicitly unresolved; this does not grant release clearance.
+
+The real local run prepares five exact Cargo archives and verifies 66 source files. Certifi remains unresolved. Reports bind inventory/lockfile hashes, omit local source paths and keep shipped disposition pending. Generated archives/reports remain ignored and are not installer resources. No runtime provenance manifest was present in the inspected Python installation; runtime/native/nested-vendor review remains open.
+
+Full local validation passes: 463 engine, 162 frontend, 32 report/packaging and 30 notice/source tests (11 new source-evidence regressions), both evaluations, public-plan verification, typecheck and frontend build. The restricted engine run stalled; the normal-environment retry passes. No app behavior, dependency, setup or installed-resource change; no new installer/installed/hosted acceptance, provider/credential/model operation or repository settings change. The owner requested a local commit; no push is part of this session.
+
+Next: exact certifi source evidence, runtime/vendor provenance, shipped-versus-build-only dispositions, final-installer mapping and durable recipient source notice/location. See [contract](docs/23-native-dependency-review.md) and [progress](docs/progress/2026-10-25.md).
 
 ## Current checkpoint — 23F embedded native-byte verification
 
