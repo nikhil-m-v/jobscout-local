@@ -20,6 +20,38 @@ This verifies native bytes in the sidecar being supplied to packaging. It does n
 
 ## Finite review queue
 
+### 2026-10-27 follow-up — installer and certifi source evidence
+
+The [installer/source supplement](reviews/23f-installer-source-review-2026-10-27.json) binds the retained installer, audit, earlier 69-file review, local component comparisons and certifi wheel evidence. This closes selected byte-mapping gaps; complete installer inventory, historical source/build provenance and all license clearances remain open. The earlier native review is preserved unchanged.
+
+The selected installer is the 23F export in `work/distribution/build-0JvrVa`: 23,445,549 bytes, SHA-256 `17b451b24ae94814d3979f457f1cb68ed7123bdc36e272ecdfcbc2183653b8bd`. A locally available 7-Zip 22.01 reads its payload streams without executing or installing it. The reader reports `NSIS-3 Unicode BadCmd=13`; consequently, its nine listed paths cannot establish a complete inventory or generated-uninstaller coverage.
+
+| Payload evidence | Result and limit |
+|---|---|
+| `jobscout-engine.exe` | 19,983,354 bytes; exact prior engine hash `b5a0a70546f0faa17746f5f71ae098e79bf23e534aac1e1a80364c9bafecf25a`. This binds the prior 70 native identities, including the 69 reviewed unknown-owner identities, to this installer payload. |
+| `licenses/THIRD-PARTY-NOTICES.txt` | 965,578 bytes; exact prior notice hash `fada8c260aa1a8c39ab6ca30c7419b2f5de5fd26774d4df305c8b50b1f862c26`. Presence and identity do not establish complete notice coverage. |
+| `jobscout-desktop.exe` | 14,707,200 bytes; hash `c89d292833979590f917052df87053a5625b8d3c0e7b37271e5aeea4304d7ab7`. It differs from the current retained CI-target desktop candidate (`2645fab81d854dc3d61ff70dcf4d063876d6ed2d91db246cd6574a49e9d4670a`). Its exact historical build counterpart/static linkage remains unresolved. |
+| Installer plugin DLLs | All five enumerated plugins — System, nsDialogs, nsis_tauri_utils, StartMenu and NSISdl — match local NSIS cache files. Those bytes travel in the installer even though they are not persistent application resources. Source/build and notice dispositions remain pending. |
+| Bootloader | EXE staging metadata names PyInstaller's Windows x64 `run.exe`. Its bytes match local PyInstaller 6.22.3 wheel RECORD. Five of six compared PE sections match the engine; `.rdata` differs. This is partial byte evidence, not full binary equality or proof of the cause of the difference. |
+
+The local NSIS `COPYING` document separately names the LZMA compression module and its Common Public License 1.0 text; review must not stop at NSIS's general zlib/libpng heading. The local PyInstaller document includes a Bootloader Exception. These documents are hashed evidence candidates, not approved dispositions. No upstream legal interpretation or clearance is asserted here.
+
+The retained generated NSIS script selects `downloadBootstrapper` for WebView2, checks an existing runtime and conditionally downloads a bootstrapper. That script mode does not embed a WebView2 bootstrapper; future downloaded runtime bytes/version remain unknown. The script also uses `WriteUninstaller`, while the archive reader did not enumerate a separately hashable `uninstall.exe`. Complete compiled-command and generated-uninstaller reconciliation remains open. No download or installed test was performed.
+
+#### Repeating the payload comparison
+
+`scripts/verify_installer_payload.py` accepts explicit `--installer`, `--audit`, `--inventory`, `--engine`, `--desktop`, `--notices`, `--archiver` and `--output` paths. Use a trusted locally available 7-Zip CLI and an unused output filename in ignored `work/`. The helper is optional review tooling, not a production packaging dependency. It checks the installer audit/inventory, validates engine/notice receipts, compares three extracted streams, records a desktop-candidate mismatch explicitly and rechecks input hashes after inspection. It refuses missing/ambiguous entries, extraction errors, receipt mismatches and existing output. It always leaves `completeInstallerInventory` false and license clearance unresolved. A successful review command can produce `allRetainedInputsMatch: false`; it must never be interpreted as packaging approval.
+
+The actual report is retained at `work/native-review/2026-10-27/installer-payload-review.json`. Its desktop mismatch is deliberate evidence, not a waived validation failure. Eleven new synthetic tests cover review success, limits, mismatches, missing/duplicate paths, wrong archive format, extraction errors, input mutation and output preservation.
+
+#### Certifi evidence from the local wheel cache
+
+An existing pip HTTP-cache wheel for certifi 2026.7.22 was found and retained as `work/native-review/2026-10-27/certifi-2026.7.22-py3-none-any.whl` (136,983 bytes; SHA-256 `62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775`). All 11 non-RECORD members pass their wheel RECORD hashes/sizes and match installed files. The wheel RECORD itself is excluded from self-hashing. The wheel's normalized license text matches the previously collected certifi notice.
+
+Frozen `certifi/cacert.pem` and `certifi/py.typed` match the wheel exactly. The two present frozen modules (`certifi` and `certifi.core`) compare equal as code objects to the wheel sources compiled locally with optimization level zero, without executing them. `certifi.__main__` is absent from PYZ. This establishes substantially more local source/payload evidence than the earlier unsupported-ecosystem report; it does not authenticate the wheel against upstream, identify a corresponding sdist/revision, prove certificate-store generation inputs, or complete recipient source delivery. The original covered-source report is preserved; the new evidence is additive. The bounded cache search inspected 70 ZIP bodies and the locally built-wheel listing, not every possible source cache.
+
+Next local work can reconcile complete NSIS commands/uninstaller with a capable reader, recover the desktop's historical build records, and inspect Cargo static/build-only dispositions. Missing original runtime acquisition/source/patch records and vendor redistribution evidence remain separate blockers. A durable recipient source location still requires an owner choice and verification; no location is promised.
+
 ### 2026-10-27 local provenance review
 
 The [dated 69-identity review inventory](reviews/23f-native-input-review-2026-10-27.json) supplements, rather than rewrites, the generated inventory. All distribution owners remain null, all license clearances remain unresolved, and release approval remains false. It records each exact filename/hash/size, archive destination, recorded build input relative to the runtime bundle, PE version resources, import dependencies, current-input comparison and explicit unresolved IDs. No machine-specific paths or raw compiler paths are published.

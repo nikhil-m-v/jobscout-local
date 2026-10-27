@@ -1,6 +1,18 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-27 (23F local native provenance review). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-10-27 (23F installer payload and certifi evidence). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — 23F installer payload and certifi evidence
+
+Publication follow-up: the owner requested committing and pushing this reviewed verifier/test/documentation payload to the existing remote. The local/uncommitted statement below describes the implementation checkpoint. Cached wheels, installers and private investigation scripts remain ignored and excluded; this publication does not grant license or release approval.
+
+The previous native provenance review was published as `e0aaa9c`; exact remote main was verified in that push turn. Continued locally with the retained 23F installer rather than rebuilding against changed runtime inputs. Its extracted engine and notice bytes match the earlier inventory receipts, binding the reviewed native identities to this installer. Its desktop payload differs from the current CI-target build candidate; the historical desktop counterpart/static-link provenance stays unresolved.
+
+Added an optional offline three-payload review helper with eleven synthetic tests. Reports bind inputs, reject engine/notice receipt or payload failures, retain desktop-candidate drift explicitly, preserve prior outputs and never declare complete inventory or clearance. The available reader reports `BadCmd=13`; full NSIS command/generated-uninstaller reconciliation remains open. Five enumerated installer plugin DLLs match local cache files. PyInstaller 6.22.3 bootloader RECORD and five PE-section matches provide partial evidence; `.rdata` differs. Generated installer script selects conditional WebView2 bootstrapper download. No installer or bootstrapper was executed/downloaded.
+
+Found and retained the exact-version certifi wheel in the local pip cache. Eleven non-RECORD files verify against RECORD and installed bytes; its license matches the collected notice. Two frozen data files match, and both present frozen modules match code objects compiled from wheel sources without execution. Upstream authentication, corresponding sdist/revision, certificate-data generation inputs and recipient delivery remain open. Added a dated review supplement; the previous 69-file review and covered-source reports remain unchanged.
+
+Validation passes 41 Python notice/source/installer tests and 32 JavaScript report/packaging tests. Initial default TEMP tests hit sandbox permissions; workspace-local TEMP passes. Real installer review reports two matching retained inputs and explicit desktop drift. No app/dependency/setup/resource change, rebuild, installed/hosted acceptance, network/provider/credential/model operation or release approval. This follow-up is uncommitted; no new push. Next: complete NSIS/uninstaller and historical desktop mapping where local evidence permits, recover original runtime/vendor build records, then resolve static-component/source-delivery dispositions. See [review](docs/23-native-dependency-review.md) and [progress](docs/progress/2026-10-27.md).
 
 ## Current checkpoint — 23F local native provenance review
 

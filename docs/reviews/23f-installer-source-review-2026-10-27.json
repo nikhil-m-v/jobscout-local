@@ -1,0 +1,387 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-27",
+  "sourceRevision": "e0aaa9c",
+  "releaseApproved": false,
+  "licenseClearance": "unresolved",
+  "scope": "Retained installer payload reconciliation, installer/bootloader evidence, and exact-version local certifi wheel evidence.",
+  "priorNativeReviewSha256": "232d20b2dfbc43fc966c6db53cc20415d8c2ab8f1c0e8c6adedafd42923e50ba",
+  "sourceEvidenceSha256": {
+    "installer-payload-review.json": "90094fd944f8fb720317b7b2829ca460414f2d0f4adb5428e73b28ce2bf912ae",
+    "additional-component-review.json": "937b082604cb36b82fd1ddbd0614b71583c60f99a35e05acd987863c658f980f",
+    "certifi-source-review.json": "a2d22b50746e9dae5aec1bc1876c7d2d168511fd53c136ca1b86b89501cbc19f"
+  },
+  "verifierSha256": "3556809d85eb2170efb814679157c6678360a4747d96157cd325f3df1d80c41e",
+  "installerPayloadReview": {
+    "schemaVersion": 1,
+    "releaseApproved": false,
+    "licenseClearance": "unresolved",
+    "scope": "Exact three application payloads only; no installer execution or installation.",
+    "inputSha256": {
+      "installer": "17b451b24ae94814d3979f457f1cb68ed7123bdc36e272ecdfcbc2183653b8bd",
+      "audit": "18985b4abc17a9a832aefd2a456e804359c72805872819ae8b94d2888b11d7be",
+      "inventory": "9e2a2ad28217f67b6519997414c18afc0e497d9c0b0e0d0e7c617b227eb6510b",
+      "engine": "b5a0a70546f0faa17746f5f71ae098e79bf23e534aac1e1a80364c9bafecf25a",
+      "desktop": "2645fab81d854dc3d61ff70dcf4d063876d6ed2d91db246cd6574a49e9d4670a",
+      "notices": "fada8c260aa1a8c39ab6ca30c7419b2f5de5fd26774d4df305c8b50b1f862c26",
+      "archiver": "7db4207c61770642f475a39a43ee462b39c09f3a7e3f68032a479c8d89de4f85"
+    },
+    "payloads": [
+      {
+        "archivePath": "jobscout-engine.exe",
+        "sizeBytes": 19983354,
+        "sha256": "b5a0a70546f0faa17746f5f71ae098e79bf23e534aac1e1a80364c9bafecf25a",
+        "matchesRetainedInput": true,
+        "referenceSha256": "b5a0a70546f0faa17746f5f71ae098e79bf23e534aac1e1a80364c9bafecf25a",
+        "referenceBasis": "Historical audit/inventory receipt"
+      },
+      {
+        "archivePath": "jobscout-desktop.exe",
+        "sizeBytes": 14707200,
+        "sha256": "c89d292833979590f917052df87053a5625b8d3c0e7b37271e5aeea4304d7ab7",
+        "matchesRetainedInput": false,
+        "referenceSha256": "2645fab81d854dc3d61ff70dcf4d063876d6ed2d91db246cd6574a49e9d4670a",
+        "referenceBasis": "Candidate build output; not a historical receipt"
+      },
+      {
+        "archivePath": "licenses/THIRD-PARTY-NOTICES.txt",
+        "sizeBytes": 965578,
+        "sha256": "fada8c260aa1a8c39ab6ca30c7419b2f5de5fd26774d4df305c8b50b1f862c26",
+        "matchesRetainedInput": true,
+        "referenceSha256": "fada8c260aa1a8c39ab6ca30c7419b2f5de5fd26774d4df305c8b50b1f862c26",
+        "referenceBasis": "Historical audit/inventory receipt"
+      }
+    ],
+    "archiveReader": {
+      "type": "Nsis",
+      "method": "LZMA:23",
+      "subType": "NSIS-3 Unicode BadCmd=13",
+      "listedPaths": [
+        "$PLUGINSDIR/System.dll",
+        "$PLUGINSDIR/modern-wizard.bmp",
+        "$PLUGINSDIR/nsDialogs.dll",
+        "$PLUGINSDIR/nsis_tauri_utils.dll",
+        "$PLUGINSDIR/StartMenu.dll",
+        "$PLUGINSDIR/NSISdl.dll",
+        "jobscout-desktop.exe",
+        "licenses/THIRD-PARTY-NOTICES.txt",
+        "jobscout-engine.exe"
+      ],
+      "completeInstallerInventory": false
+    },
+    "allRetainedInputsMatch": false,
+    "unresolved": [
+      "Complete NSIS command/payload and generated-uninstaller reconciliation.",
+      "Installer stub/plugins, desktop static linkage and bootloader provenance/notice review.",
+      "Runtime/vendor source, patches and build records; recipient source delivery.",
+      "Installed behavior, WebView prerequisite acquisition and release acceptance.",
+      "Installer desktop bytes differ from the supplied candidate build output."
+    ]
+  },
+  "additionalComponents": {
+    "schemaVersion": 1,
+    "reviewDate": "2026-10-27",
+    "releaseApproved": false,
+    "licenseClearance": "unresolved",
+    "installerSha256": "17b451b24ae94814d3979f457f1cb68ed7123bdc36e272ecdfcbc2183653b8bd",
+    "installerPayloadReportSha256": "90094fd944f8fb720317b7b2829ca460414f2d0f4adb5428e73b28ce2bf912ae",
+    "plugins": [
+      {
+        "archivePath": "$PLUGINSDIR/System.dll",
+        "sizeBytes": 12288,
+        "sha256": "8b4c47c4cf5e76ec57dd5a050d5acd832a0d532ee875d7b44f6cdaf68f90d37c",
+        "localCandidate": "Plugins/x86-unicode/System.dll",
+        "localSha256": "8b4c47c4cf5e76ec57dd5a050d5acd832a0d532ee875d7b44f6cdaf68f90d37c",
+        "matchesLocalCandidate": true,
+        "provenanceStatus": "upstream source/build and license disposition unresolved"
+      },
+      {
+        "archivePath": "$PLUGINSDIR/nsDialogs.dll",
+        "sizeBytes": 9728,
+        "sha256": "b1350f487692057c8ffde75dcc55287a52a3272240d4d4912f24464b27551fc0",
+        "localCandidate": "Plugins/x86-unicode/nsDialogs.dll",
+        "localSha256": "b1350f487692057c8ffde75dcc55287a52a3272240d4d4912f24464b27551fc0",
+        "matchesLocalCandidate": true,
+        "provenanceStatus": "upstream source/build and license disposition unresolved"
+      },
+      {
+        "archivePath": "$PLUGINSDIR/nsis_tauri_utils.dll",
+        "sizeBytes": 34304,
+        "sha256": "5ba143b5db4a87d32d6e7802e033330aae56cbceabe0d1e3ba41948385ad4709",
+        "localCandidate": "Plugins/x86-unicode/additional/nsis_tauri_utils.dll",
+        "localSha256": "5ba143b5db4a87d32d6e7802e033330aae56cbceabe0d1e3ba41948385ad4709",
+        "matchesLocalCandidate": true,
+        "provenanceStatus": "upstream source/build and license disposition unresolved"
+      },
+      {
+        "archivePath": "$PLUGINSDIR/StartMenu.dll",
+        "sizeBytes": 7680,
+        "sha256": "fe330320459637d8dd2b5d84d07925c38ec264152ffd3b1760a4d44d76536caa",
+        "localCandidate": "Plugins/x86-unicode/StartMenu.dll",
+        "localSha256": "fe330320459637d8dd2b5d84d07925c38ec264152ffd3b1760a4d44d76536caa",
+        "matchesLocalCandidate": true,
+        "provenanceStatus": "upstream source/build and license disposition unresolved"
+      },
+      {
+        "archivePath": "$PLUGINSDIR/NSISdl.dll",
+        "sizeBytes": 15360,
+        "sha256": "ddf40229dd9d6b268902d8dea88c8a04aacf1af218dd29f6dcd35babc54ac08d",
+        "localCandidate": "Plugins/x86-unicode/NSISdl.dll",
+        "localSha256": "ddf40229dd9d6b268902d8dea88c8a04aacf1af218dd29f6dcd35babc54ac08d",
+        "matchesLocalCandidate": true,
+        "provenanceStatus": "upstream source/build and license disposition unresolved"
+      }
+    ],
+    "nsisCopying": {
+      "pathAlias": "NSIS/COPYING",
+      "sha256": "e7dd514003ab96cb3ddccbc028fe5c795fccf57dc41f21cfb9d4dd16ead23bf5",
+      "observations": [
+        "Local document describes general NSIS materials as zlib/libpng except stated exceptions.",
+        "Local document separately names Common Public License 1.0 for the NSIS LZMA compression module.",
+        "Exact source/version/build binding, exceptions and applicable shipped obligations remain unreviewed."
+      ]
+    },
+    "webview": {
+      "generatedScriptSha256": "9faf1ba8950db02fa8fffff45b9759188b3619aafaaae8fb3dfaab7f2f1d56ac",
+      "mode": "downloadBootstrapper",
+      "bootstrapperEmbeddedByThisScriptMode": false,
+      "observation": "Generated script checks installed WebView2 and conditionally downloads its bootstrapper. No download/installation performed; exact future runtime bytes/version are unknown.",
+      "generatedUninstaller": "Script uses WriteUninstaller; reader did not enumerate a separately hashable uninstall.exe. Reconciliation unresolved."
+    },
+    "bootloader": {
+      "distribution": {
+        "name": "PyInstaller",
+        "version": "6.22.3"
+      },
+      "recordedInput": "PyInstaller/bootloader/Windows-64bit-intel/run.exe",
+      "sha256": "581ea23eb35cee8f9df8835c892e91416df95ca629b1a6050289aea19390e08d",
+      "sizeBytes": 311808,
+      "wheelRecordVerified": true,
+      "recordSha256": "8d88f0051bcfef7abd920422fab2ea7e807cc8ee0dda5e6a63c95fec8f7a7a67",
+      "exeTocSha256": "5ed24c508cec558cab09793aaed7106924ce2241adeb622138a59231072471dc",
+      "sectionComparisons": [
+        {
+          "name": ".text",
+          "bootloaderSha256": "0e0d193ef7d4268667f4e34c491cb619991da0be590f6d45279c29db07bcf646",
+          "engineSha256": "0e0d193ef7d4268667f4e34c491cb619991da0be590f6d45279c29db07bcf646",
+          "equal": true
+        },
+        {
+          "name": ".rdata",
+          "bootloaderSha256": "318b98898af878d14e505b9fd43a416de54153a445ef59c1ef34252f08f6a770",
+          "engineSha256": "1b735aee05cd7e7601554d5dae7f3f76e87e0ab84dcdf7f35783dfd47c79b932",
+          "equal": false
+        },
+        {
+          "name": ".data",
+          "bootloaderSha256": "d6701d7a3bda1755a248b6714e2e6e00d60874e64707285c41b4da38dac6e930",
+          "engineSha256": "d6701d7a3bda1755a248b6714e2e6e00d60874e64707285c41b4da38dac6e930",
+          "equal": true
+        },
+        {
+          "name": ".pdata",
+          "bootloaderSha256": "babd962c983dd50ec1a166d4f999cbad552c4a5faa9cb803253d05c056992618",
+          "engineSha256": "babd962c983dd50ec1a166d4f999cbad552c4a5faa9cb803253d05c056992618",
+          "equal": true
+        },
+        {
+          "name": ".fptable",
+          "bootloaderSha256": "076a27c79e5ace2a3d47f9dd2e83e4ff6ea8872b3c2218f66c92b89b55f36560",
+          "engineSha256": "076a27c79e5ace2a3d47f9dd2e83e4ff6ea8872b3c2218f66c92b89b55f36560",
+          "equal": true
+        },
+        {
+          "name": ".reloc",
+          "bootloaderSha256": "ac95171a2bc8e8e0d682e6a104327b3de0b13146e5fb8cfc9431c35c108a175a",
+          "engineSha256": "ac95171a2bc8e8e0d682e6a104327b3de0b13146e5fb8cfc9431c35c108a175a",
+          "equal": true
+        }
+      ],
+      "licenseSha256": "0598064c7d2718e38d7914a7d08343b2fa008e3bea9ebba2aa7a6ffa5900dd64",
+      "limits": "RECORD is local metadata, not an authenticated acquisition record. Section equality is byte evidence only; full bootloader equals neither full engine nor a proven upstream source build. License document includes a Bootloader Exception; exact build/source and disposition remain unresolved."
+    },
+    "certifi": {
+      "version": "2026.7.22",
+      "frozenData": [
+        {
+          "archivePath": "certifi/cacert.pem",
+          "sizeBytes": 240216,
+          "sha256": "9cc2a774b5198dcff14d9be1e66091f538975d867ce029a96bce15a55dfd730f"
+        },
+        {
+          "archivePath": "certifi/py.typed",
+          "sizeBytes": 0,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        }
+      ],
+      "cachedArchiveCandidates": [
+        {
+          "cacheKey": "4196fb32cd5477509fa68e914f1472976a27100798a6d4a646f26472.body",
+          "metadataPath": "certifi-2026.7.22.dist-info/METADATA",
+          "sha256": "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775",
+          "sizeBytes": 136983,
+          "members": [
+            "certifi/__init__.py",
+            "certifi/__main__.py",
+            "certifi/cacert.pem",
+            "certifi/core.py",
+            "certifi/py.typed",
+            "certifi/tests/__init__.py",
+            "certifi/tests/test_certify.py",
+            "certifi-2026.7.22.dist-info/licenses/LICENSE",
+            "certifi-2026.7.22.dist-info/METADATA",
+            "certifi-2026.7.22.dist-info/WHEEL",
+            "certifi-2026.7.22.dist-info/top_level.txt",
+            "certifi-2026.7.22.dist-info/RECORD"
+          ]
+        }
+      ],
+      "cacheSearchScope": {
+        "zipBodyCandidatesInspected": 70,
+        "scope": "Existing pip http-v2 ZIP bodies and pip locally built wheel listing only. Not an exhaustive source-archive search."
+      },
+      "sourceDisposition": "Exact source archive, modifications, bundled certificate-data source and recipient delivery unresolved."
+    }
+  },
+  "certifiSourceReview": {
+    "schemaVersion": 1,
+    "reviewDate": "2026-10-27",
+    "releaseApproved": false,
+    "licenseClearance": "unresolved",
+    "name": "certifi",
+    "version": "2026.7.22",
+    "wheelSha256": "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775",
+    "wheelSizeBytes": 136983,
+    "wheelRecordFilesVerified": 11,
+    "engineSha256": "b5a0a70546f0faa17746f5f71ae098e79bf23e534aac1e1a80364c9bafecf25a",
+    "sourceInventorySha256": "9e2a2ad28217f67b6519997414c18afc0e497d9c0b0e0d0e7c617b227eb6510b",
+    "files": [
+      {
+        "path": "certifi/__init__.py",
+        "sha256": "7a52e5f4205f9b3d12a31898ceaa7e3f6837d19cc230700bcae1a9d91d1486c1",
+        "sizeBytes": 94,
+        "wheelRecordVerified": true,
+        "installedBytesMatch": true
+      },
+      {
+        "path": "certifi/__main__.py",
+        "sha256": "c410688fdd394d45812d118034e71fee88ba7beddd30fe1c1281bd3b232cd758",
+        "sizeBytes": 243,
+        "wheelRecordVerified": true,
+        "installedBytesMatch": true
+      },
+      {
+        "path": "certifi/cacert.pem",
+        "sha256": "9cc2a774b5198dcff14d9be1e66091f538975d867ce029a96bce15a55dfd730f",
+        "sizeBytes": 240216,
+        "wheelRecordVerified": true,
+        "installedBytesMatch": true
+      },
+      {
+        "path": "certifi/core.py",
+        "sha256": "5c55f2727746e697f7edac9e17c377d8752e0da7ecca191531b3b80403d61dad",
+        "sizeBytes": 3394,
+        "wheelRecordVerified": true,
+        "installedBytesMatch": true
+      },
+      {
+        "path": "certifi/py.typed",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sizeBytes": 0,
+        "wheelRecordVerified": true,
+        "installedBytesMatch": true
+      },
+      {
+        "path": "certifi/tests/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sizeBytes": 0,
+        "wheelRecordVerified": true,
+        "installedBytesMatch": true
+      },
+      {
+        "path": "certifi/tests/test_certify.py",
+        "sha256": "7c179d1edf37f7e912b133663735fb46c6338d5d0e5f8915d11c3bc287d227b8",
+        "sizeBytes": 467,
+        "wheelRecordVerified": true,
+        "installedBytesMatch": true
+      },
+      {
+        "path": "certifi-2026.7.22.dist-info/licenses/LICENSE",
+        "sha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7",
+        "sizeBytes": 989,
+        "wheelRecordVerified": true,
+        "installedBytesMatch": true
+      },
+      {
+        "path": "certifi-2026.7.22.dist-info/METADATA",
+        "sha256": "ef5af1638fbb23676ac3c5777dfcfc2cd9c348fe4172ed5ba3d277655b248090",
+        "sizeBytes": 2474,
+        "wheelRecordVerified": true,
+        "installedBytesMatch": true
+      },
+      {
+        "path": "certifi-2026.7.22.dist-info/WHEEL",
+        "sha256": "2b6eb4118ce7cd7b09601406aa623c553c4476265836f0d9c16f5c061f7efcc0",
+        "sizeBytes": 91,
+        "wheelRecordVerified": true,
+        "installedBytesMatch": true
+      },
+      {
+        "path": "certifi-2026.7.22.dist-info/top_level.txt",
+        "sha256": "28cbb8bd409fb232eb90f6d235d81d7a44bea552730402453bffe723c345ebe5",
+        "sizeBytes": 8,
+        "wheelRecordVerified": true,
+        "installedBytesMatch": true
+      }
+    ],
+    "frozenDataMatches": [
+      "certifi/cacert.pem",
+      "certifi/py.typed"
+    ],
+    "frozenModuleChecks": [
+      {
+        "module": "certifi",
+        "presentInPyz": true,
+        "compiledSourceCodeObjectMatches": true,
+        "sourceSha256": "7a52e5f4205f9b3d12a31898ceaa7e3f6837d19cc230700bcae1a9d91d1486c1"
+      },
+      {
+        "module": "certifi.core",
+        "presentInPyz": true,
+        "compiledSourceCodeObjectMatches": true,
+        "sourceSha256": "5c55f2727746e697f7edac9e17c377d8752e0da7ecca191531b3b80403d61dad"
+      },
+      {
+        "module": "certifi.__main__",
+        "presentInPyz": false
+      }
+    ],
+    "normalizedLicenseSha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7",
+    "licenseMatchesCollectedNotice": true,
+    "retainedArchive": "certifi-2026.7.22-py3-none-any.whl",
+    "unresolved": [
+      "Local wheel RECORD is an internal consistency check, not an authenticated upstream acquisition hash.",
+      "No corresponding sdist/upstream revision or certificate-store generation inputs were verified.",
+      "Code-object comparison uses this local Python compiler with optimize=0; it is not a historical build attestation.",
+      "Recipient source-delivery location, completeness and license disposition remain pending."
+    ]
+  },
+  "reviewDisposition": {
+    "closedEvidenceGaps": [
+      "Exact selected installer engine and notice payloads match the prior inventory receipts.",
+      "Exact installer desktop payload hash/size recorded; candidate build-output mismatch exposed.",
+      "Five enumerated NSIS plugin DLLs match local cache files; no license inference.",
+      "Recorded PyInstaller bootloader matches local wheel RECORD; per-section comparison retained.",
+      "Certifi exact-version cached wheel retained: 11 non-RECORD entries verified against RECORD and installed files, two frozen data entries match, two frozen modules match compiled wheel sources."
+    ],
+    "remaining": [
+      "Historical runtime/vendor source archives, patches, compile/link recipes and original acquisition evidence.",
+      "Full NSIS command inventory and generated uninstaller; archive reader reports BadCmd=13.",
+      "Desktop historical counterpart and statically linked component/source attribution.",
+      "Installer stub/plugin and bootloader upstream build records, notice applicability and disposition.",
+      "Certifi upstream authentication, corresponding sdist/revision and certificate-data generation inputs.",
+      "Cargo shipped/build-only dispositions and recipient source location/delivery.",
+      "Installed behavior, signing, WebView acquisition and other release gates."
+    ]
+  }
+}
