@@ -1,0 +1,2998 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-27",
+  "releaseApproved": false,
+  "inventorySha256": "9e2a2ad28217f67b6519997414c18afc0e497d9c0b0e0d0e7c617b227eb6510b",
+  "engineSha256": "b5a0a70546f0faa17746f5f71ae098e79bf23e534aac1e1a80364c9bafecf25a",
+  "analysisSha256": "b4cc6fb82049e759bd150c0ea6d66b575f88671b3e2c09f3e234ebc4b0134574",
+  "rows": [
+    {
+      "name": "VCRUNTIME140.dll",
+      "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066",
+      "sizeBytes": 124544,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/VCRUNTIME140.dll",
+      "archiveDestination": "VCRUNTIME140.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "Microsoft\u00ae C Runtime Library",
+        "FileVersion": "14.44.35211.0",
+        "InternalName": "vcruntime140.dll",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "vcruntime140.dll",
+        "ProductName": "Microsoft\u00ae Visual Studio\u00ae",
+        "ProductVersion": "14.44.35211.0"
+      },
+      "imports": [
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-python",
+      "unresolved": [
+        "R6"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 4,
+        "exactMatches": [
+          {
+            "root": "vc-redist",
+            "path": "14.44.35112/x64/Microsoft.VC143.CRT/vcruntime140.dll",
+            "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066",
+            "matches": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "VCRUNTIME140_1.dll",
+      "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f",
+      "sizeBytes": 49792,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/VCRUNTIME140_1.dll",
+      "archiveDestination": "VCRUNTIME140_1.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "Microsoft\u00ae C Runtime Library",
+        "FileVersion": "14.44.35211.0",
+        "InternalName": "vcruntime140_1.dll",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "vcruntime140_1.dll",
+        "ProductName": "Microsoft\u00ae Visual Studio\u00ae",
+        "ProductVersion": "14.44.35211.0"
+      },
+      "imports": [
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "VCRUNTIME140.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-python",
+      "unresolved": [
+        "R6"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 2,
+        "exactMatches": [
+          {
+            "root": "vc-redist",
+            "path": "14.44.35112/x64/Microsoft.VC143.CRT/vcruntime140_1.dll",
+            "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f",
+            "matches": true
+          }
+        ]
+      }
+    },
+    {
+      "name": "_asyncio.pyd",
+      "sha256": "caf82004ed48ae675dfb6c33c671d4063c9c5881967e8d585ecd83d860b07284",
+      "sizeBytes": 75056,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_asyncio.pyd",
+      "archiveDestination": "_asyncio.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "6f432946d14e23d6e2e008947b37301f6ce3c6b2adbfec89038474c03ac7ff68",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_asyncio.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_bz2.pyd",
+      "sha256": "19c941a8aa0e00bb9d0bbc68a22d648a8cbf0cc3b69e5e6168d65e2cb3e8dabe",
+      "sizeBytes": 88880,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_bz2.pyd",
+      "archiveDestination": "_bz2.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "b958e1b9fb471a8e628c42c7f3599ea920d92bef0a76bb20056df9db5a42271a",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_bz2.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [
+        "Embedded string: 1.0.8, 13-Jul-2019; nearby libbzip2 diagnostics. Candidate bzip2 version, not source/build proof."
+      ],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_ctypes.pyd",
+      "sha256": "822593944564ef4445bba3b472b64161dfa2444c1dc38ff21d576bdf9669bb72",
+      "sizeBytes": 131888,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_ctypes.pyd",
+      "archiveDestination": "_ctypes.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "703904b5fb4f3a17d17244df016cbb71949acc52349170dd61fc227ba06429fe",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_ctypes.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "libffi-8.dll",
+        "ole32.dll",
+        "OLEAUT32.dll",
+        "KERNEL32.dll",
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_decimal.pyd",
+      "sha256": "2e925b30ab7afc9773142723d0a16c759685095dc2bcce240684c02b486a1238",
+      "sizeBytes": 263984,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_decimal.pyd",
+      "archiveDestination": "_decimal.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "f7440b5e6b51c41dbf84a87d481e7fd5985fb993f90e998165b8afd8d58ded9d",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_decimal.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [
+        "Embedded string: 2.5.1; __libmpdec_version__ and libmpdec source-path suffixes. Candidate mpdecimal version, not source/build proof."
+      ],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_elementtree.pyd",
+      "sha256": "d25ea03d62f629a1c00bf065dabd1527cbe54e11f103466b96e9a0b837cd5a36",
+      "sizeBytes": 137520,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_elementtree.pyd",
+      "archiveDestination": "_elementtree.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "40b5f0443c5baf06b0321ee5958624e64f4d9c84eedadcc050ff72b639fda1f5",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_elementtree.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "KERNEL32.dll",
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_hashlib.pyd",
+      "sha256": "b608e1c62327920be215e001efffa60391d6d0450f84a600c9bae32554c5ec2d",
+      "sizeBytes": 70448,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_hashlib.pyd",
+      "archiveDestination": "_hashlib.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "2ce541e9af628cf41eec182a038da61df2c63fc4cd6a072d7e2fc48c42ebb910",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_hashlib.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "libcrypto-3-x64.dll",
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_lzma.pyd",
+      "sha256": "e8ab87fdee43cf54f6af142b8b28ff06163128602a9923d6429409c34a16f406",
+      "sizeBytes": 168240,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_lzma.pyd",
+      "archiveDestination": "_lzma.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "b2c78fff625722409d5bb902308bbb0548b2c379672eb73eade9a60d655f5d2a",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_lzma.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [
+        "No exact vendor version established by the bounded string/import inspection."
+      ],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_multiprocessing.pyd",
+      "sha256": "9fe8f45190a6d5d7a82f87ebed91f9a080bef5c4ffb59381bb28cf2b949a5098",
+      "sizeBytes": 39728,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_multiprocessing.pyd",
+      "archiveDestination": "_multiprocessing.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "983571c7483aee8c96476510af34789e0fa2c741649d693d46e5452eab258df1",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_multiprocessing.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "WS2_32.dll",
+        "KERNEL32.dll",
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_overlapped.pyd",
+      "sha256": "b1c2d219c113a4e1dff9606680954d02626d65e2df5e33312cd39435db342de9",
+      "sizeBytes": 59696,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_overlapped.pyd",
+      "archiveDestination": "_overlapped.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "02dfdd516bcaca1ae893f5bb1cef3935aad1343618922ce641d2d19d6aceed9b",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_overlapped.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "WS2_32.dll",
+        "KERNEL32.dll",
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_queue.pyd",
+      "sha256": "b984206ad508450c3422e3701f71041d411d34ed1b806380fc0ad9c2323a5fb8",
+      "sizeBytes": 36144,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_queue.pyd",
+      "archiveDestination": "_queue.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "429bb6af694d6eaa66a70c9e9c7b01bd80f8a7445d0ba1835821146f8626e7e0",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_queue.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_socket.pyd",
+      "sha256": "40077141f02345aa0b5e7508571cf003706b585f5a93f49dc43a166d6e5a005e",
+      "sizeBytes": 87344,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_socket.pyd",
+      "archiveDestination": "_socket.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "e35983195cb32edc42ebdda2345dbe21b673e13bd8e23d0b24a90267a94302b2",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_socket.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "WS2_32.dll",
+        "IPHLPAPI.DLL",
+        "RPCRT4.dll",
+        "KERNEL32.dll",
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_sqlite3.pyd",
+      "sha256": "84853d3b85657911d672a19b55882372729a26839c5128617a19c98482b616f2",
+      "sizeBytes": 127792,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_sqlite3.pyd",
+      "archiveDestination": "_sqlite3.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "d8d9e31f07c74bc8bed1b6bbb3124afccb29cfafe7e9f67a4392f4cf9d22afdb",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_sqlite3.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "python312.dll",
+        "sqlite3.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_ssl.pyd",
+      "sha256": "d90ddeb464778f3e6bc6d709929602093caadc17c92f7215cf38d755188097a7",
+      "sizeBytes": 180528,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_ssl.pyd",
+      "archiveDestination": "_ssl.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "37a2b51185b3be51a2d721bb3966d033d817570bb1b5a9a0a2d02ceb7a9e1ef3",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_ssl.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "WS2_32.dll",
+        "CRYPT32.dll",
+        "libcrypto-3-x64.dll",
+        "libssl-3-x64.dll",
+        "KERNEL32.dll",
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_uuid.pyd",
+      "sha256": "0b22aa5b202c3927814d800b85c1268cac0692a98e0f5c0ff5ed9e40b5a23b21",
+      "sizeBytes": 29488,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_uuid.pyd",
+      "archiveDestination": "_uuid.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "877676697288ee538d372e6d3627abb8fe53b84f916b2ab809752f7d5e8d8115",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_uuid.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "RPCRT4.dll",
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_wmi.pyd",
+      "sha256": "d0c1b32a56214297594bbc975910e4f22b28317445a202b8288217c1371c72a4",
+      "sizeBytes": 41264,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_wmi.pyd",
+      "archiveDestination": "_wmi.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "3ef8b1e1947596289e4f6727a5f04cdc119c87c91ba09cf9ae4da735102815dd",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_wmi.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "PROPSYS.dll",
+        "OLEAUT32.dll",
+        "KERNEL32.dll",
+        "python312.dll",
+        "VCRUNTIME140_1.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll"
+      ],
+      "delayImports": [
+        "ole32.dll"
+      ],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "_zoneinfo.pyd",
+      "sha256": "62b4a1ba8aa6da6b5d0150fdfb92e6e982115aeb035d6aa17b6b31d3dd7c595a",
+      "sizeBytes": 52016,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/_zoneinfo.pyd",
+      "archiveDestination": "_zoneinfo.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "4563f050e1ebd6f37ee2112eb1a2d7e54ee675715e90a338f407b4ba38ea5e98",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "_zoneinfo.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-console-l1-1-0.dll",
+      "sha256": "015bd08815c7b934a8952c3a7578e9ce59f21136e8a880d42bbd414bec2c6058",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-console-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-console-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "015bd08815c7b934a8952c3a7578e9ce59f21136e8a880d42bbd414bec2c6058",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-datetime-l1-1-0.dll",
+      "sha256": "5534812cdbdae94ba45cb216e5eb9af686b853948df54365103555abbbaf9d9a",
+      "sizeBytes": 22896,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-datetime-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-datetime-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "5534812cdbdae94ba45cb216e5eb9af686b853948df54365103555abbbaf9d9a",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-debug-l1-1-0.dll",
+      "sha256": "837d2b1b2cd03e03fc6ccb050698b6b5763af17c201304872342a5eae9e0a2d2",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-debug-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-debug-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "837d2b1b2cd03e03fc6ccb050698b6b5763af17c201304872342a5eae9e0a2d2",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-errorhandling-l1-1-0.dll",
+      "sha256": "de43b165f568c276c00e95acd454e3092f352a18e95874595f4f4658c06d2ec7",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-errorhandling-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-errorhandling-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "de43b165f568c276c00e95acd454e3092f352a18e95874595f4f4658c06d2ec7",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-fibers-l1-1-0.dll",
+      "sha256": "3cebc45bf479ad74cfabf2c6bfd4994d7ad639ed1221025981d19cedf9ce0416",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-fibers-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-fibers-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "3cebc45bf479ad74cfabf2c6bfd4994d7ad639ed1221025981d19cedf9ce0416",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 2,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-fibers-l1-1-1.dll",
+      "sha256": "5ef70308bcca628ce6b0e2856b15b1c7ae340c3f9bbbc4c1071d8c191a34a5c3",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-fibers-l1-1-1.dll",
+      "archiveDestination": "api-ms-win-core-fibers-l1-1-1.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "5ef70308bcca628ce6b0e2856b15b1c7ae340c3f9bbbc4c1071d8c191a34a5c3",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 2,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-file-l1-1-0.dll",
+      "sha256": "250ac829f2617bcac1c6e5b8c4f630462e20765863ba573526a3e11bbfb94a9a",
+      "sizeBytes": 27008,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-file-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-file-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "250ac829f2617bcac1c6e5b8c4f630462e20765863ba573526a3e11bbfb94a9a",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-file-l1-2-0.dll",
+      "sha256": "ae14079a114733f60ce87b92cba42acd8083c2cd67594e53bc37dc0b97a4b465",
+      "sizeBytes": 22888,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-file-l1-2-0.dll",
+      "archiveDestination": "api-ms-win-core-file-l1-2-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "ae14079a114733f60ce87b92cba42acd8083c2cd67594e53bc37dc0b97a4b465",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-file-l2-1-0.dll",
+      "sha256": "914bf26a298713119477ea0a8e7bd43171b91344ebe24fb47ad77c49686e3d87",
+      "sizeBytes": 22912,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-file-l2-1-0.dll",
+      "archiveDestination": "api-ms-win-core-file-l2-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "914bf26a298713119477ea0a8e7bd43171b91344ebe24fb47ad77c49686e3d87",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-handle-l1-1-0.dll",
+      "sha256": "ab5489955e371b15f77906c08ec3c7affe2c7a46a08c514ca628768b4478974b",
+      "sizeBytes": 22896,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-handle-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-handle-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "ab5489955e371b15f77906c08ec3c7affe2c7a46a08c514ca628768b4478974b",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-heap-l1-1-0.dll",
+      "sha256": "c70f9644d8377fa39c5b71f2e9734c1400d7598904fdeb772e8502099982dcb7",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-heap-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-heap-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "c70f9644d8377fa39c5b71f2e9734c1400d7598904fdeb772e8502099982dcb7",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-interlocked-l1-1-0.dll",
+      "sha256": "f8129710188e407bb0e6f46d30aeba277d67b947ece5fe09e883fde2323f3ae6",
+      "sizeBytes": 22888,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-interlocked-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-interlocked-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "f8129710188e407bb0e6f46d30aeba277d67b947ece5fe09e883fde2323f3ae6",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+      "sha256": "5200b16cb2ddc61cfc07373a9a84aa85a3ab50806ca96c879c883275832944c1",
+      "sizeBytes": 22888,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+      "archiveDestination": "api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "5200b16cb2ddc61cfc07373a9a84aa85a3ab50806ca96c879c883275832944c1",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 2,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-libraryloader-l1-1-0.dll",
+      "sha256": "48786fb88b001dcd1f63acea903d3ca9cc0b3060d5a325e3f2f3cbc3bfd53166",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-libraryloader-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-libraryloader-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "48786fb88b001dcd1f63acea903d3ca9cc0b3060d5a325e3f2f3cbc3bfd53166",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-localization-l1-2-0.dll",
+      "sha256": "9ec3898f7eba91faa28b51616c211a2689e3a13aeef8de6e13cb674e49d689eb",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-localization-l1-2-0.dll",
+      "archiveDestination": "api-ms-win-core-localization-l1-2-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "9ec3898f7eba91faa28b51616c211a2689e3a13aeef8de6e13cb674e49d689eb",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-memory-l1-1-0.dll",
+      "sha256": "3a6cbc524c99e1cd80d5368f5601402a37ad602528b1ab628093573ef638eb3b",
+      "sizeBytes": 22896,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-memory-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-memory-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "3a6cbc524c99e1cd80d5368f5601402a37ad602528b1ab628093573ef638eb3b",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-namedpipe-l1-1-0.dll",
+      "sha256": "97145ef89c44949fcf0f04ac834a8bc7d687ef49ee73ae9fc32f3c11136b7201",
+      "sizeBytes": 22888,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-namedpipe-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-namedpipe-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "97145ef89c44949fcf0f04ac834a8bc7d687ef49ee73ae9fc32f3c11136b7201",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-processenvironment-l1-1-0.dll",
+      "sha256": "8bc7c10b1851aea644e9c9f381cdb935e091fee6b0be3d3aedc6fffaac96adb7",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-processenvironment-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-processenvironment-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "8bc7c10b1851aea644e9c9f381cdb935e091fee6b0be3d3aedc6fffaac96adb7",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-processthreads-l1-1-0.dll",
+      "sha256": "d8030b777617c71f0f94564607699dbf7561487d779db9756aed378c5675213f",
+      "sizeBytes": 22912,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-processthreads-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-processthreads-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "d8030b777617c71f0f94564607699dbf7561487d779db9756aed378c5675213f",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-processthreads-l1-1-1.dll",
+      "sha256": "f5e676713340f73a03a3d41a6ec9883b431da7d16c7f07bd0a920fb80e6c0753",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-processthreads-l1-1-1.dll",
+      "archiveDestination": "api-ms-win-core-processthreads-l1-1-1.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "f5e676713340f73a03a3d41a6ec9883b431da7d16c7f07bd0a920fb80e6c0753",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-profile-l1-1-0.dll",
+      "sha256": "f023d47e44d3eea6b0743580f57e8c6ba81e79d5ebfa7da26250076c647b980e",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-profile-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-profile-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "f023d47e44d3eea6b0743580f57e8c6ba81e79d5ebfa7da26250076c647b980e",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "sha256": "9746d8930704153578a628c010638a5f818ffe5a927e25591b108e256dc6afca",
+      "sizeBytes": 22888,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-rtlsupport-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "9746d8930704153578a628c010638a5f818ffe5a927e25591b108e256dc6afca",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-string-l1-1-0.dll",
+      "sha256": "7c53ae24c982d16ffd1bf7f918d115b11b7f30e57bc7feaa18cb9781e4abb926",
+      "sizeBytes": 22896,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-string-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-string-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "7c53ae24c982d16ffd1bf7f918d115b11b7f30e57bc7feaa18cb9781e4abb926",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-synch-l1-1-0.dll",
+      "sha256": "56d9d62ca5dba79a6581b8d574a7d8b2a64a5ecb71e47dcf06ed0285708b1859",
+      "sizeBytes": 22896,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-synch-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-synch-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "56d9d62ca5dba79a6581b8d574a7d8b2a64a5ecb71e47dcf06ed0285708b1859",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-synch-l1-2-0.dll",
+      "sha256": "f6482bbec5612c39ecb4822787a333f2b7570f7a5f922a4059be41ba957bb372",
+      "sizeBytes": 22888,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-synch-l1-2-0.dll",
+      "archiveDestination": "api-ms-win-core-synch-l1-2-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "f6482bbec5612c39ecb4822787a333f2b7570f7a5f922a4059be41ba957bb372",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-sysinfo-l1-1-0.dll",
+      "sha256": "272d02765fdd3582618236c2d309abba069642f9bc1062ede069d0c144e17007",
+      "sizeBytes": 22896,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-sysinfo-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-sysinfo-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "272d02765fdd3582618236c2d309abba069642f9bc1062ede069d0c144e17007",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-sysinfo-l1-2-0.dll",
+      "sha256": "8a0900788859d0eb51c2f48f50cc6ed376a120b518100fa20e11d7702ccde260",
+      "sizeBytes": 22912,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-sysinfo-l1-2-0.dll",
+      "archiveDestination": "api-ms-win-core-sysinfo-l1-2-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "8a0900788859d0eb51c2f48f50cc6ed376a120b518100fa20e11d7702ccde260",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 2,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-timezone-l1-1-0.dll",
+      "sha256": "ff35de6c03812b332e140f17dade25c5dd4775156da9eeb1eaae3fddd27236ec",
+      "sizeBytes": 22896,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-timezone-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-timezone-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "ff35de6c03812b332e140f17dade25c5dd4775156da9eeb1eaae3fddd27236ec",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-core-util-l1-1-0.dll",
+      "sha256": "191ef3e98641a57296f19d572d8eb62489470ff1ef6030d136af170c2f835173",
+      "sizeBytes": 22896,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-core-util-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-core-util-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "191ef3e98641a57296f19d572d8eb62489470ff1ef6030d136af170c2f835173",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-conio-l1-1-0.dll",
+      "sha256": "54ee5ec719a051496ff60aa00dbeaa94b9a7d2cdac27fe9b7317f1a666b6a2aa",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-conio-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-conio-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "54ee5ec719a051496ff60aa00dbeaa94b9a7d2cdac27fe9b7317f1a666b6a2aa",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-convert-l1-1-0.dll",
+      "sha256": "8b94662429171019fcd63c70bbf2095a075170599704a5e7dcdbe3da13f3a429",
+      "sizeBytes": 26992,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-convert-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-convert-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "8b94662429171019fcd63c70bbf2095a075170599704a5e7dcdbe3da13f3a429",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-environment-l1-1-0.dll",
+      "sha256": "39e5929593709e8af3bc9e0a75ec1155778d6f4a247f4cdfc58928ad6db88434",
+      "sizeBytes": 22912,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-environment-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-environment-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "39e5929593709e8af3bc9e0a75ec1155778d6f4a247f4cdfc58928ad6db88434",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "sha256": "5a8ecebac32edf4e1f3c5c6c1c8ea1a1add6cda4f9c9cb26f752fb295bea6865",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-filesystem-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-filesystem-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "5a8ecebac32edf4e1f3c5c6c1c8ea1a1add6cda4f9c9cb26f752fb295bea6865",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-heap-l1-1-0.dll",
+      "sha256": "c71080cbcb43bf1f8f3e391deb12a582eb0abefc80946f340675a2c616e4feb4",
+      "sizeBytes": 22872,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-heap-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-heap-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "c71080cbcb43bf1f8f3e391deb12a582eb0abefc80946f340675a2c616e4feb4",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-locale-l1-1-0.dll",
+      "sha256": "6c68648e524187e03c4ad9aaa4a99113c6ee9f29fb39cc0ed93f951975138e63",
+      "sizeBytes": 22896,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-locale-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-locale-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "6c68648e524187e03c4ad9aaa4a99113c6ee9f29fb39cc0ed93f951975138e63",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-math-l1-1-0.dll",
+      "sha256": "d4fbcccbe29371cbce431e43b2eb4f7ba9a6f04a3d740a071f02457a505e9dc8",
+      "sizeBytes": 31064,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-math-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-math-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "d4fbcccbe29371cbce431e43b2eb4f7ba9a6f04a3d740a071f02457a505e9dc8",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-process-l1-1-0.dll",
+      "sha256": "47c1935942e3ac0812e4dcf18c0e265e565f0194a3349111c299712f5565f7ac",
+      "sizeBytes": 22896,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-process-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-process-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "47c1935942e3ac0812e4dcf18c0e265e565f0194a3349111c299712f5565f7ac",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-runtime-l1-1-0.dll",
+      "sha256": "72adc1b3677e0814d9c4ebf0964000e84bb2acf67336c8963061665e44f78029",
+      "sizeBytes": 26968,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-runtime-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-runtime-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "72adc1b3677e0814d9c4ebf0964000e84bb2acf67336c8963061665e44f78029",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-stdio-l1-1-0.dll",
+      "sha256": "900afc3989673c9bb1a687ed38c192f46db9e6ba6d11a668898a539e7fc23798",
+      "sizeBytes": 26968,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-stdio-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-stdio-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "900afc3989673c9bb1a687ed38c192f46db9e6ba6d11a668898a539e7fc23798",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-string-l1-1-0.dll",
+      "sha256": "fcf12466cc12fd3b73611fc0763a5a1f9d44e90349513c34a0c83b0f36421793",
+      "sizeBytes": 26968,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-string-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-string-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "fcf12466cc12fd3b73611fc0763a5a1f9d44e90349513c34a0c83b0f36421793",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-time-l1-1-0.dll",
+      "sha256": "886e57c4a6adb299b38f02945369f590a67da4e79a798359fc60aaa067212d7c",
+      "sizeBytes": 22912,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-time-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-time-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "886e57c4a6adb299b38f02945369f590a67da4e79a798359fc60aaa067212d7c",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "api-ms-win-crt-utility-l1-1-0.dll",
+      "sha256": "5f8f26b216ade615b67a41f6fbbb910972fc6153315a65bb8f09912be50215b1",
+      "sizeBytes": 22912,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/api-ms-win-crt-utility-l1-1-0.dll",
+      "archiveDestination": "api-ms-win-crt-utility-l1-1-0.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "5f8f26b216ade615b67a41f6fbbb910972fc6153315a65bb8f09912be50215b1",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "ApiSet Stub DLL",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "apisetstub",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "apisetstub",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 5,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "libcrypto-3-x64.dll",
+      "sha256": "6d57354b0baffbc77a32e43e276d716ac5c233812f22c35c5ba0aa73da0b3d81",
+      "sizeBytes": 8003376,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/libcrypto-3-x64.dll",
+      "archiveDestination": "libcrypto-3-x64.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "d3a631ba96ad212b64cb6e5635bace1f11567ae2c89ee60f2759c0505a98f3c1",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "The OpenSSL Project, https://www.openssl.org/",
+        "FileDescription": "OpenSSL library",
+        "FileVersion": "3.5.8",
+        "InternalName": "libcrypto",
+        "OriginalFilename": "libcrypto",
+        "ProductName": "The OpenSSL Toolkit",
+        "ProductVersion": "3.5.8",
+        "LegalCopyright": "Copyright 1998-2026 The OpenSSL Authors. All rights reserved."
+      },
+      "imports": [
+        "WS2_32.dll",
+        "ADVAPI32.dll",
+        "CRYPT32.dll",
+        "USER32.dll",
+        "KERNEL32.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [
+        "Embedded string: OpenSSL 3.5.8 25 Aug 2026"
+      ],
+      "provenanceGroup": "openssl-via-python",
+      "unresolved": [
+        "R1",
+        "R3",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "libffi-8.dll",
+      "sha256": "d411e632456012c0e104d29e54576fd3b7403ba77ca45eafb334fd1af5c63e35",
+      "sizeBytes": 43824,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/libffi-8.dll",
+      "archiveDestination": "libffi-8.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "5115b853a4d789b8b9c9650c2ce678b71ac5c7504249baa52e64759e5dd5f0ee",
+      "currentInputMatches": false,
+      "peVersion": {},
+      "imports": [
+        "KERNEL32.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [
+        "Embedded PDB path has libffi/x86_64-w64-cygwin/.libs/libffi-8.pdb suffix; no exact source version established."
+      ],
+      "provenanceGroup": "libffi-via-python",
+      "unresolved": [
+        "R1",
+        "R5",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "libssl-3-x64.dll",
+      "sha256": "289df55481d0ed65cbcedb9c2d1971071613dae868cedc1e1846d2ad1cc38599",
+      "sizeBytes": 1599280,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/libssl-3-x64.dll",
+      "archiveDestination": "libssl-3-x64.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "8f23a60b874e9a8bbe01c69b366a789afa2eec16d034850baed7847a5dd4cbed",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "The OpenSSL Project, https://www.openssl.org/",
+        "FileDescription": "OpenSSL library",
+        "FileVersion": "3.5.8",
+        "InternalName": "libssl",
+        "OriginalFilename": "libssl",
+        "ProductName": "The OpenSSL Toolkit",
+        "ProductVersion": "3.5.8",
+        "LegalCopyright": "Copyright 1998-2026 The OpenSSL Authors. All rights reserved."
+      },
+      "imports": [
+        "libcrypto-3-x64.dll",
+        "WS2_32.dll",
+        "KERNEL32.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "openssl-via-python",
+      "unresolved": [
+        "R1",
+        "R3",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "pyexpat.pyd",
+      "sha256": "47d9b28405e90a51aaf0658dc974d370af5706eb97b15fed82110251212d863a",
+      "sizeBytes": 226096,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/pyexpat.pyd",
+      "archiveDestination": "pyexpat.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "9b972f13e8fbc3e3dd1f068db8c83ff2ee744b0b636942a4a02eab1a160fe8f6",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "pyexpat.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "KERNEL32.dll",
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [
+        "Embedded string: expat_2.8.3. Candidate Expat version, not source/build proof."
+      ],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "python312.dll",
+      "sha256": "c250cec687f173b2497d5c96f55ff36cb07a6c0ab9f2d6c7fbc969e9afeaed26",
+      "sizeBytes": 6985520,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/python312.dll",
+      "archiveDestination": "python312.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "58afcb600bce8fbebec58970e83fc0b3e160cdb257ef90c900bd97a169f61645",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "python312.dll",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "VERSION.dll",
+        "WS2_32.dll",
+        "api-ms-win-core-path-l1-1-0.dll",
+        "bcrypt.dll",
+        "ADVAPI32.dll",
+        "KERNEL32.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-environment-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-locale-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-convert-l1-1-0.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-process-l1-1-0.dll",
+        "api-ms-win-crt-conio-l1-1-0.dll",
+        "api-ms-win-crt-filesystem-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [
+        "Embedded strings: 1.3.2 (twice). Candidate zlib version only; source/build binding unresolved."
+      ],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "select.pyd",
+      "sha256": "bee7d7bb5292303e31121a6c36e3a4594635b6028e6d4701e025bc972886614d",
+      "sizeBytes": 34608,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/select.pyd",
+      "archiveDestination": "select.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "92d79f72d1fe9548c0c2d7b04c22a846a7d53cb3e5711a3f7f883a9d924602d2",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "select.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "WS2_32.dll",
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "sqlite3.dll",
+      "sha256": "3b2bebac21139171ca934da712db55fddb1ff7e19b472e42c19ab1fe629dbf0d",
+      "sizeBytes": 1623336,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/sqlite3.dll",
+      "archiveDestination": "sqlite3.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "325f552a406006fe62273c6e5c15dabc76ec61f77d160e81b2a888f7b3325e11",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "SQLite3",
+        "FileDescription": "SQLite3",
+        "FileVersion": "3.53.1.0",
+        "InternalName": "SQLite3 DLL",
+        "LegalCopyright": "Unspecified",
+        "OriginalFilename": "sqlite3.dll",
+        "ProductName": "SQLite3",
+        "ProductVersion": "3.53.1.0"
+      },
+      "imports": [
+        "KERNEL32.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-math-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "api-ms-win-crt-time-l1-1-0.dll",
+        "api-ms-win-crt-heap-l1-1-0.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-utility-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [
+        "Embedded source-id: 2026-05-05 10:34:17 c88b22011a54b4f6fbd149e9f8e4de77658ce58143a1af0e3785e4e6475127e9"
+      ],
+      "provenanceGroup": "sqlite-via-python",
+      "unresolved": [
+        "R1",
+        "R4",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "ucrtbase.dll",
+      "sha256": "3239227d27667ba20d10a880751924e5719de0078f9fce232d149d383f7681f6",
+      "sizeBytes": 1362264,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/native/libheif/libheif/bin/ucrtbase.dll",
+      "archiveDestination": "ucrtbase.dll",
+      "analysisKind": "BINARY",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "3239227d27667ba20d10a880751924e5719de0078f9fce232d149d383f7681f6",
+      "currentInputMatches": true,
+      "peVersion": {
+        "CompanyName": "Microsoft Corporation",
+        "FileDescription": "Microsoft\u00ae C Runtime Library",
+        "FileVersion": "10.0.26100.4654 (WinBuild.160101.0800)",
+        "InternalName": "ucrtbase.dll",
+        "LegalCopyright": "\u00a9 Microsoft Corporation. All rights reserved.",
+        "OriginalFilename": "ucrtbase.dll",
+        "ProductName": "Microsoft\u00ae Windows\u00ae Operating System",
+        "ProductVersion": "10.0.26100.4654"
+      },
+      "imports": [
+        "api-ms-win-core-errorhandling-l1-1-0.dll",
+        "api-ms-win-core-heap-l1-1-0.dll",
+        "api-ms-win-core-processthreads-l1-1-0.dll",
+        "api-ms-win-core-libraryloader-l1-1-0.dll",
+        "api-ms-win-core-sysinfo-l1-2-0.dll",
+        "api-ms-win-core-kernel32-legacy-l1-1-1.dll",
+        "api-ms-win-core-synch-l1-1-0.dll",
+        "api-ms-win-core-debug-l1-1-0.dll",
+        "api-ms-win-core-processenvironment-l1-1-0.dll",
+        "api-ms-win-core-file-l1-1-0.dll",
+        "api-ms-win-core-string-l1-1-0.dll",
+        "api-ms-win-core-memory-l1-1-0.dll",
+        "api-ms-win-core-fibers-l1-1-0.dll",
+        "api-ms-win-core-file-l1-2-0.dll",
+        "api-ms-win-core-localization-l1-2-0.dll",
+        "api-ms-win-core-fibers-l1-1-1.dll",
+        "api-ms-win-core-datetime-l1-1-0.dll",
+        "api-ms-win-core-sysinfo-l1-1-0.dll",
+        "api-ms-win-core-rtlsupport-l1-1-0.dll",
+        "api-ms-win-core-processthreads-l1-1-1.dll",
+        "api-ms-win-core-console-l1-1-0.dll",
+        "api-ms-win-core-handle-l1-1-0.dll",
+        "api-ms-win-core-namedpipe-l1-1-0.dll",
+        "api-ms-win-core-timezone-l1-1-0.dll",
+        "api-ms-win-core-file-l2-1-0.dll",
+        "api-ms-win-core-synch-l1-2-0.dll",
+        "api-ms-win-core-profile-l1-1-0.dll",
+        "api-ms-win-core-util-l1-1-0.dll",
+        "api-ms-win-core-interlocked-l1-1-0.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "microsoft-via-libheif",
+      "unresolved": [
+        "R6",
+        "R7"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 6,
+        "exactMatches": []
+      }
+    },
+    {
+      "name": "unicodedata.pyd",
+      "sha256": "3d78310619e7bb43bc6f45d9a2625da2f62795e4c0f1ba3978b2792c481de296",
+      "sizeBytes": 1143600,
+      "distribution": null,
+      "reviewStatus": "pending",
+      "recordedInput": "dependencies/python/DLLs/unicodedata.pyd",
+      "archiveDestination": "unicodedata.pyd",
+      "analysisKind": "EXTENSION",
+      "archiveIdentityVerified": true,
+      "currentInputSha256": "5d435389461a027806212effa095708c005fba6d233c57133dfec913555e210d",
+      "currentInputMatches": false,
+      "peVersion": {
+        "CompanyName": "Python Software Foundation",
+        "FileDescription": "Python Core",
+        "FileVersion": "3.12.14",
+        "InternalName": "Python DLL",
+        "LegalCopyright": "Copyright \u00a9 2001-2023 Python Software Foundation. Copyright \u00a9 2000 BeOpen.com. Copyright \u00a9 1995-2001 CNRI. Copyright \u00a9 1991-1995 SMC.",
+        "OriginalFilename": "unicodedata.pyd",
+        "ProductName": "Python",
+        "ProductVersion": "3.12.14"
+      },
+      "imports": [
+        "python312.dll",
+        "VCRUNTIME140.dll",
+        "api-ms-win-crt-string-l1-1-0.dll",
+        "api-ms-win-crt-stdio-l1-1-0.dll",
+        "api-ms-win-crt-runtime-l1-1-0.dll",
+        "KERNEL32.dll"
+      ],
+      "delayImports": [],
+      "vendorObservations": [],
+      "provenanceGroup": "cpython",
+      "unresolved": [
+        "R1",
+        "R2",
+        "R8"
+      ],
+      "licenseClearance": "unresolved",
+      "upstreamBuildProvenance": "unresolved",
+      "localRedistComparisons": {
+        "candidateCount": 0,
+        "exactMatches": []
+      }
+    }
+  ],
+  "scope": "Dated review supplement to the selected 23F inventory; not a new build inventory or license disposition. Paths use runtime-bundle-relative aliases, not machine paths.",
+  "sourceRevision": "2e88af0",
+  "sourceInventory": "work/notices/build-iQk8o4/inventory.json",
+  "analysis": "work/pyinstaller/jobscout-engine/Analysis-00.toc",
+  "engine": "apps/desktop/src-tauri/binaries/jobscout-engine-x86_64-pc-windows-msvc.exe",
+  "method": [
+    "Join inventory name/SHA-256/size to bytes read in memory from the hash-bound CArchiveReader sidecar; no binary execution.",
+    "Join archive destination to one Analysis-00.toc record; retain runtime-bundle-relative input and analysis kind. Historical input path is recorded evidence, not an upstream build attestation.",
+    "Read PE version resources and normal/delayed import tables using pefile. Metadata is self-description, not authenticated upstream provenance.",
+    "Compare current recorded input bytes separately; do not overwrite historical identity on mismatch.",
+    "Compare name-selected DLL candidates in installed VC and Windows SDK Redist roots by SHA-256; equality establishes bytes only."
+  ],
+  "evidenceDocuments": [
+    {
+      "id": "current-runtime-manifest",
+      "path": "runtime.json",
+      "sha256": "ee45312ed43304651273c140f994fabde8ac0b96543fc3d53c5b87579025bd57",
+      "scope": "Current local installation only; not a historical acquisition or build receipt."
+    },
+    {
+      "id": "current-libheif-manifest",
+      "path": "dependencies/native/libheif/manifest.json",
+      "sha256": "eb9e6ab42754eb3b3faa0c28ba1507b74793bcca58141ce618e233177ce9dd41",
+      "scope": "Current local installation only; not a historical acquisition or build receipt."
+    },
+    {
+      "id": "current-python-license",
+      "path": "dependencies/python/LICENSE.txt",
+      "sha256": "886a0ead2d89030ee62dbff52b04e47ab91998341295bb9c56fb952b4e081c7a",
+      "scope": "Current local installation only; not a historical acquisition or build receipt."
+    },
+    {
+      "id": "current-python-header",
+      "path": "dependencies/python/include/patchlevel.h",
+      "sha256": "66ff726e200a2eba15cfedee752bf6a59e20d6741a7c45f7a2c424dea649f473",
+      "scope": "Current local installation only; not a historical acquisition or build receipt."
+    }
+  ],
+  "currentRuntimeManifest": {
+    "artifactToolVersion": "2.8.106",
+    "bundleFormatVersion": 2,
+    "bundleVersion": "26.1025.11240",
+    "bundledPlugins": [
+      "plugins/openai-primary-runtime"
+    ],
+    "bundledSkills": [],
+    "libreOfficeVersion": null,
+    "nativeDependencies": [
+      "libheif",
+      "jxrlib",
+      "poppler",
+      "powershell",
+      "git"
+    ],
+    "nodeVersion": "24.22.1-cua.1",
+    "pnpmVersion": "11.25.0",
+    "pythonVersion": "3.12.14",
+    "skillsToRemove": [
+      "codex-primary-runtime/spreadsheets",
+      "codex-primary-runtime/slides",
+      "doc",
+      "docs",
+      "spreadsheet",
+      "slides"
+    ],
+    "targetArch": "x64",
+    "targetPlatform": "win32"
+  },
+  "currentLibheifManifest": {
+    "name": "libheif",
+    "version": "1.23.2",
+    "targetPlatform": "win32",
+    "targetArch": "x64",
+    "sourceUrl": "https://github.com/strukturag/libheif/releases/download/v1.23.2/libheif-1.23.2.tar.gz",
+    "sourceSha256": "8bd5d41d19dc84536d118b04774709f244df6104ef66d623dad5fa4650143405",
+    "packageSpecs": [
+      "libde265=1.1.1=h477610d_0",
+      "libjpeg-turbo=3.1.4.1=hfd05255_0",
+      "libpng=1.6.58=h7351971_0",
+      "zlib=1.3.2=hfd05255_2"
+    ]
+  },
+  "repositoryEvidence": [
+    {
+      "path": "scripts/python.mjs",
+      "sha256": "eb3e28afd3cb6bc38d5d96ee50814054d334cf73f27599e97233603c1759d52f"
+    },
+    {
+      "path": "scripts/build-engine.mjs",
+      "sha256": "6bce5b676c9db28c3be0f04174b603e663d8ad2de1849f06ba4cc748985adf78"
+    },
+    {
+      "path": "scripts/collect_notices.py",
+      "sha256": "1ee4e1de181b5eadcbc9a062837cdc326f562c11afc5d0587273aad2e478c25b"
+    },
+    {
+      "path": ".github/workflows/windows-ci.yml",
+      "sha256": "7f7bf35a4fca9e21152b7f6d6fed1784ae73502431d38cc21b63a8ab64ea858f"
+    },
+    {
+      "path": "docs/architecture/0044-preserve-python-ssl-runtime-data.md",
+      "sha256": "8f9be2a556759578ac9b8003341ded74bf625d729755e2195ca9f36a8022388e"
+    }
+  ],
+  "unresolvedItems": {
+    "R1": "Exact historical runtime acquisition artifact/checksum, builder identity, source revisions, patches, compiler/linker flags and vendor build manifests are absent from the evidence inspected. Current bundle metadata is not retroactive proof.",
+    "R2": "Exact nested/static source versions, modifications, build/link records and applicable notice texts must be reconciled; strings and absence of a vendor DLL import are clues, not exhaustive static attribution.",
+    "R3": "Exact OpenSSL source/revision, patch set and build recipe plus applicable notice text remain unbound to these two DLL hashes.",
+    "R4": "SQLite embedded source-id and PE version still need corresponding source, patch/build record and notice/disposition evidence.",
+    "R5": "libffi source version/revision, patch/build record and applicable notice are unknown; ABI filename and build-path hints do not resolve them.",
+    "R6": "Microsoft original redistributable/SDK acquisition and exact-file redistribution basis remain unverified. Local redistributable byte matches and PE CompanyName do not grant clearance.",
+    "R7": "Current libheif manifest describes libheif source and four dependency specs, but does not enumerate or establish origin/rights for the 43 collected Microsoft DLLs.",
+    "R8": "Twenty-four recorded Python/vendor inputs no longer match disk. Preserve selected archive identities; new packaging requires fresh collection and archive verification. Historical runtime source tree cannot be substituted with the current one.",
+    "R9": "Final NSIS extraction/mapping, desktop static linkage, bootloader, WebView disposition, recipient source delivery and release approval are outside this 69-binary supplement."
+  },
+  "counts": {
+    "reviewedIdentities": 69,
+    "archiveMatches": 69,
+    "currentInputMatches": 45,
+    "changedCurrentInputs": 24,
+    "localRedistributableMatchedIdentities": 2,
+    "licenseCleared": 0
+  },
+  "redistributableSearch": {
+    "roots": [
+      "VC/Redist/MSVC",
+      "Windows Kits/10/Redist"
+    ],
+    "candidateCounts": {
+      "vc-redist": 6,
+      "windows-sdk-redist": 204
+    },
+    "scope": "Recursive DLL filename candidates only, read without execution. No matches for the 43 Microsoft identities supplied via libheif. Does not prove absence from other packages or locations."
+  },
+  "pkgTocSha256": "3e6ba1d449000f86088dbdb575dca2c1237c1f29a243176d333ae9df0ed8eef1",
+  "pkgRecordedInputsMatchAnalysis": true,
+  "pythonNoticeComparison": {
+    "normalization": "collect_notices.read_notice: UTF-8 BOM removal and CRLF to LF",
+    "currentNormalizedSha256": "160a384f3520ae891b3197f14ff8b1db1d6a1270873424383045dc025a083908",
+    "selectedInventoryNoticeSha256": "160a384f3520ae891b3197f14ff8b1db1d6a1270873424383045dc025a083908",
+    "matches": true,
+    "scope": "Notice text identity only; not a source/build or full vendor coverage attestation."
+  }
+}

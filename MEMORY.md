@@ -1,6 +1,16 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-25 (23F offline covered-source preparation). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-10-27 (23F local native provenance review). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — 23F local native provenance review
+
+Reviewed the 69 unknown-owner identities from the covered-source checkpoint inventory against its retained sidecar. All 69 exact identities are present; Analysis and PKG records agree on their recorded input paths and archive destinations. Added a dated, path-sanitized review inventory with PE versions/imports, per-file current-input comparisons, source-document hashes and explicit unresolved items. Distribution ownership and license clearance remain unresolved; no byte match or filename grants clearance.
+
+Twenty-six inputs came from the runtime Python tree: 20 Python binaries, two OpenSSL DLLs, SQLite, libffi and two VC runtime DLLs. Forty-three Microsoft DLLs came from the bundled libheif bin directory. PE metadata identifies Python 3.12.14, OpenSSL 3.5.8, SQLite 3.53.1.0, VC 14.44.35211.0 and API-set/UCRT 10.0.26100.4654. Libffi's exact source version remains unknown; static vendor strings are clues only. Both VC DLLs match installed local redist copies; none of the 43 other Microsoft DLLs match the inspected SDK redist candidates. Redistribution basis remains open.
+
+Current runtime drift affects 24 Python/vendor inputs; 45 still match. Current bundle metadata is not historical provenance. The normalized Python notice text still matches the selected inventory. Exact historical source/patch/build records, nested/static vendors, final-installer mapping and recipient source delivery remain unresolved. Local inspection and mapping need no external approval; missing external evidence and eventual redistribution approval are separate issues.
+
+Validation: all 69 review records independently reconciled with the selected inventory and retained archive; input/PKG mappings, drift counts, unresolved references and path hygiene checked. No application/build changes, new installer, installed/hosted acceptance, network/provider/credential/model operation. The reviewed documentation/inventory payload is now ready for the owner's requested push. Next: preserve the historical runtime acquisition/build records if available, then reconcile final installer contents and exact vendor notices. See [review](docs/23-native-dependency-review.md) and [progress](docs/progress/2026-10-27.md).
 
 ## Current checkpoint — 23F offline covered-source preparation
 
