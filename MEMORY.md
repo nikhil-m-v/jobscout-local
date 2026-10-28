@@ -1,6 +1,14 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-27 (23F installer payload and certifi evidence). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-10-28 (23F offline certifi archive verification). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — 23F offline certifi archive verification
+
+Continued from clean `db44836`. No attached PRs or local PR refs were available; local history already contains the manual certifi review. Current hosted PR state is unknown because this session forbids network access. Do not treat that limitation as evidence that no PR exists.
+
+Added an optional explicit-pin certifi wheel path to covered-source preparation. Exact inventory version, archive SHA-256, METADATA identity, complete RECORD hashes/sizes and all non-RECORD installed-file bytes must match before output. Unsafe/duplicate/link entries and oversized archives fail closed. Outputs are restricted to new ignored review directories. Reports omit input paths and bind pin/inventory/archive/file hashes; retained wheels do not close upstream source completeness or recipient delivery.
+
+The real local run retained five Cargo archives with 66 compared files and certifi 2026.7.22 with 11 compared files; certifi remains unresolved. Focused source regressions pass 22 tests. Related offline notice/source/installer suite passed 49 tests before three additional focused regressions were added. No app/dependency/setup change, network access, download, rebuild, commit or publication. Next: inspect hosted PR state when network access is authorized; obtain corresponding sdist/revision and certificate-generation provenance only from approved evidence, then resolve source delivery separately. See [progress](docs/progress/2026-10-28.md).
 
 ## Current checkpoint — 23F installer payload and certifi evidence
 

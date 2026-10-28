@@ -7,6 +7,13 @@ from pathlib import Path, PurePosixPath
 import re
 import tarfile
 import tomllib
+import subprocess
+import zipfile
+
+try:
+    from scripts.verify_certifi_archive import verify_certifi
+except ModuleNotFoundError:
+    from verify_certifi_archive import verify_certifi
 
 MAX_ARCHIVE_BYTES = 100_000_000
 MAX_SOURCE_BYTES = 300_000_000
@@ -64,7 +71,7 @@ def verify_source_tree(data, directory, name, version):
     return len(seen)
 
 
-def prepare(inventory_path, cargo_path, lock_path, cache, output):
+def prepare(inventory_path, cargo_path, lock_path, cache, output, python_evidence=None):
     inventory_bytes = inventory_path.read_bytes()
     lock_bytes = lock_path.read_bytes()
     inventory = json.loads(inventory_bytes)
@@ -74,14 +81,33 @@ def prepare(inventory_path, cargo_path, lock_path, cache, output):
         raise ValueError('Unsupported notice inventory')
     if output.exists():
         raise ValueError('Source evidence output must be a new directory')
+    repo = Path(__file__).resolve().parents[1]
+    resolved_output = output.resolve()
+    if (not any(resolved_output.is_relative_to(repo / folder) for folder in ('work', '.local')) or
+            any(p.is_symlink() or p.is_junction() for p in (output, *output.parents)) or
+            subprocess.run(['git', 'check-ignore', '--quiet', str(resolved_output)],
+                           cwd=repo, check=False).returncode != 0):
+        raise ValueError('Source evidence output must be in an ignored review workspace')
+    python_bytes = python_evidence.read_bytes() if python_evidence else None
+    pin = json.loads(python_bytes) if python_bytes else None
     candidates = [item for item in inventory['components']
                   if re.search(r'\bMPL-2\.0\b', item['declaredLicense'])]
     records, archives = [], {}
+    python_candidates = [c for c in candidates if c['ecosystem'] == 'python-frozen-input' and c['name'] == 'certifi']
+    if python_evidence and (not isinstance(pin, dict) or len(python_candidates) != 1):
+        raise ValueError('Ambiguous or missing certifi inventory candidate')
     for component in sorted(candidates, key=lambda c: (c['ecosystem'], c['name'], c['version'])):
         name, version = component['name'], component['version']
         record = {key: component[key] for key in ('ecosystem', 'name', 'version', 'declaredLicense')}
         record.update(shippedDisposition='pending', reviewStatus='pending')
         records.append(record)
+        if pin is not None and component in python_candidates:
+            data, evidence = verify_certifi(pin, version)
+            archives[evidence['archive']] = data
+            record.update(evidence)
+            record.update(status='unresolved',
+                          reason='Local wheel verified; upstream source completeness and delivery remain unresolved')
+            continue
         if component['ecosystem'] != 'cargo-windows-build-graph':
             record.update(status='unresolved', reason='No supported cached source archive for this ecosystem')
             continue
@@ -127,6 +153,8 @@ def prepare(inventory_path, cargo_path, lock_path, cache, output):
                                   'Shipped versus build-only dispositions',
                                   'Durable recipient source location and notice',
                                   'Exact final-installer mapping and reviewer signoff']}
+    if python_bytes is not None:
+        report['pythonEvidenceSha256'] = digest(python_bytes)
     # All validation precedes output; never overwrite an earlier evidence set.
     output.mkdir(parents=True, exist_ok=False)
     for filename, data in archives.items():
@@ -139,9 +167,11 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('inventory', 'cargo', 'lock', 'cache', 'output'):
         parser.add_argument(f'--{name}', type=Path, required=True)
+    parser.add_argument('--python-evidence', type=Path,
+                        help='Local certifi pin JSON: name, version, sha256, archive, installedRoot')
     args = parser.parse_args()
     try:
-        report = prepare(args.inventory, args.cargo, args.lock, args.cache, args.output)
-        print(f"Prepared {report['preparedCount']} source archives; {report['unresolvedCount']} unresolved candidates. Review remains open.")
-    except (ValueError, OSError, KeyError, tarfile.TarError) as error:
+        report = prepare(args.inventory, args.cargo, args.lock, args.cache, args.output, args.python_evidence)
+        print(f"Retained {report['preparedCount']} archives; {report['unresolvedCount']} unresolved candidates. Review remains open.")
+    except (ValueError, OSError, KeyError, tarfile.TarError, zipfile.BadZipFile) as error:
         raise SystemExit(f'Source preparation failed: {error}') from None

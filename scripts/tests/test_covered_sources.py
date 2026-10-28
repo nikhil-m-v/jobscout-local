@@ -7,6 +7,8 @@ from pathlib import Path
 import tarfile
 import tempfile
 import unittest
+import base64
+import zipfile
 from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location('sources', Path(__file__).parents[1] / 'prepare_covered_sources.py')
@@ -16,7 +18,9 @@ spec.loader.exec_module(sources)
 
 class SourceTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory(prefix='jobscout-source-test-')
+        workspace = Path(__file__).resolve().parents[2] / 'work' / 'source-tests'
+        workspace.mkdir(parents=True, exist_ok=True)
+        self.temp = tempfile.TemporaryDirectory(prefix='jobscout-source-test-', dir=workspace)
         self.addCleanup(self.temp.cleanup)
         self.root = Path(self.temp.name).resolve()
         self.tree = self.root / 'source'
@@ -142,6 +146,136 @@ class SourceTests(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'size limit'):
                     self.prepare()
                 self.assertFalse(self.output.exists())
+
+
+class PythonSourceTests(unittest.TestCase):
+    make_archive = SourceTests.make_archive
+
+    def setUp(self):
+        SourceTests.setUp(self)
+        self.python_component = dict(ecosystem='python-frozen-input', name='certifi',
+                                     version='1.2.3', declaredLicense='MPL-2.0')
+        self.inventory.write_text(json.dumps(dict(schemaVersion=1, components=[self.python_component])))
+        self.pin_path = self.root / 'pin.json'
+        self.wheel = self.root / 'certifi-1.2.3-py3-none-any.whl'
+        self.installed = self.root / 'installed'
+        self.members = {'certifi/__init__.py': b'# synthetic', 'certifi/core.py': b'# never execute',
+                        'certifi/cacert.pem': b'synthetic certificates',
+                        'certifi-1.2.3.dist-info/METADATA': b'Name: certifi\nVersion: 1.2.3\n',
+                        'certifi-1.2.3.dist-info/WHEEL': b'Wheel-Version: 1.0\n'}
+        self.make_wheel()
+
+    def make_wheel(self, bad_record=False):
+        rows = []
+        for name, content in self.members.items():
+            target = self.installed / name
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_bytes(content)
+            hashed = base64.urlsafe_b64encode(hashlib.sha256(content).digest()).decode().rstrip('=')
+            rows.append(f'{name},sha256={hashed},{len(content)}')
+        rows.append('certifi-1.2.3.dist-info/RECORD,,')
+        with zipfile.ZipFile(self.wheel, 'w') as archive:
+            for name, content in self.members.items():
+                archive.writestr(name, content)
+            archive.writestr('certifi-1.2.3.dist-info/RECORD', '\n'.join(rows[:-2] if bad_record else rows))
+        self.pin = dict(name='certifi', version='1.2.3', sha256=sources.digest(self.wheel.read_bytes()),
+                        archive=str(self.wheel), installedRoot=str(self.installed))
+        self.pin_path.write_text(json.dumps(self.pin))
+
+    def prepare(self):
+        return sources.prepare(self.inventory, self.cargo, self.lock, self.cache, self.output, self.pin_path)
+
+    def test_python_verified_remains_unresolved_and_path_free(self):
+        report = self.prepare()
+        self.assertEqual(report['preparedCount'], 1)
+        self.assertEqual(report['unresolvedCount'], 1)
+        self.assertEqual(report['components'][0]['comparedFileCount'], 5)
+        self.assertFalse(report['components'][0]['upstreamAuthenticated'])
+        self.assertEqual(report['pythonEvidenceSha256'], sources.digest(self.pin_path.read_bytes()))
+        self.assertNotIn(str(self.root), json.dumps(report))
+        self.assertEqual((self.output / self.wheel.name).read_bytes(), self.wheel.read_bytes())
+
+    def test_python_bad_pin_version_and_hash(self):
+        for key, value in [('version', '9.0'), ('sha256', '0' * 64), ('name', 'other')]:
+            with self.subTest(key=key):
+                self.pin_path.write_text(json.dumps(dict(self.pin, **{key: value})))
+                with self.assertRaises(ValueError):
+                    self.prepare()
+                self.assertFalse(self.output.exists())
+
+    def test_python_metadata_mismatch(self):
+        self.members['certifi-1.2.3.dist-info/METADATA'] = b'Name: certifi\nVersion: 9.0\n'
+        self.make_wheel()
+        with self.assertRaisesRegex(ValueError, 'identity'):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_python_record_incomplete(self):
+        self.make_wheel(bad_record=True)
+        with self.assertRaisesRegex(ValueError, 'RECORD'):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_python_installed_changed_or_missing(self):
+        target = self.installed / 'certifi/core.py'
+        target.write_bytes(b'changed')
+        with self.assertRaisesRegex(ValueError, 'Installed'):
+            self.prepare()
+        target.unlink()
+        with self.assertRaisesRegex(ValueError, 'Installed'):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_python_unsafe_duplicate_and_symlink(self):
+        for name, mode in [('certifi/../escape', 0), ('certifi/CORE.py', 0),
+                           ('certifi/link', 0o120777)]:
+            self.make_wheel()
+            with zipfile.ZipFile(self.wheel, 'a') as archive:
+                entry = zipfile.ZipInfo(name)
+                entry.external_attr = mode << 16
+                archive.writestr(entry, b'bad')
+            self.pin['sha256'] = sources.digest(self.wheel.read_bytes())
+            self.pin_path.write_text(json.dumps(self.pin))
+            with self.assertRaisesRegex(ValueError, 'Unsafe'):
+                self.prepare()
+            self.assertFalse(self.output.exists())
+
+    def test_python_duplicate_inventory(self):
+        self.inventory.write_text(json.dumps(dict(schemaVersion=1, components=[self.python_component] * 2)))
+        with self.assertRaisesRegex(ValueError, 'Ambiguous'):
+            self.prepare()
+
+    def test_python_record_hash_mismatch(self):
+        with zipfile.ZipFile(self.wheel) as archive:
+            entries = {name: archive.read(name) for name in archive.namelist()}
+        entries['certifi/core.py'] = b'tampered with outer pin updated'
+        with zipfile.ZipFile(self.wheel, 'w') as archive:
+            for name, data in entries.items():
+                archive.writestr(name, data)
+        self.pin['sha256'] = sources.digest(self.wheel.read_bytes())
+        self.pin_path.write_text(json.dumps(self.pin))
+        with self.assertRaisesRegex(ValueError, 'RECORD hash'):
+            self.prepare()
+        self.assertFalse(self.output.exists())
+
+    def test_python_size_limits(self):
+        for limit in ('MAX_ARCHIVE_BYTES', 'MAX_SOURCE_BYTES'):
+            with patch.dict(sources.verify_certifi.__globals__, {limit: 1}):
+                with self.assertRaisesRegex(ValueError, 'size limit'):
+                    self.prepare()
+                self.assertFalse(self.output.exists())
+
+    def test_python_prior_output_preserved(self):
+        self.prepare()
+        prior = (self.output / 'source-review.json').read_bytes()
+        with self.assertRaisesRegex(ValueError, 'new directory'):
+            self.prepare()
+        self.assertEqual((self.output / 'source-review.json').read_bytes(), prior)
+
+    def test_python_output_outside_workspace(self):
+        self.output = Path(__file__).parents[2] / 'unignored-source-output'
+        with self.assertRaisesRegex(ValueError, 'ignored review'):
+            self.prepare()
 
 
 if __name__ == '__main__':
