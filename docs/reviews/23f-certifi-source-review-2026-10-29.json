@@ -1,0 +1,225 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-29",
+  "offline": true,
+  "repositoryCommit": "91469778b1bddbc7364aa6857ff0b20c245ecf87",
+  "identity": {
+    "wheel": {
+      "sha256": "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775",
+      "sizeBytes": 136983
+    },
+    "wheelMembers": [
+      {
+        "path": "certifi/__init__.py",
+        "sha256": "7a52e5f4205f9b3d12a31898ceaa7e3f6837d19cc230700bcae1a9d91d1486c1",
+        "sizeBytes": 94
+      },
+      {
+        "path": "certifi/__main__.py",
+        "sha256": "c410688fdd394d45812d118034e71fee88ba7beddd30fe1c1281bd3b232cd758",
+        "sizeBytes": 243
+      },
+      {
+        "path": "certifi/cacert.pem",
+        "sha256": "9cc2a774b5198dcff14d9be1e66091f538975d867ce029a96bce15a55dfd730f",
+        "sizeBytes": 240216
+      },
+      {
+        "path": "certifi/core.py",
+        "sha256": "5c55f2727746e697f7edac9e17c377d8752e0da7ecca191531b3b80403d61dad",
+        "sizeBytes": 3394
+      },
+      {
+        "path": "certifi/py.typed",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sizeBytes": 0
+      },
+      {
+        "path": "certifi/tests/__init__.py",
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+        "sizeBytes": 0
+      },
+      {
+        "path": "certifi/tests/test_certify.py",
+        "sha256": "7c179d1edf37f7e912b133663735fb46c6338d5d0e5f8915d11c3bc287d227b8",
+        "sizeBytes": 467
+      },
+      {
+        "path": "certifi-2026.7.22.dist-info/licenses/LICENSE",
+        "sha256": "e93716da6b9c0d5a4a1df60fe695b370f0695603d21f6f83f053e42cfc10caf7",
+        "sizeBytes": 989
+      },
+      {
+        "path": "certifi-2026.7.22.dist-info/METADATA",
+        "sha256": "ef5af1638fbb23676ac3c5777dfcfc2cd9c348fe4172ed5ba3d277655b248090",
+        "sizeBytes": 2474
+      },
+      {
+        "path": "certifi-2026.7.22.dist-info/WHEEL",
+        "sha256": "2b6eb4118ce7cd7b09601406aa623c553c4476265836f0d9c16f5c061f7efcc0",
+        "sizeBytes": 91
+      },
+      {
+        "path": "certifi-2026.7.22.dist-info/top_level.txt",
+        "sha256": "28cbb8bd409fb232eb90f6d235d81d7a44bea552730402453bffe723c345ebe5",
+        "sizeBytes": 8
+      },
+      {
+        "path": "certifi-2026.7.22.dist-info/RECORD",
+        "sha256": "ffbaaaa116c13b3c0337a451c316aab71c19aec40b67f4fc971e4685565bddc5",
+        "sizeBytes": 945
+      }
+    ],
+    "cachedIndexEntries": [
+      {
+        "core-metadata": {
+          "sha256": "ef5af1638fbb23676ac3c5777dfcfc2cd9c348fe4172ed5ba3d277655b248090"
+        },
+        "data-dist-info-metadata": {
+          "sha256": "ef5af1638fbb23676ac3c5777dfcfc2cd9c348fe4172ed5ba3d277655b248090"
+        },
+        "filename": "certifi-2026.7.22-py3-none-any.whl",
+        "hashes": {
+          "sha256": "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775"
+        },
+        "provenance": "https://pypi.org/integrity/certifi/2026.7.22/certifi-2026.7.22-py3-none-any.whl/provenance",
+        "requires-python": ">=3.7",
+        "size": 136983,
+        "upload-time": "2026-07-22T03:35:11.276376Z",
+        "url": "https://files.pythonhosted.org/packages/0b/a7/71ac2cff56fec219ed242bb11b8efb69fcc4bec75db06fb7bfe35de520e6/certifi-2026.7.22-py3-none-any.whl",
+        "yanked": false
+      },
+      {
+        "core-metadata": false,
+        "data-dist-info-metadata": false,
+        "filename": "certifi-2026.7.22.tar.gz",
+        "hashes": {
+          "sha256": "741e2c3b351ddf169a738da9f2c048608ff7f2c5cc02f1ebc6b118bb090d5d55"
+        },
+        "provenance": "https://pypi.org/integrity/certifi/2026.7.22/certifi-2026.7.22.tar.gz/provenance",
+        "requires-python": ">=3.7",
+        "size": 138112,
+        "upload-time": "2026-07-22T03:35:12.644458Z",
+        "url": "https://files.pythonhosted.org/packages/a3/c2/24167ea9858356b47a87a50d39908bfdb72ceeefe0041586e704e5376b3a/certifi-2026.7.22.tar.gz",
+        "yanked": false
+      }
+    ],
+    "wheelMatchesCachedIndex": true,
+    "metadataMatchesCachedIndex": true,
+    "sdistBytesLocated": false,
+    "sourceRevision": null
+  },
+  "provenance": {
+    "status": "unresolved",
+    "indexUrl": "https://pypi.org/simple/certifi/",
+    "indexCacheKey": "4be07d3ac353e38d2c9e3a257cad36ee2a758fc88b4cd5f0d479a5a9",
+    "cachedIndex": {
+      "sha256": "4764120d81f6c46b503c07f433bef4a2f9bc98d0f91476ec91ee05d53603cad2",
+      "sizeBytes": 19215
+    },
+    "decodedIndex": {
+      "sha256": "41085741927edb970f42ec87a520bd5223683611733bf5874a572bf6d9c1327b",
+      "sizeBytes": 75538
+    },
+    "cacheMetadata": {
+      "sha256": "21aef793236e3256956520c7e6a23085f50bc70d8cabd3a10f45292256a39f81",
+      "sizeBytes": 1802
+    },
+    "cachedHeaders": {
+      "Content-Length": "19215",
+      "content-encoding": "gzip",
+      "ETag": "\"k1NeoewykUDeXam4Tg8mQA\"",
+      "x-pypi-last-serial": "39243739",
+      "Date": "Sun, 04 Oct 2026 09:27:22 GMT",
+      "Content-Type": "application/vnd.pypi.simple.v1+json"
+    },
+    "limitation": "Local cache URL-key and digest agreement is not authenticated upstream provenance. URLs were not fetched.",
+    "wheelDeclaredSource": "https://github.com/certifi/python-certifi",
+    "wheelDeclaredGenerator": "setuptools (83.0.0)",
+    "installedDirectUrlPresent": false,
+    "generationInputs": {
+      "status": "unresolved",
+      "bundle": {
+        "sha256": "9cc2a774b5198dcff14d9be1e66091f538975d867ce029a96bce15a55dfd730f",
+        "sizeBytes": 240216
+      },
+      "certificateCount": 121,
+      "uniqueDerSha256Count": 121,
+      "commentFingerprintsMatchDer": true,
+      "missing": [
+        "Exact Mozilla/NSS source snapshot and trust-selection inputs",
+        "Generator source revision, options, exclusions and patch set",
+        "Release/build record binding those inputs to this bundle"
+      ],
+      "limitation": "Certificate hashes identify output bytes, not generation inputs or trust approval."
+    }
+  },
+  "searchScope": {
+    "pipCacheFiles": 508,
+    "bodyCounts": {
+      "bodies": 251,
+      "4d65": 88,
+      "1f8b": 93,
+      "gzipJson": 89,
+      "504b": 70,
+      "gzipNonJson": 4
+    },
+    "errors": [],
+    "sdistCandidates": [],
+    "urlCacheLookups": {
+      "sdist": {
+        "cacheKey": "2d9aef1f5842d2566b5d6c74b568f35819db695ee37737d6762c3b3c",
+        "matchingFiles": 0
+      },
+      "sdistProvenance": {
+        "cacheKey": "38bbb26a69510ea000ce9af04a38d72d625769e4b5e2c5b017675d6a",
+        "matchingFiles": 0
+      },
+      "wheelProvenance": {
+        "cacheKey": "674676be7857ac687aba661eb2d31194bc3d1da9b1652046e55f3cf7",
+        "matchingFiles": 0
+      }
+    },
+    "limitation": "Bounded named package/cache locations, not a whole-machine absence claim.",
+    "gzipNonJsonArchives": [
+      "markupsafe-3.0.3",
+      "uuid_utils-0.17.0",
+      "zstandard-0.25.0",
+      "pyyaml-6.0.3"
+    ],
+    "builtWheelCache": "Only markupsafe 3.0.3 wheel and origin.json; no certifi wheel build record.",
+    "additionalNamedLocations": "Filename search in local pip cache and current codex runtime cache; uv cache absent. Current runtime has certifi 2026.10.19, which is not the selected 2026.7.22 artifact.",
+    "accessLimit": "Broad workspace filename scan encountered access-denied entries in unrelated ignored test workspaces; these were not inspected and no whole-workspace absence is claimed."
+  },
+  "sourceDelivery": {
+    "status": "unresolved",
+    "questions": [
+      "Retain and verify the indexed sdist or exact source revision; compare package and bundle bytes.",
+      "Establish source completeness, generation inputs and modification disposition.",
+      "Choose and verify durable recipient source location, notice and exact installer mapping."
+    ]
+  },
+  "licenseClearance": "unresolved",
+  "releaseApproved": false,
+  "privateReviewReceipt": {
+    "sha256": "e8a8f77818bb30db5426aaa0cc1c187273b24d5a7681d7de9a0827426e8a8c07",
+    "sizeBytes": 13149
+  },
+  "preservedEvidenceCount": 33,
+  "priorReviewReceipts": [
+    {
+      "path": "docs/reviews/23f-installer-source-review-2026-10-27.json",
+      "sha256": "48a236b4175806e5b9cb17976968bfc13c051826a143ffcd286b6efa38adf225"
+    },
+    {
+      "path": "work/covered-sources/2026-10-28-certifi/source-review.json",
+      "sha256": "96c1effae1ce00b129863d987ae97fc580ecf17b10a65ea460444443ebc60df9"
+    }
+  ],
+  "repositoryMetadata": {
+    "directCertifiRequirement": false,
+    "dependencyPath": "pyproject.toml -> httpx; installed httpx 0.28.1 METADATA -> certifi (unversioned)",
+    "certifiSourceRevisionPinFound": false,
+    "scope": "Tracked certifi/certdata/mk-ca-bundle filenames and local all-ref history for pyproject.toml, scripts and docs/reviews; wheel metadata and installed direct_url.json presence."
+  }
+}

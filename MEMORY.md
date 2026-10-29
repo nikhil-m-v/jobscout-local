@@ -1,6 +1,22 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-10-28 (23F offline certifi archive verification). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-10-29 (23F repeatable offline certifi source comparison). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — 23F repeatable offline certifi source comparison
+
+Publication follow-up: the owner requested committing and pushing the six-file source/test/documentation payload to the existing remote. Offline/no-publication statements below describe the implementation checkpoints. Cached archives, raw cache metadata and private investigation files remain ignored and excluded. Publication grants no license clearance or release approval.
+
+Added `scripts/review_certifi_source.py` to bind a pinned decoded local package index to the verified installed/wheel evidence and optionally an exact sdist. Source checks reject hash/size/identity mismatch, unsafe/duplicate/link/conflicting tar entries, excessive expansion and missing/extra/changed package files; the source LICENSE must equal the wheel license. No package code is executed or extracted. Output is restricted to a new ignored review directory and separates identity, unresolved provenance/generation inputs and unresolved source delivery. Package equality never claims source completeness or clearance.
+
+All 61 offline Python notice/source/installer tests pass, including nine new regressions. Existing CI discovery includes them automatically. Real local execution at `work/native-review/2026-10-29-certifi-repeatable/` verifies wheel/index identity and explicitly reports missing sdist; no new upstream evidence was obtained. Earlier evidence remains preserved. No app/dependency/setup change, network, download, rebuild, hosted acceptance, commit or push. Next: obtain the exact source artifact through permitted evidence, run the optional comparison, and resolve generation provenance and recipient delivery separately. See [progress](docs/progress/2026-10-29.md).
+
+## Current checkpoint — 23F offline certifi source identity review
+
+Continued from clean `9146977`. Cached package-index metadata names `certifi-2026.7.22.tar.gz`, 138,112 bytes, SHA-256 `741e2c3b351ddf169a738da9f2c048608ff7f2c5cc02f1ebc6b118bb090d5d55`, and an unfetched provenance endpoint. Its wheel size/hash and METADATA hash match the retained wheel. This is a precise locally recorded source-artifact identity, not retained sdist bytes, authenticated upstream provenance or an established source revision.
+
+Bounded inspection of 251 pip response bodies (89 compressed JSON indexes, four other source tarballs, 70 ZIPs and 88 metadata bodies), built-wheel cache and named runtime/package locations found no exact certifi sdist or generation inputs. Current runtime certifi 2026.10.19 is a different artifact. The reviewed bundle contains 121 distinct DER certificates with matching SHA-256 comment fingerprints; output identity does not identify Mozilla/NSS inputs, generator revision/options or release build records. Repository metadata has an indirect dependency through httpx, not a certifi source-revision pin.
+
+Added a separate dated review with identity, provenance and source-delivery fields; preserved 33 existing review/evidence files by hash. No application or tool implementation change, network access, download, rebuild, commit or publication. License clearance remains unresolved and release approval false. Next: when corresponding evidence is available, verify the exact indexed sdist and provenance/revision, compare package/bundle bytes, identify generation inputs and modifications, then resolve recipient source completeness/location/notice separately. See [progress](docs/progress/2026-10-29.md).
 
 ## Current checkpoint — 23F offline certifi archive verification
 

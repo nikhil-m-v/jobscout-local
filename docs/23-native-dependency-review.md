@@ -20,6 +20,20 @@ This verifies native bytes in the sidecar being supplied to packaging. It does n
 
 ## Finite review queue
 
+### 2026-10-29 follow-up — offline certifi source identity
+
+The [dated certifi review](reviews/23f-certifi-source-review-2026-10-29.json) separates artifact identity, provenance and source delivery. Existing review outputs remain unchanged. Raw cached index evidence and the local investigation report are retained in ignored `work/native-review/2026-10-29-certifi/`.
+
+**Identity:** the cached index for `https://pypi.org/simple/certifi/` names `certifi-2026.7.22.tar.gz` (138,112 bytes; SHA-256 `741e2c3b351ddf169a738da9f2c048608ff7f2c5cc02f1ebc6b118bb090d5d55`). Its exact wheel entry matches the previously retained wheel's size/hash and embedded METADATA hash. URLs and declared upload times are recorded as cached claims, without fetching them. The source archive itself was not located; no archive-content correspondence or source revision is established.
+
+**Provenance:** the index cache key agrees with the SHA-224 URL key, but this and internally consistent hashes do not authenticate upstream. Cached provenance URLs have no matching local response entries. Wheel metadata points to the unversioned python-certifi repository and declares setuptools 83.0.0; neither identifies a source commit or certificate generator. Installed certifi has no `direct_url.json`. Repository requirements reach certifi through httpx and do not pin its source revision. The current bundled runtime's certifi 2026.10.19 cannot substitute for the reviewed 2026.7.22 payload.
+
+The wheel contains the finished 240,216-byte `cacert.pem`, SHA-256 `9cc2a774b5198dcff14d9be1e66091f538975d867ce029a96bce15a55dfd730f`. Its 121 distinct certificate DER hashes match the 121 SHA-256 comment fingerprints. This verifies output consistency only. Exact Mozilla/NSS source/trust-selection inputs, generator source/options/exclusions, modifications and a release/build record binding them to this bundle remain unresolved. The wheel does not contain that recipe or input snapshot; its runtime helper only reads the supplied bundle.
+
+**Source delivery:** retain and compare the exact indexed source archive or verified revision when available, establish source completeness and modification disposition, and separately choose/verify a durable recipient location, notice and exact installer mapping. A cached source URL or provenance link is not recipient delivery. License clearance remains unresolved; release approval remains false.
+
+Search scope: all 251 pip HTTP response bodies were classified; 93 gzip bodies decoded within the 20 MB cap (89 JSON documents and four unrelated source tarballs). The other bodies were 70 ZIPs and 88 metadata texts. No sdist-size/hash match or expected source-tree marker appeared. Built-wheel cache held only MarkupSafe; named runtime/package scans found no corresponding certifi source. This is not a whole-machine absence claim; unrelated ignored test directories denied the initial broad filename scan. No network, package execution, extraction, rebuild or trust-store change occurred. See [progress](progress/2026-10-29.md).
+
 ### 2026-10-27 follow-up — installer and certifi source evidence
 
 The [installer/source supplement](reviews/23f-installer-source-review-2026-10-27.json) binds the retained installer, audit, earlier 69-file review, local component comparisons and certifi wheel evidence. This closes selected byte-mapping gaps; complete installer inventory, historical source/build provenance and all license clearances remain open. The earlier native review is preserved unchanged.
@@ -92,6 +106,22 @@ External **evidence** is still needed if the exact historical runtime/vendor sou
 Python documents incorporated software separately and calls its online list incomplete; the exact runtime build still needs reconciliation. See [Python license documentation](https://docs.python.org/3.12/license.html). The [PyInstaller exception](https://pyinstaller.org/en/stable/license.html) allows commercial bundles subject to dependency licenses; do not treat a package-level GPL string as the complete disposition.
 
 ## Covered-source delivery plan
+
+### Repeatable certifi index and sdist comparison
+
+`scripts/review_certifi_source.py` reviews an explicitly pinned, decoded local index JSON with the existing five-field wheel pin. It performs no network requests. Use the decoded-index hash from the dated review, not a new digest taken on trust from an unknown input:
+
+```powershell
+.venv\Scripts\python.exe scripts/review_certifi_source.py `
+  --index work/native-review/2026-10-29-certifi/cached-certifi-index.json `
+  --index-sha256 41085741927edb970f42ec87a520bd5223683611733bf5874a572bf6d9c1327b `
+  --wheel-pin work/covered-sources/2026-10-28-inputs/certifi-pin.json `
+  --output work/native-review/<new-certifi-review>
+```
+
+Without `--sdist`, the result explicitly records missing source bytes. When an exact local `certifi-<version>.tar.gz` is available, supply `--sdist <local-archive>`: the helper requires the indexed filename/hash/size, validates PKG-INFO identity, and compares every package member with the verified wheel, rejecting missing/additional/changed package files. The top-level LICENSE must match the wheel license. It records all source file hashes, including build files, without executing them. The supported layout is a versioned top-level directory with `certifi/`, `PKG-INFO` and `LICENSE`; alternate layouts require review rather than an automatic equivalence assumption.
+
+It rejects linked inputs, archive links, traversal/duplicates/conflicting destinations, oversized compressed/decompressed input and excessive entries. All validation precedes output to a new ignored directory; index/wheel and any verified sdist are retained there. Reports omit input machine paths and keep provenance, certificate-generation inputs, source completeness, recipient location and license clearance unresolved, with release approval false. Index agreement is not authentication; package-byte equality is not proof of historical build inputs or complete corresponding source. The real 2026-10-29 run verifies the available wheel/index and reports missing sdist. Nine new synthetic tests and the full 61-test offline Python review suite pass.
 
 ### Offline archive preparation
 
