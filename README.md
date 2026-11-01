@@ -66,7 +66,15 @@ With these prerequisites ready:
 npm run desktop:dev
 ```
 
+Engine dependencies pin certifi to `2026.10.19` after the [emSign certificate advisory](https://github.com/certifi/python-certifi/security/advisories/GHSA-6q48-6c7w-9gw2). Packaging checks the installed version and exact reviewed CA-bundle bytes, then checks those bytes inside the frozen engine; the installed-acceptance builder checks reused engines too. If this check fails, rerun the dependency installation command above and rebuild the paired installer. Updating a developer environment does not update an already installed app: it needs the rebuilt installer. This adds no setup step, provider permission or model requirement, and does not change Windows certificate settings. See [the review evidence](docs/23-native-dependency-review.md#2026-10-29-follow-up--certifi-security-update).
+
 This packages the engine as a sidecar, starts Vite, and opens the Tauri window. Tauri owns the engine process and shuts it down when the application exits. Native app data starts in the OS application-data folder for `app.jobscout.local`; reviewed folder changes relocate career records while keeping the original routing and credential identity.
+
+If the local engine stops unexpectedly, JobScout marks the workspace offline and
+asks you to close and reopen the app. After reopening, check your saved records:
+a save that was still running may not have finished. JobScout does not
+automatically restart the engine or retry saves/searches. See the
+[engine-loss recovery checks](docs/23-engine-loss.md).
 
 Managed desktop development uses the ignored `work/desktop-dev` Cargo cache, separate from direct Cargo checks and release packaging. The first run rebuilds this cache; later runs reuse it. An explicit `CARGO_TARGET_DIR` override is respected.
 

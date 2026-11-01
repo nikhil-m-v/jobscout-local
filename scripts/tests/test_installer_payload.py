@@ -59,6 +59,33 @@ class InstallerPayloadTests(unittest.TestCase):
         self.assertFalse(report['payloads'][1]['matchesRetainedInput'])
         self.assertTrue(any('desktop bytes differ' in s for s in report['unresolved']))
 
+    def test_exact_bundle_marker_change_is_accounted_for_but_raw_mismatch_remains(self):
+        reference = b'MZ synthetic desktop __TAURI_BUNDLE_TYPE_VAR_UNK end'
+        self.args['desktop'].write_bytes(reference)
+        self.entries['jobscout-desktop.exe'] = reference.replace(b'_UNK', b'_NSS')
+        report = self.run_review()
+        desktop = report['payloads'][1]
+        self.assertFalse(report['allRetainedInputsMatch'])
+        self.assertFalse(desktop['matchesRetainedInput'])
+        self.assertTrue(report['allApplicationPayloadsAccountedFor'])
+        self.assertTrue(desktop['bundleMarkerVerification']['verified'])
+        self.assertEqual(desktop['bundleMarkerVerification']['changedByteCount'], 3)
+        self.assertNotEqual(desktop['sha256'], desktop['referenceSha256'])
+        self.assertFalse(report['releaseApproved'])
+        self.assertEqual(report['licenseClearance'], 'unresolved')
+
+    def test_marker_does_not_hide_other_byte_changes_or_ambiguous_markers(self):
+        marker = b'__TAURI_BUNDLE_TYPE_VAR_UNK'
+        for reference, installed in [
+            (b'MZ' + marker, b'NZ' + marker.replace(b'UNK', b'NSS')),
+            (marker * 2, marker.replace(b'UNK', b'NSS') * 2),
+            (marker + marker.replace(b'UNK', b'NSS'), marker.replace(b'UNK', b'NSS') * 2),
+            (marker, marker.replace(b'UNK', b'MSI')),
+            (marker, marker.replace(b'UNK', b'NSS') + b'extra'),
+        ]:
+            with self.subTest(reference=reference, installed=installed):
+                self.assertFalse(payload.desktop_bundle_marker(reference, installed)['verified'])
+
     def test_archive_listing_rejects_duplicates(self):
         data = b'Type = Nsis\n----------\nPath = Demo.exe\nPath = demo.exe\n'
         with patch.object(payload.subprocess, 'run', return_value=CompletedProcess([], 0, data, b'')):

@@ -1,4 +1,38 @@
-# Production engine baseline — 2026-09-30
+# Production resource baseline
+
+## Current packaged-engine measurements — 2026-11-01
+
+Nine fresh synthetic workspaces (three DOCX, three PDF and three fifty-candidate local-analysis runs) pass with the current production sidecar. Its 19,982,714 bytes hash to `e690a89382b0988c6bc62e73119e8a36ba45738d5e391f9aeae9feb5a68aeda7`; the package audit's verified native-archive receipt binds that same engine hash. The paired unsigned installer is 23,445,619 bytes (22.36 MiB), SHA-256 `b11f40534c1638c5a334bc735684e29d8fa2519312651e4269d15065e8bc2946`. Artifact identity and measurement do not grant license clearance or release approval.
+
+The machine reports Windows build 26200, x64 process architecture, 12 logical processors and 31.36 GiB physical RAM. Runs used warm filesystem caches after packaging, without concurrent project builds/tests. These facts are test conditions, not minimum hardware requirements.
+
+| Metric | Observed |
+|---|---:|
+| Authenticated workspace readiness, nine launches | 2.18–2.35 s; median 2.21 s |
+| Idle engine-tree working set / private commitment | 80.45–80.77 / 47.84–48.41 MiB |
+| DOCX sampled import working set / private commitment | 112.86–128.52 / 67.01–81.74 MiB |
+| Ten-page PDF sampled import working set / private commitment | 112.93–128.20 / 67.29–81.75 MiB |
+| Fifty-candidate analysis sampled working set / private commitment | 80.70–80.89 / 48.84–49.41 MiB |
+| Warm local-analysis request duration, fifteen requests | 32.35–41.76 ms; median 34.83 ms |
+| Idle engine temporary extraction, each run | 30,642,190 bytes (29.22 MiB) |
+| Non-temp synthetic workspace files after each workload | 24,771 bytes |
+| Remaining sampled owned process identities after helper cleanup | Zero in all nine runs |
+
+The DOCX fixture contains 1,000 repeated synthetic paragraphs; PDF contains ten pages of forty synthetic lines. Local analysis uses the checked-in `bounded-50` pool and verifies all fifty returned matches. Real health must report ready database/storage, and real imports must return the generated text. Each report records the engine and exact request/document SHA-256; DOCX archive timestamps make its byte hash differ across launches. No personal records, credential operation, provider search, result-page request or inference is part of the measurement. Normal health retains the optional local-runtime status probe on loopback.
+
+There are only **two memory samples per import and one per analysis run**, taken with CIM enumeration plus a 100 ms pause. Short peaks can be missed; working-set sums can count shared pages repeatedly. Only successfully matched process identities contribute; a live member that exits or cannot be matched during sampling can be omitted, so these are not exhaustive tree totals. Request timing covers the packaged local API, not search-provider latency or Results rendering. Disk values are snapshots, not peak temporary storage. Cleanup forcibly terminates only the benchmark tree and verifies sampled identities; this is not normal-close or comprehensive descendant acceptance.
+
+The existing provisional installer-size, engine-readiness, idle-private-memory and sampled-import investigation thresholds pass for these fixtures. Stable full-desktop workload measurements, online-search/Results peaks, reboot-cold startup and end-user hardware budgets remain open. Earlier installed-footprint and desktop observations below keep their original binary/workload scope.
+
+Raw reports are retained separately under ignored `.local/resource-check/reports-a3d5e24dfd0746c496935015dcabeb32/`, without overwriting earlier evidence:
+
+| Report | SHA-256 |
+|---|---|
+| `docx.json` | `4d0dd8f5f6fe23a8f2969ec9804fc6484730c06ff2e34470c63e86a54ef57d34` |
+| `pdf.json` | `3f44c619efe84d939e4e1b54f0b1bbe1b2cd2df89cda40f8e7271e7316a01ce5` |
+| `shortlist.json` | `4bcfbc97433df7909b801a5f6f134c9705b5b9e3328bf2dba31ac3596a4182e1` |
+
+## Earlier baseline — 2026-09-30 onward
 
 Latest paired package and installed subset — 2026-10-20: [22D follow-up](progress/2026-10-20.md) verifies the current separate-identity production-code acceptance package. Production NSIS installer 23,263,424 bytes (22.19 MiB), desktop 14,706,688 bytes and engine 19,985,901 bytes; production artifact hashes preserved. Acceptance installation files total 34,771,938 bytes (33.16 MiB). Three ten-process snapshots measured 482.22/315.82, 484.60/283.30 and 478.54/295.72 MiB summed working set/private commitment, each including two frozen-engine and six WebView processes. Shared pages can be counted multiple times. These are individual synthetic setup/tracker observations, not stable idle means, cold-start timing, import/search/Results peaks, hardware recommendations or release budgets. Both normal closes leave zero owned processes; test uninstall and production-data preservation checks pass. No new online provider/page request or model workload. Earlier measurements below retain their original binary/workload scope.
 
@@ -42,6 +76,16 @@ pwsh -NoProfile -File scripts/measure-engine.ps1 -Runs 3 -Format pdf
 ```
 
 Requires permission to enumerate Windows processes. No extra package is installed. The script creates a fresh session credential in memory, binds only to loopback, bypasses proxies, generates its own DOCX, and prints only metrics. It kills only its own process tree on exit. Isolated databases/temp directories remain under ignored `.local/resource-check/` for inspection; they may be removed after the run. Existing app data is untouched. Startup failures/timeouts and unsuccessful imports fail the run.
+
+The current helper emits a versioned JSON object with `engine` SHA-256/byte size, hardware facts, scope and `runs`; earlier unbound arrays remain historical. It verifies the real workspace health response, fingerprints each generated workload, reports the number of memory samples and checks sampled process identities after cleanup. CIM process timestamps are compared at their microsecond precision so a reused PID is not accepted as the earlier process. An engine change before, during or after the run rejects the report. Synthetic benchmark cleanup forcibly stops its own engine tree and does not establish normal shutdown acceptance.
+
+Use `-EnginePath` to measure a specific staged sidecar instead of assuming the default release-folder copy is current:
+
+```powershell
+pwsh -NoProfile -File scripts/measure-engine.ps1 -Runs 3 -Format docx -EnginePath apps/desktop/src-tauri/binaries/jobscout-engine-x86_64-pc-windows-msvc.exe
+```
+
+Use an otherwise idle machine and retain each output separately. Compare the reported engine identity to the exact installer/package receipt before treating it as current-package evidence. The health request includes the application's existing optional local-runtime loopback status probe; it performs no inference, online search, provider-key read or result-page request. Hardware facts contain no machine name or local path. Memory sampling can miss short peaks, and extraction/data sizes are snapshots rather than peak disk use.
 
 ## Initial engineering gates
 

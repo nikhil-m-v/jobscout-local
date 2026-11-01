@@ -43,6 +43,16 @@ These are requirements, not claims of complete release acceptance. Saving jobs, 
 
 ## v1.0 completion gates
 
+Latest bounded progress — 2026-11-01: [engine-loss hardening](23-engine-loss.md)
+passes full local validation, current paired packaging, real frozen crash/restart
+and separate installed offline/reopen/saved-record recovery/uninstall checks.
+The certificate update handoff and exact three-application-payload comparison are
+complete; native/static/licensing/source delivery is not. [Current engine
+measurements](resource-baseline.md) pass provisional investigation thresholds,
+with sparse/warm-cache sampling limits. This closes these finite subsets only;
+the remaining Windows, hosted, human usefulness and release-review evidence in
+the table is still required. Version remains 0.1.0, with no release approval.
+
 | Gate | Completion evidence |
 |---|---|
 | Privacy | Captured synthetic requests, strict engine validation and installed behavior exclude private markers/records; malformed input, redirects and untrusted job content cannot broaden outbound permissions |

@@ -1,5 +1,6 @@
 import { invoke, isTauri } from '@tauri-apps/api/core';
 import { openUrl } from '@tauri-apps/plugin-opener';
+import { EngineStoppedError } from './engine-connection-state.ts';
 
 export interface EngineHealth {
   status: 'ready';
@@ -10,7 +11,10 @@ export interface EngineHealth {
 
 export async function readEngineHealth(): Promise<EngineHealth> {
   const data: unknown = isTauri()
-    ? await invoke('engine_health')
+    ? await invoke('engine_health').catch(cause => {
+        if (cause === 'Workspace stopped') throw new EngineStoppedError();
+        throw cause;
+      })
     : await fetch('/engine/health', { signal: AbortSignal.timeout(5000) }).then(response => {
         if (!response.ok) throw new Error('The local engine could not be reached.');
         return response.json();

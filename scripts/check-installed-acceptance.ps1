@@ -1,5 +1,5 @@
 # Isolated release-mode installation lifecycle. UI input uses Computer Use separately.
-param([Parameter(Mandatory=$true)][ValidateSet('Install','Snapshot','Terminate','Closed','Uninstall')][string]$Action)
+param([Parameter(Mandatory=$true)][ValidateSet('Install','Snapshot','Terminate','EngineTerminate','Closed','Uninstall')][string]$Action)
 $ErrorActionPreference = 'Stop'
 $root = [IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent))
 $directory = [IO.Path]::GetFullPath((Join-Path $root '.local/installed-acceptance'))
@@ -120,6 +120,39 @@ if ($Action -eq 'Snapshot') {
     exit
 }
 $remaining = Owned-Processes $state
+if ($Action -eq 'EngineTerminate') {
+    # Choose only the frozen application child: desktop -> launcher -> application.
+    # Parser descendants are left alone so their own parent-loss cleanup is tested.
+    $desktop = @($remaining | Where-Object name -eq 'jobscout-desktop')
+    if ($desktop.Count -ne 1) { throw 'Snapshot must identify exactly one live owned desktop.' }
+    $desktopProcess = Get-Process -Id $desktop[0].id
+    if ($desktopProcess.Path -ne (Join-Path $destination 'jobscout-desktop.exe') -or $desktopProcess.StartTime.ToUniversalTime().Ticks -ne (Start-Ticks $desktop[0].started)) { throw 'Owned desktop identity changed.' }
+    if ((Get-FileHash -LiteralPath $desktopProcess.Path).Hash -ne (Expected-DesktopHash)) { throw 'Owned desktop executable changed.' }
+    $enginePath = Join-Path $destination 'jobscout-engine.exe'
+    if ((Get-FileHash -LiteralPath $enginePath).Hash.ToLowerInvariant() -ne $build.engine_sha256) { throw 'Owned engine executable changed.' }
+    $all = @(Get-CimInstance Win32_Process -Property ProcessId,ParentProcessId,ExecutablePath)
+    $launchers = @($all | Where-Object { $_.ParentProcessId -eq $desktop[0].id -and $_.ExecutablePath -eq $enginePath -and $_.ProcessId -in $remaining.id })
+    if ($launchers.Count -ne 1) { throw 'Expected exactly one snapshot-owned engine launcher.' }
+    $applications = @($all | Where-Object { $_.ParentProcessId -eq $launchers[0].ProcessId -and $_.ExecutablePath -eq $enginePath -and $_.ProcessId -in $remaining.id })
+    if ($applications.Count -ne 1) { throw 'Expected exactly one snapshot-owned engine application.' }
+    $application = @($remaining | Where-Object id -eq $applications[0].ProcessId)[0]
+    $member = Get-Process -Id $application.id
+    # Force .NET to retain an OS handle before checking start time/path. Kill()
+    # then targets the same process even if Windows later reuses this numeric PID.
+    $retainedHandle = $member.Handle
+    if ($retainedHandle -eq [IntPtr]::Zero -or $member.HasExited -or $member.Path -ne $enginePath -or $member.StartTime.ToUniversalTime().Ticks -ne (Start-Ticks $application.started)) { throw 'Owned engine application identity changed.' }
+    $launcher = Get-Process -Id $launchers[0].ProcessId
+    $launcherRecord = @($remaining | Where-Object id -eq $launcher.Id)[0]
+    if ($launcher.Path -ne $enginePath -or $launcher.StartTime.ToUniversalTime().Ticks -ne (Start-Ticks $launcherRecord.started) -or $member.StartTime.ToUniversalTime().Ticks -lt $launcher.StartTime.ToUniversalTime().Ticks) { throw 'Owned engine launcher identity changed.' }
+    # Recheck the relationship after retaining the handle to reject stale snapshots.
+    $current = Get-CimInstance Win32_Process -Filter "ProcessId = $($member.Id)" -Property ParentProcessId,ExecutablePath
+    if ($current.ParentProcessId -ne $launcher.Id -or $current.ExecutablePath -ne $enginePath -or $member.HasExited) { throw 'Owned engine application parent changed.' }
+    $member.Kill()
+    if (!$member.WaitForExit(10000)) { throw 'Owned engine termination did not finish.' }
+    Assert-ProductionUnchanged $state.before
+    [pscustomobject]@{ owned_engine_application_terminated='pass'; desktop_terminated_by_helper=$false; descendants_terminated_by_helper=$false; production_profiles_unchanged='pass' } | ConvertTo-Json
+    exit
+}
 if ($Action -eq 'Terminate') {
     $desktop = @($remaining | Where-Object name -eq 'jobscout-desktop')
     if ($desktop.Count -ne 1) { throw 'Snapshot must identify exactly one live owned desktop.' }

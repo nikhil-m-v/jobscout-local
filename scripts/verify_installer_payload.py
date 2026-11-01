@@ -14,6 +14,23 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def desktop_bundle_marker(reference, installed):
+    """Account for only Tauri's unique UNK -> NSS NSIS bundle marker.
+
+    Retain raw hashes/mismatch independently. This is byte correspondence to
+    a supplied candidate, not authentication of that candidate or its build.
+    """
+    before = b'__TAURI_BUNDLE_TYPE_VAR_UNK'
+    after = b'__TAURI_BUNDLE_TYPE_VAR_NSS'
+    if (reference.count(before) != 1 or reference.count(after) != 0 or
+            installed.count(before) != 0 or installed.count(after) != 1 or
+            reference.replace(before, after, 1) != installed):
+        return {'verified': False}
+    return {'verified': True, 'transformation': 'Tauri NSIS bundle marker UNK -> NSS',
+            'offset': reference.index(before), 'changedByteCount': 3,
+            'transformedReferenceSha256': digest(installed)}
+
+
 def read_entry(archiver, installer, name):
     result = subprocess.run(
         [str(archiver), 'x', '-so', '-y', str(installer), name.replace('/', '\\')],
@@ -81,19 +98,24 @@ def verify(installer, audit, inventory, engine, desktop, notices, archiver, outp
                          'referenceSha256': before[label],
                          'referenceBasis': ('Candidate build output; not a historical receipt'
                                             if label == 'desktop' else 'Historical audit/inventory receipt')})
+        if label == 'desktop':
+            payloads[-1]['bundleMarkerVerification'] = desktop_bundle_marker(source.read_bytes(), data)
     if any(digest(path.read_bytes()) != before[name] for name, path in paths.items()):
         raise ValueError('Review input changed during inspection')
     report = {'schemaVersion': 1, 'releaseApproved': False, 'licenseClearance': 'unresolved',
               'scope': 'Exact three application payloads only; no installer execution or installation.',
               'inputSha256': before, 'payloads': payloads, 'archiveReader': listing,
               'allRetainedInputsMatch': all(p['matchesRetainedInput'] for p in payloads),
+              'allApplicationPayloadsAccountedFor': all(
+                  p['matchesRetainedInput'] or p.get('bundleMarkerVerification', {}).get('verified')
+                  for p in payloads),
               'unresolved': [
                   'Complete NSIS command/payload and generated-uninstaller reconciliation.',
                   'Installer stub/plugins, desktop static linkage and bootloader provenance/notice review.',
                   'Runtime/vendor source, patches and build records; recipient source delivery.',
                   'Installed behavior, WebView prerequisite acquisition and release acceptance.',
               ]}
-    if not report['allRetainedInputsMatch']:
+    if not report['allApplicationPayloadsAccountedFor']:
         report['unresolved'].append('Installer desktop bytes differ from the supplied candidate build output.')
     # Exclusive creation after all checks: never replace a prior evidence report.
     with output.open('x', encoding='utf-8', newline='\n') as stream:

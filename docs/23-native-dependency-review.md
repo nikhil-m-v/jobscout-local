@@ -1,6 +1,6 @@
 # Milestone 23F — native dependency review evidence
 
-Status: exact frozen-input inventory and embedded-native-byte verification implemented; component clearance and source delivery remain open. No new dependency, application behavior, setup step or installer resource.
+Status: exact frozen-input inventory and embedded-native-byte verification implemented; component clearance and source delivery remain open. The 2026-10-29 security follow-up pins the existing transitive certifi dependency and verifies its updated trust bundle during packaging. No new setup step or installer resource category.
 
 ## Reproducible inventory
 
@@ -19,6 +19,30 @@ Production and installed-acceptance packaging now pass the exact sidecar path to
 This verifies native bytes in the sidecar being supplied to packaging. It does not extract the final NSIS installer, identify upstream build provenance, verify licenses, or inspect statically linked libraries. PyInstaller transformations that change native input bytes intentionally fail this Windows comparison; any future strip/UPX or other transformation needs an explicit provenance design before use.
 
 ## Finite review queue
+
+### 2026-11-01 follow-up — bounded NSIS desktop transformation
+
+The offline three-payload verifier now separately checks Tauri's unique
+`__TAURI_BUNDLE_TYPE_VAR_UNK` to `__TAURI_BUNDLE_TYPE_VAR_NSS` replacement.
+Exactly one source marker, one corresponding installed marker, equal lengths and
+equality of every other byte are required. Missing/duplicate markers, a different
+bundle type, appended data or any other changed byte cannot pass this comparison.
+The raw hashes and `matchesRetainedInput: false` remain visible; the additional
+`bundleMarkerVerification` and `allApplicationPayloadsAccountedFor` fields describe
+only this exact transformation of the supplied candidate. They do not authenticate
+the candidate's build or establish static-component provenance or clearance.
+Thirteen payload tests pass, including unrelated-byte and marker-ambiguity checks.
+Complete NSIS command/generated-uninstaller inventory and licensing remain open.
+
+### 2026-10-29 follow-up — certifi security update
+
+Checking the recorded upstream source exposed [GHSA-6q48-6c7w-9gw2](https://github.com/certifi/python-certifi/security/advisories/GHSA-6q48-6c7w-9gw2). The retained certifi 2026.7.22 bundle includes emSign ECC Root CA - G3. Its replacement, [certifi 2026.10.19](https://pypi.org/project/certifi/2026.10.19/), removes that root. Comparing the two reviewed wheels finds 121 versus 120 distinct DER certificates, with exactly one removed and none added; the removed certificate's SHA-256 is `86a1ecba089c4a8d3bbe2734c612ba341d813e043cf9e8a862cd5c57a36bbe6b`. This establishes bundle contents, not a claim that an attack occurred or an audit of every runtime/platform trust policy.
+
+`pyproject.toml` now directly pins the already-transitive dependency to `certifi==2026.10.19`. `scripts/check_certifi_bundle.py` checks installed distribution/import identity and the exact reviewed bundle SHA-256 `50f79f98dac192b20dbf73f35c56f0b0c557ab267ff5199d1117cc1180b70785`. Engine packaging runs it before freezing and against embedded bytes before promoting the new sidecar. The shared notice-generation path also checks frozen bytes, covering the installed-acceptance builder's reused engine. Missing, duplicate, noncanonical or changed bundle entries fail. Dependency updates must change the reviewed pin and bundle policy together; a regression checks their agreement. No runtime network check, TLS bypass, Windows trust-store edit or new user consent is introduced.
+
+The historical sdist was downloaded from its exact previously recorded PyPI file URL and matches the existing 138,112-byte/hash pin. The replacement wheel and sdist were downloaded from PyPI's file host after independent version-metadata lookup, with exact sizes/hashes checked against the current simple index. Both source archives pass the existing offline comparison: seven package files and the LICENSE equal their respective verified installed wheels; all 19 source-file identities are inventoried. Source archives were read without extraction or build-script execution. Downloads and review outputs remain ignored. Historical review JSON remains unchanged; the old sidecar and analysis records were preserved before rebuilding. The historical wheel pin's installed path now refers to an upgraded environment, so it is not a reusable old-version input without an explicitly preserved matching tree.
+
+This closes the missing-sdist byte-comparison gap for both versions. HTTPS acquisition and artifact hashes do not establish source-revision attestations, certificate-generation inputs, complete corresponding source, license clearance or recipient delivery. Those remain separate gates. Historical installers containing the old bundle are review evidence, not candidates for new distribution. See [the dated security/source supplement](reviews/23f-certifi-security-review-2026-10-29.json) and [validation/progress](progress/2026-10-29.md#follow-up--certifi-security-update).
 
 ### 2026-10-29 follow-up — offline certifi source identity
 

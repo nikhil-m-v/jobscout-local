@@ -22,4 +22,10 @@ The forced-termination helper is limited to a manifest-owned acceptance desktop.
 
 ## Evidence and limits
 
+Current-package follow-up on 2026-11-01 verifies [a separate installed engine-loss
+and reopen slice](23-engine-loss.md#installed-results--2026-11-01). It uses the
+certifi-updated engine and current shell, preserves production fingerprints and
+completes guarded uninstall. It does not rerun or upgrade the historical active
+PDF-parser desktop-closure observations below to a new binary.
+
 Results are recorded in the [dated progress note](progress/2026-10-22.md). Active-search closure, arbitrary engine termination, full accessibility/OS themes, interactive installer wizard, fresh-user/upgrade/runtime acquisition, workload resources and search quality remain separate gates. Dependency notices being present does not complete native/nested-vendor license or covered-source review. This procedure establishes only the observed bounded synthetic installed behavior.

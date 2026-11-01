@@ -95,6 +95,11 @@ jobs:
           .venv/Scripts/python.exe scripts/check-packaged-lifecycle.py
           --engine apps/desktop/src-tauri/binaries/jobscout-engine-x86_64-pc-windows-msvc.exe
           --report work/ci/packaged-lifecycle.json
+      - name: Verify frozen-engine crash recovery
+        run: >-
+          .venv/Scripts/python.exe scripts/check-packaged-crash.py
+          --engine apps/desktop/src-tauri/binaries/jobscout-engine-x86_64-pc-windows-msvc.exe
+          --report work/ci/packaged-crash.json
       - name: Check lockfile stability
         run: git diff --exit-code -- package-lock.json apps/desktop/src-tauri/Cargo.lock
       - name: Retain unsigned installer
@@ -112,5 +117,6 @@ jobs:
           path: |
             ${{ steps.package.outputs.audit-path }}
             work/ci/packaged-lifecycle.json
+            work/ci/packaged-crash.json
           retention-days: 7
           if-no-files-found: error

@@ -2,9 +2,10 @@ import { spawnSync } from 'node:child_process';
 import { mkdirSync, renameSync } from 'node:fs';
 import path from 'node:path';
 import { root, pythonExecutable } from './python.mjs';
-import { sslRuntimeDataArgs } from './engine-runtime-data.mjs';
+import { checkCertifiBundle, sslRuntimeDataArgs } from './engine-runtime-data.mjs';
 
 export function buildEngine() {
+  checkCertifiBundle();
   const rust = spawnSync('rustc', ['-vV'], { encoding: 'utf8', windowsHide: true });
   const target = process.env.JOBSCOUT_TARGET ?? rust.stdout?.match(/^host: (.+)$/m)?.[1];
   if (!target) throw new Error('Rust is required to identify the desktop target. Install the Tauri prerequisites from README.md.');
@@ -24,7 +25,9 @@ export function buildEngine() {
   if (result.error || result.status !== 0) throw new Error('Engine packaging failed. Install the desktop Python dependencies first.');
   const extension = process.platform === 'win32' ? '.exe' : '';
   const engine = path.join(destination, `jobscout-engine-${target}${extension}`);
-  renameSync(path.join(destination, `jobscout-engine${extension}`), engine);
+  const built = path.join(destination, `jobscout-engine${extension}`);
+  checkCertifiBundle(built);
+  renameSync(built, engine);
   return engine;
 }
 if (process.argv[1] === path.join(root, 'scripts/build-engine.mjs')) {

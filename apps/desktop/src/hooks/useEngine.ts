@@ -1,40 +1,22 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { readEngineHealth, type EngineHealth } from '../lib/engine';
+import { useEffect, useState, useSyncExternalStore } from 'react';
+import { isTauri } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
+import { readEngineHealth } from '../lib/engine';
+import { createEngineConnection } from '../lib/engine-connection-state';
 
 export function useEngine() {
-  const [health, setHealth] = useState<EngineHealth | null>(null);
-  const [checking, setChecking] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const inFlight = useRef(false);
-  const mounted = useRef(false);
-  const hasConnection = useRef(false);
-  const lastCheck = useRef(0);
-
-  const refresh = useCallback(async () => {
-    if (inFlight.current) return;
-    inFlight.current = true;
-    setChecking(true);
-    try {
-      const next = await readEngineHealth();
-      if (mounted.current) { hasConnection.current = true; setHealth(next); setError(null); }
-    } catch {
-      if (mounted.current) { hasConnection.current = false; setHealth(null); setError('We could not reach your local workspace. Try again in a moment.'); }
-    } finally {
-      inFlight.current = false;
-      lastCheck.current = Date.now();
-      if (mounted.current) setChecking(false);
-    }
-  }, []);
-
+  const [store] = useState(() => createEngineConnection(readEngineHealth));
+  const state = useSyncExternalStore(store.subscribe, store.getSnapshot);
   useEffect(() => {
-    mounted.current = true;
-    void refresh();
+    let active = true, unlisten: (() => void) | undefined;
+    if (isTauri()) void listen('engine-stopped', () => store.stopped()).then(stop => {
+      if (active) unlisten = stop; else stop();
+    }).catch(() => { /* Health also reports a stopped engine if event setup fails. */ });
+    void store.start();
     const timer = window.setInterval(() => {
-      const interval = hasConnection.current ? 15000 : 2500;
-      if (document.visibilityState === 'visible' && Date.now() - lastCheck.current >= interval) void refresh();
+      if (document.visibilityState === 'visible') store.poll();
     }, 2500);
-    return () => { mounted.current = false; window.clearInterval(timer); };
-  }, [refresh]);
-
-  return { health, checking, error, refresh };
+    return () => { active = false; unlisten?.(); store.dispose(); window.clearInterval(timer); };
+  }, [store]);
+  return { ...state, refresh: store.refresh };
 }

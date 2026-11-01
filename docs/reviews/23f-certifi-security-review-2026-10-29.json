@@ -1,0 +1,237 @@
+{
+  "schemaVersion": 1,
+  "reviewDate": "2026-10-29",
+  "baseRevision": "ec5db1320e2c19b8487f8f4e7ac498994f0e955a",
+  "scope": "Certifi security update, source-artifact comparison, and new local package verification.",
+  "advisory": "https://github.com/certifi/python-certifi/security/advisories/GHSA-6q48-6c7w-9gw2",
+  "acquisition": {
+    "indexUrl": "https://pypi.org/simple/certifi/",
+    "indexSha256": "55938697e655745383dc87e26c87676071e0de5c59ba713e908408481841de3d",
+    "artifactHost": "files.pythonhosted.org",
+    "transport": "HTTPS",
+    "method": "Direct bounded downloads; no redirects; pinned archive sizes and SHA-256 checked against current index.",
+    "sourceRevisionAttestationVerified": false
+  },
+  "sources": [
+    {
+      "version": "2026.7.22",
+      "archives": [
+        {
+          "filename": "certifi-2026.7.22-py3-none-any.whl",
+          "sha256": "62f22742b58a1a33014a2b6b706588a8d7e2a88ae7bd1a6ebe8c992928483775",
+          "sizeBytes": 136983
+        },
+        {
+          "filename": "certifi-2026.7.22.tar.gz",
+          "sha256": "741e2c3b351ddf169a738da9f2c048608ff7f2c5cc02f1ebc6b118bb090d5d55",
+          "sizeBytes": 138112
+        }
+      ],
+      "comparedPackageFiles": 7,
+      "inventoriedSourceFiles": 19,
+      "licenseBytesMatch": true,
+      "reportSha256": "341c4e0d115e7dd10cee45d1d51889f480f0bc44b82b3a95b0792295125ccdf8"
+    },
+    {
+      "version": "2026.10.19",
+      "archives": [
+        {
+          "filename": "certifi-2026.10.19-py3-none-any.whl",
+          "sha256": "42d35340cc5b9ba78e818ddbff0c5b1c2b779de448a340fd1b989f5fa8670e1b",
+          "sizeBytes": 136464
+        },
+        {
+          "filename": "certifi-2026.10.19.tar.gz",
+          "sha256": "035c1e85572b141bf1c3a3eff0e33a8eb74917522f2559075ff8d2fea780a1ae",
+          "sizeBytes": 137598
+        }
+      ],
+      "comparedPackageFiles": 7,
+      "inventoriedSourceFiles": 19,
+      "licenseBytesMatch": true,
+      "reportSha256": "e13c9d51ed5b4c469966e4579ea2f10488bbf5892853e4b839d18e9b7723f7b0"
+    }
+  ],
+  "trustBundle": {
+    "version": "2026.10.19",
+    "sha256": "50f79f98dac192b20dbf73f35c56f0b0c557ab267ff5199d1117cc1180b70785",
+    "sizeBytes": 238856,
+    "certificateCount": 120,
+    "priorCertificateCount": 121,
+    "addedCertificates": 0,
+    "removedCertificate": {
+      "label": "emSign ECC Root CA - G3",
+      "sha256": "86a1ecba089c4a8d3bbe2734c612ba341d813e043cf9e8a862cd5c57a36bbe6b"
+    }
+  },
+  "packaging": {
+    "installer": {
+      "sha256": "d98c1e09e6e5f6149595ee8d0478acf1b90eed7402f27c3c768ef79121f3d0e5",
+      "sizeBytes": 23450876
+    },
+    "nativeArchiveVerification": {
+      "engineSha256": "fe36da40b2aa60124e91dfed72c9c9caae74eadf4771255c7443d02a39c6be06",
+      "verified": true,
+      "identityCount": 70,
+      "archiveEntryCount": 70,
+      "scope": "Embedded DLL/PYD/EXE bytes only; excludes bootloader, desktop, installer and runtime provenance"
+    },
+    "inventorySha256": "57637888cd93c112e4c55014c6c465c90e35e800a21b199dc1e3c3451eada5b6",
+    "componentCount": 342,
+    "nativeComparison": {
+      "unchanged": 46,
+      "removedOrChanged": 24,
+      "addedOrChanged": 24
+    },
+    "installerPayloads": [
+      {
+        "archivePath": "jobscout-engine.exe",
+        "sizeBytes": 19984359,
+        "sha256": "fe36da40b2aa60124e91dfed72c9c9caae74eadf4771255c7443d02a39c6be06",
+        "matchesRetainedInput": true,
+        "referenceSha256": "fe36da40b2aa60124e91dfed72c9c9caae74eadf4771255c7443d02a39c6be06",
+        "referenceBasis": "Historical audit/inventory receipt"
+      },
+      {
+        "archivePath": "jobscout-desktop.exe",
+        "sizeBytes": 14707200,
+        "sha256": "9bb3cc96106484e06371995470fdf148df51b71957562e9b2d4ad85954d18bbe",
+        "matchesRetainedInput": false,
+        "referenceSha256": "73dda5fad59160f204f8288abb64bc9b9cde21e648bbf11c41813639176359f9",
+        "referenceBasis": "Candidate build output; not a historical receipt"
+      },
+      {
+        "archivePath": "licenses/THIRD-PARTY-NOTICES.txt",
+        "sizeBytes": 965579,
+        "sha256": "7179aa53f8368a3c2363466a76f33ef92d7028376325a2dff32147bec53ccd15",
+        "matchesRetainedInput": true,
+        "referenceSha256": "7179aa53f8368a3c2363466a76f33ef92d7028376325a2dff32147bec53ccd15",
+        "referenceBasis": "Historical audit/inventory receipt"
+      }
+    ],
+    "archiveReaderSubType": "NSIS-3 Unicode BadCmd=13",
+    "completeInstallerInventory": false,
+    "desktopDifference": {
+      "exactMarkerReplacementOnly": true,
+      "before": "__TAURI_BUNDLE_TYPE_VAR_UNK",
+      "after": "__TAURI_BUNDLE_TYPE_VAR_NSS",
+      "byteOffset": 11034346,
+      "differingBytes": 3,
+      "evidence": "Build log records NSIS bundle-type patch; cached tauri-utils 2.10.0 src/platform.rs maps NSS to Nsis.",
+      "sourceFileSha256": "5e12803d943b7728147c6223fe3e49ba532a0485b122fc47537398160f4092bc",
+      "limitation": "Raw verifier mismatch preserved; no automatic normalization or historical desktop clearance."
+    }
+  },
+  "validation": {
+    "checks": [
+      {
+        "check": "engine",
+        "passed": true,
+        "exitCode": 0,
+        "error": null
+      },
+      {
+        "check": "frontend",
+        "passed": true,
+        "exitCode": 0,
+        "error": null
+      },
+      {
+        "check": "reports",
+        "passed": true,
+        "exitCode": 0,
+        "error": null
+      },
+      {
+        "check": "notices",
+        "passed": true,
+        "exitCode": 0,
+        "error": null
+      },
+      {
+        "check": "shortlist",
+        "passed": true,
+        "exitCode": 0,
+        "error": null
+      },
+      {
+        "check": "candidate-pool",
+        "passed": true,
+        "exitCode": 0,
+        "error": null
+      },
+      {
+        "check": "quality-plans",
+        "passed": true,
+        "exitCode": 0,
+        "error": null
+      },
+      {
+        "check": "typecheck",
+        "passed": true,
+        "exitCode": 0,
+        "error": null
+      },
+      {
+        "check": "build",
+        "passed": true,
+        "exitCode": 0,
+        "error": null
+      }
+    ],
+    "testCounts": {
+      "engine": 463,
+      "frontend": 162,
+      "reports": 32,
+      "dependencyReview": 67
+    },
+    "frozenLifecycle": {
+      "schema_version": 1,
+      "passed": true,
+      "scope": "synthetic-frozen-sidecar",
+      "engine_sha256": "fe36da40b2aa60124e91dfed72c9c9caae74eadf4771255c7443d02a39c6be06",
+      "cases": [
+        {
+          "owner_exit": "normal",
+          "passed": true,
+          "workspace_health_verified": true,
+          "frozen_parser": true,
+          "active_upload_cancelled": true,
+          "listener_closed": true,
+          "shutdown_seconds": 0.672
+        },
+        {
+          "owner_exit": "forced",
+          "passed": true,
+          "workspace_health_verified": true,
+          "frozen_parser": true,
+          "active_upload_cancelled": true,
+          "listener_closed": true,
+          "shutdown_seconds": 0.672
+        }
+      ],
+      "installed_desktop_verified": false,
+      "restart_saved_profile_verified": true,
+      "database_integrity_verified": true
+    },
+    "oldBuildEnvironmentRejected": true,
+    "oldFrozenSidecarRejected": true,
+    "sharedInstallerPathRejectsOldSidecar": true
+  },
+  "hostedBaseline": {
+    "revision": "ec5db1320e2c19b8487f8f4e7ac498994f0e955a",
+    "url": "https://github.com/nikhil-m-v/jobscout-local/actions/runs/40896400589",
+    "conclusion": "success",
+    "evidence": "Run and job metadata only; artifacts not downloaded in this session.",
+    "coversLocalSecurityUpdate": false
+  },
+  "unresolved": [
+    "Exact source-revision attestations and certificate-generation inputs.",
+    "Complete corresponding source, recipient source location and delivery.",
+    "Runtime/vendor provenance and the 24 changed native identities in the new package.",
+    "Full installer/uninstaller inventory, static vendors and license dispositions.",
+    "Installed desktop/WebView and hosted acceptance of this new local package; other release gates."
+  ],
+  "licenseClearance": "unresolved",
+  "releaseApproved": false
+}

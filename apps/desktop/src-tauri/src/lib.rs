@@ -1,7 +1,8 @@
 use std::sync::{Arc, Mutex};
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::time::Duration;
 use base64::Engine;
-use tauri::Manager;
+use tauri::{Emitter, Manager};
 use tauri_plugin_shell::{process::{CommandChild, CommandEvent}, ShellExt};
 
 struct EngineState {
@@ -9,10 +10,12 @@ struct EngineState {
     child: Mutex<Option<CommandChild>>,
     token: String,
     client: reqwest::Client,
+    stopped: AtomicBool,
 }
 
 #[tauri::command]
 async fn engine_health(state: tauri::State<'_, Arc<EngineState>>) -> Result<serde_json::Value, String> {
+    if state.stopped.load(Ordering::SeqCst) { return Err("Workspace stopped".into()); }
     let endpoint = state.endpoint.lock().map_err(|_| "Workspace unavailable")?
         .clone().ok_or("Workspace is starting")?;
     state.client.get(format!("{endpoint}/api/v1/health"))
@@ -294,6 +297,7 @@ async fn local_assistance(
 pub fn run() {
     let state = Arc::new(EngineState {
         endpoint: Mutex::new(None), child: Mutex::new(None),
+        stopped: AtomicBool::new(false),
         token: format!("{}{}", uuid::Uuid::new_v4().simple(), uuid::Uuid::new_v4().simple()),
         client: reqwest::Client::builder().timeout(Duration::from_secs(5))
             .no_proxy().redirect(reqwest::redirect::Policy::none())
@@ -317,6 +321,7 @@ pub fn run() {
                 .args(["--data-dir", &directory.to_string_lossy(), "--port", "0"])
                 .spawn()?;
             *state.child.lock().map_err(|_| "Could not store engine process")? = Some(child);
+            let events_app = app.handle().clone();
             tauri::async_runtime::spawn(async move {
                 while let Some(event) = events.recv().await {
                     match event {
@@ -333,12 +338,14 @@ pub fn run() {
                             }
                         }
                         CommandEvent::Terminated(_) => {
-                            if let Ok(mut endpoint) = state.endpoint.lock() { *endpoint = None; }
                             break;
                         }
                         _ => {}
                     }
                 }
+                state.stopped.store(true, Ordering::SeqCst);
+                if let Ok(mut endpoint) = state.endpoint.lock() { *endpoint = None; }
+                let _ = events_app.emit("engine-stopped", ());
             });
             Ok(())
         })

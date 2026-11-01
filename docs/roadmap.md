@@ -4,7 +4,28 @@ Release scope adopted 2026-10-10: **v1.0 is the model-free Windows core through 
 
 Baseline: 2026-09-29. Rows remain small meaningful deliveries; difficult milestones can span several sessions. Reorder when evidence warrants it and preserve a working app. No deadline, automation or reminder is implied.
 
-## Current implementation — milestone 23 hardening, 2026-10-20
+## Current implementation — milestone 23 hardening, 2026-11-01
+
+The [current hardening continuation](progress/2026-11-01.md) completes the certifi
+security-update handoff, fixes terminal engine-loss UI recovery, adds a CI-gated
+real frozen-parser crash/restart check and verifies that behavior in a separate
+installed production-code identity. Current full validation and paired unsigned
+packaging pass. The exact installer application payloads are accounted for,
+including the narrowly verified Tauri marker transformation; complete installer
+and license review remain separate. Nine current-engine resource runs pass the
+existing provisional investigation thresholds with sparse-sampling/warm-cache
+limits. See [engine-loss scope](23-engine-loss.md) and [measurements](resource-baseline.md).
+
+Milestone 23 is **in progress**, not release-approved. Next is a finite installed
+active-search closure check with synthetic transport, then ordinary wizard,
+shortcuts/fresh-user/upgrade and full accessibility/theme acceptance. Current
+hosted/PR/enforced checks, broader desktop resources, licensing/source delivery,
+end-user terms/signing/destination/distribution and milestone-21 human usefulness
+remain open. No live acquisition or release publication is authorized by this
+checkpoint. Do not repeat passed finite engine-loss checks without a changed
+binary or demonstrated regression.
+
+## Earlier implementation checkpoint — 2026-10-20
 
 Owner-directed distribution change: future JobScout source is private; users receive the installer. [Decision 0042](architecture/0042-private-source-installer-distribution.md) preserves historical/third-party licenses and adds synthetic CI plus a guarded installer-only export. Amendment 2026-10-21: the owner permits source pushes regardless of visibility and will make the repository private at the first major release. Repository visibility does not gate edits, tests, CI, builds, commits or authorized pushes. Synthetic reports and build artifacts may be uploaded while public. Source visibility and installer-only distribution are first-major-release checkpoints; licensing/notices and release review remain open.
 
@@ -204,6 +225,10 @@ Completed bounded [installed normal/forced desktop closure during real parsing](
 [Exact frozen native-input evidence and source-delivery plan](23-native-dependency-review.md) implemented. Packaging reconciles embedded native bytes with the analysis inventory and binds the check to the exact engine hash. Offline source preparation retains five lockfile-verified Cargo archives and compares their cached source contents; follow-up local certifi wheel evidence verifies 11 files, two frozen data entries and both present frozen modules, with upstream source authentication/completeness still unresolved. The dated native review maps all 69 unknown-owner identities to retained sidecar bytes and recorded build inputs and identifies 24 changed on-disk inputs. Retained-installer extraction now confirms that engine and notice payload; desktop-candidate drift and the reader's incomplete NSIS-command support remain explicit. Plugin/bootloader byte evidence is recorded. Exact upstream runtime/vendor build provenance, complete installer/static-component dispositions, license clearances and recipient source delivery remain open.
 
 ## Scope controls
+
+The [2026-11-01 engine-loss slice](23-engine-loss.md) additionally completes
+bounded frozen and installed abrupt-engine-loss/reopen checks and current engine
+measurements. It does not close the broader milestone-23 release gates above.
 
 Milestone 23C adds [installer dependency notices](23-dependency-notices.md), version-bound notice overrides and a private inventory. It removes pytest from the packaged engine. Package-level notice collection does not close source-availability/native-license review, signing, hosted CI or installed acceptance.
 

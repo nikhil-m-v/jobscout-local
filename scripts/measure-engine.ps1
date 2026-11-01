@@ -1,16 +1,32 @@
-param([int]$Runs = 3, [ValidateSet('docx', 'pdf', 'shortlist')][string]$Format = 'docx')
+param([int]$Runs = 3, [ValidateSet('docx', 'pdf', 'shortlist')][string]$Format = 'docx', [string]$EnginePath)
 $ErrorActionPreference = 'Stop'
 if ($Runs -lt 1 -or $Runs -gt 10) { throw 'Runs must be between 1 and 10.' }
 $root = Split-Path $PSScriptRoot -Parent
-$engine = Join-Path $root 'apps/desktop/src-tauri/target/release/jobscout-engine.exe'
+$engine = if ($EnginePath) { [IO.Path]::GetFullPath($EnginePath) } else { Join-Path $root 'apps/desktop/src-tauri/target/release/jobscout-engine.exe' }
 if (!(Test-Path -LiteralPath $engine)) { throw 'Run npm run desktop:build first.' }
+$engineIdentity = [pscustomobject]@{ sha256 = (Get-FileHash -LiteralPath $engine -Algorithm SHA256).Hash.ToLowerInvariant(); bytes = (Get-Item -LiteralPath $engine).Length }
+$measuredAt = [DateTime]::UtcNow.ToString('o')
+$hardware = [pscustomobject]@{
+    os = [Runtime.InteropServices.RuntimeInformation]::OSDescription
+    process_architecture = [Runtime.InteropServices.RuntimeInformation]::ProcessArchitecture.ToString()
+    logical_processors = [Environment]::ProcessorCount
+    physical_memory_bytes = (Get-CimInstance Win32_ComputerSystem -Property TotalPhysicalMemory).TotalPhysicalMemory
+}
+function Assert-EngineUnchanged {
+    if ((Get-Item -LiteralPath $engine).Length -ne $engineIdentity.bytes -or (Get-FileHash -LiteralPath $engine -Algorithm SHA256).Hash.ToLowerInvariant() -ne $engineIdentity.sha256) { throw 'Engine changed during measurement; no report will be emitted.' }
+}
+function Hash-Bytes([byte[]]$bytes) {
+    return [Convert]::ToHexString([Security.Cryptography.SHA256]::HashData($bytes)).ToLowerInvariant()
+}
 Add-Type -AssemblyName System.Net.Http
 function Get-Bytes($directory) {
-    $sum = (Get-ChildItem -LiteralPath $directory -File -Recurse -ErrorAction SilentlyContinue | Measure-Object Length -Sum).Sum
+    $sum = (Get-ChildItem -LiteralPath $directory -File -Recurse -ErrorAction Stop | Measure-Object Length -Sum).Sum
     if ($null -eq $sum) { return 0 }; return [long]$sum
 }
 $results = @()
 for ($run = 1; $run -le $Runs; $run++) {
+    Assert-EngineUnchanged
+    $runResult = $null; $started = $false; $known = @{}
     $directory = Join-Path $root ('.local/resource-check/' + [guid]::NewGuid().ToString('N'))
     $temp = Join-Path $directory 'temp'
     New-Item -ItemType Directory -Path $temp -Force | Out-Null
@@ -31,19 +47,25 @@ for ($run = 1; $run -le $Runs; $run++) {
     $timer = [System.Diagnostics.Stopwatch]::StartNew()
     try {
         $process.Start() | Out-Null
+        $started = $true
         $line = $process.StandardOutput.ReadLineAsync()
         while (!$line.IsCompleted -and $timer.Elapsed.TotalSeconds -lt 30) { Start-Sleep -Milliseconds 50 }
         if (!$line.IsCompleted -or $process.HasExited) { throw 'Packaged engine startup failed or timed out.' }
-        $port = ($line.Result | ConvertFrom-Json).port
+        $binding = $line.Result | ConvertFrom-Json
+        if ($binding.event -ne 'bound') { throw 'Missing engine bound handshake.' }
+        $port = $binding.port
         if (!$port -or $port -lt 1 -or $port -gt 65535) { throw 'Invalid engine handshake.' }
         $url = "http://127.0.0.1:$port/api/v1"
         $response = $client.GetAsync("$url/health").GetAwaiter().GetResult()
         $response.EnsureSuccessStatusCode() | Out-Null
+        $health = $response.Content.ReadAsStringAsync().GetAwaiter().GetResult() | ConvertFrom-Json
+        if ($health.status -ne 'ready' -or $health.database -ne 'ready') { throw 'Packaged workspace did not report ready.' }
         $response.Dispose()
         $ready = [math]::Round($timer.Elapsed.TotalSeconds, 2)
         Start-Sleep -Seconds 2
         function Get-TreeMemory {
-            $all = @(Get-CimInstance Win32_Process -Property ProcessId,ParentProcessId)
+            if ($process.HasExited) { throw 'Measured engine exited during sampling.' }
+            $all = @(Get-CimInstance Win32_Process -Property ProcessId,ParentProcessId,CreationDate)
             $ids = @($process.Id)
             do {
                 $next = @($all | Where-Object { $_.ParentProcessId -in $ids -and $_.ProcessId -notin $ids } | ForEach-Object { [int]$_.ProcessId })
@@ -52,8 +74,16 @@ for ($run = 1; $run -le $Runs; $run++) {
             $working = 0L; $private = 0L
             foreach ($id in $ids) {
                 $p = Get-Process -Id $id -ErrorAction SilentlyContinue
-                if ($p) { $working += $p.WorkingSet64; $private += $p.PrivateMemorySize64 }
+                $record = $all | Where-Object { $_.ProcessId -eq $id } | Select-Object -First 1
+                # CIM timestamps have microsecond precision; Process timestamps
+                # may retain a final 100ns digit. Compare the common precision.
+                $ticks = if ($p) { $p.StartTime.ToUniversalTime().Ticks } else { 0L }
+                if ($p -and $record -and ($ticks - ($ticks % 10)) -eq $record.CreationDate.ToUniversalTime().Ticks) {
+                    $working += $p.WorkingSet64; $private += $p.PrivateMemorySize64
+                    $known[$id] = $p.StartTime.ToUniversalTime().Ticks
+                }
             }
+            if ($working -le 0 -or $private -le 0) { throw 'Engine memory could not be sampled with verified process identities.' }
             return @{ working = $working; private = $private }
         }
         $idle = Get-TreeMemory
@@ -63,12 +93,15 @@ for ($run = 1; $run -le $Runs; $run++) {
             $case = $fixture.cases | Where-Object { $_.id -eq 'bounded-50' }
             if (!$case -or $case.candidates.Count -ne 50) { throw 'Missing bounded synthetic shortlist fixture.' }
             $review = @{ text = $case.review; reviewed = $true; candidates = @($case.candidates | ForEach-Object { @{ title = $_.title; snippet = $_.snippet } }) } | ConvertTo-Json -Depth 8 -Compress
+            $fixtureHash = Hash-Bytes ([Text.Encoding]::UTF8.GetBytes($review))
             $content = [System.Net.Http.StringContent]::new($review, [System.Text.Encoding]::UTF8, 'application/json')
             $content.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::new('application/json')
             $peak = $idle.working; $peakPrivate = $idle.private
             $analysis = $client.PostAsync("$url/assistance", $content)
+            $sampleCount = 0
             while (!$analysis.IsCompleted) {
                 $sample = Get-TreeMemory
+                $sampleCount++
                 $peak = [math]::Max($peak, $sample.working)
                 $peakPrivate = [math]::Max($peakPrivate, $sample.private)
                 Start-Sleep -Milliseconds 100
@@ -91,7 +124,8 @@ for ($run = 1; $run -le $Runs; $run++) {
                 $latencies += [math]::Round($requestTimer.Elapsed.TotalMilliseconds, 2)
                 $response.Dispose(); $content.Dispose()
             }
-            $results += [pscustomobject]@{ run = $run; format = $Format; candidates = 50; ready_seconds = $ready; idle_working_bytes = $idle.working; idle_private_bytes = $idle.private; sampled_analysis_working_bytes = $peak; sampled_analysis_private_bytes = $peakPrivate; warm_analysis_request_ms = $latencies; extracted_temp_bytes = $extracted; data_bytes = (Get-Bytes $directory) - (Get-Bytes $temp) }
+            $runResult = [pscustomobject]@{ run = $run; format = $Format; fixture_sha256 = $fixtureHash; candidates = 50; ready_seconds = $ready; idle_working_bytes = $idle.working; idle_private_bytes = $idle.private; workload_memory_samples = $sampleCount; sampled_analysis_working_bytes = $peak; sampled_analysis_private_bytes = $peakPrivate; warm_analysis_request_ms = $latencies; extracted_temp_bytes = $extracted; data_bytes = (Get-Bytes $directory) - (Get-Bytes $temp) }
+            $results += $runResult
             continue
         }
         # Generate synthetic documents; no user file is accepted by this benchmark.
@@ -140,10 +174,13 @@ for ($run = 1; $run -le $Runs; $run++) {
             $mime = 'application/pdf'
         }
         $content.Headers.ContentType = [System.Net.Http.Headers.MediaTypeHeaderValue]::new($mime)
+        $fixtureHash = Hash-Bytes ($content.ReadAsByteArrayAsync().GetAwaiter().GetResult())
         $import = $client.PutAsync("$url/imports/$taskId/$Format", $content)
         $peak = $idle.working; $peakPrivate = $idle.private
+        $sampleCount = 0
         while (!$import.IsCompleted) {
             $sample = Get-TreeMemory
+            $sampleCount++
             $peak = [math]::Max($peak, $sample.working)
             $peakPrivate = [math]::Max($peakPrivate, $sample.private)
             Start-Sleep -Milliseconds 100
@@ -151,14 +188,33 @@ for ($run = 1; $run -le $Runs; $run++) {
         $importResponse = $import.GetAwaiter().GetResult()
         $importResponse.EnsureSuccessStatusCode() | Out-Null
         $body = $importResponse.Content.ReadAsStringAsync().GetAwaiter().GetResult() | ConvertFrom-Json
-        if (!$body.text) { throw 'Synthetic import did not return extracted text.' }
+        if (!$body.text -or !$body.text.Contains('Synthetic engineer profile. Python SQL accessible software.')) { throw 'Synthetic import did not return the generated fixture text.' }
         $importResponse.Dispose(); $content.Dispose()
-        $results += [pscustomobject]@{ run = $run; format = $Format; ready_seconds = $ready; idle_working_bytes = $idle.working; idle_private_bytes = $idle.private; sampled_import_working_bytes = $peak; sampled_import_private_bytes = $peakPrivate; extracted_temp_bytes = $extracted; data_bytes = (Get-Bytes $directory) - (Get-Bytes $temp) }
+        $runResult = [pscustomobject]@{ run = $run; format = $Format; fixture_sha256 = $fixtureHash; ready_seconds = $ready; idle_working_bytes = $idle.working; idle_private_bytes = $idle.private; workload_memory_samples = $sampleCount; sampled_import_working_bytes = $peak; sampled_import_private_bytes = $peakPrivate; extracted_temp_bytes = $extracted; data_bytes = (Get-Bytes $directory) - (Get-Bytes $temp) }
+        $results += $runResult
     } finally {
         $client.Dispose()
-        if (!$process.HasExited) { $process.Kill($true); $process.WaitForExit() }
+        if ($started -and !$process.HasExited) { $process.Kill($true); if (!$process.WaitForExit(10000)) { throw 'Benchmark engine did not terminate.' } }
+        $cleanupDeadline = [DateTime]::UtcNow.AddSeconds(10)
+        do {
+            $remaining = @($known.GetEnumerator() | Where-Object {
+                $member = Get-Process -Id $_.Key -ErrorAction SilentlyContinue
+                $member -and $member.StartTime.ToUniversalTime().Ticks -eq $_.Value
+            })
+            if ($remaining.Count) { Start-Sleep -Milliseconds 100 }
+        } while ($remaining.Count -and [DateTime]::UtcNow -lt $cleanupDeadline)
+        if ($remaining.Count) { throw 'A sampled benchmark process survived cleanup; no report will be emitted.' }
+        if ($runResult) { $runResult | Add-Member -NotePropertyName remaining_sampled_owned_processes -NotePropertyValue 0 }
         $process.Dispose()
         # Keep isolated benchmark files for inspection; never delete existing app data.
     }
 }
-$results | ConvertTo-Json
+Assert-EngineUnchanged
+[pscustomobject]@{
+    schema_version = 1
+    measured_at_utc = $measuredAt
+    engine = $engineIdentity
+    hardware = $hardware
+    scope = 'Fresh synthetic workspaces; warm filesystem cache; engine tree only. Health includes the existing optional local-runtime loopback status probe; no inference, provider, vault, page or download operation. Summed working sets may count shared pages repeatedly. CIM enumeration plus 100ms pauses can miss brief workload peaks. Extraction/data sizes are pre-cleanup snapshots; isolated synthetic workspace files are retained. Cleanup forcibly stops only the benchmark tree; this is not normal shutdown acceptance. No desktop, installed footprint, online search, Results rendering, reboot-cold startup or hardware requirement is established.'
+    runs = $results
+} | ConvertTo-Json -Depth 6

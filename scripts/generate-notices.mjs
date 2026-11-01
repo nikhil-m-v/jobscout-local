@@ -4,6 +4,7 @@ import { mkdirSync, mkdtempSync, readFileSync, writeFileSync } from 'node:fs';
 import path from 'node:path';
 import { root, pythonExecutable } from './python.mjs';
 import { checkBundleConfig } from './installer-export.mjs';
+import { checkCertifiBundle } from './engine-runtime-data.mjs';
 
 export function checkNoticeInventory(directory, engine) {
   const inventory = JSON.parse(readFileSync(path.join(directory, 'inventory.json'), 'utf8'));
@@ -25,6 +26,8 @@ export function checkNoticeInventory(directory, engine) {
 
 export function generateNotices(engine) {
   if (!engine) throw new Error('Pass the exact frozen engine to dependency notice collection.');
+  // Also covers the installed-acceptance builder, which reuses a frozen engine.
+  checkCertifiBundle(engine);
   const npm = process.env.npm_execpath;
   if (!npm) throw new Error('Build through npm run desktop:build or npm run package:installer.');
   checkBundleConfig(JSON.parse(readFileSync(path.join(root, 'apps/desktop/src-tauri/tauri.conf.json'), 'utf8')));
