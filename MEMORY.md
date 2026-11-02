@@ -1,6 +1,51 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-11-01 (milestone 23 engine-loss, certificate update and resource hardening). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-11-02 (milestone 23 finite synthetic installed active-search closure). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — finite synthetic installed active-search closure
+
+Publication follow-up: the owner requested committing and pushing this reviewed
+source/test/documentation payload to the existing remote. Uncommitted/no-push
+statements below describe implementation. Generated installers and local evidence
+remain ignored and excluded; publication does not grant release approval.
+
+Completed the Nov 1 next action: marked normal and forced installed desktop closure
+during broader discovery with a fully synthetic transport. The acceptance-only
+frozen entry uses production shell/application/search/server/owner code,
+`MockTransport`, an in-memory synthetic key and offline model stub. No production
+engine hook, live-provider mode or application/dependency/setup change. The exact
+production engine/desktop/installer hashes remain unchanged from Nov 1.
+
+Both final cases verify 2 attempted / 1 completed / 1 active immediately before
+closure, shutdown before cancellation, 1 cancelled / 0 active afterward, no third
+dispatch, explicit listener refusal and zero snapshot-owned survivors. Complete
+saved profile/job/Interview/note responses and SQLite integrity survive; connected
+restarts start no search automatically and the recovered tracker renders. Guarded
+uninstall removes test files/registration/storage with production fingerprints
+unchanged. Fixed a demonstrated snapshot PID-reuse false ownership case with
+retained handles and creation-order guards; no unrelated process was killed.
+Corrected test-only self-pointer/AppData projection guards and shell/refusal
+handling; earlier reports remain separate from final acceptance.
+
+Validation passes 86 offline Python harness/packaging/ownership, 32 JavaScript
+packaging/report and 9 production shutdown tests, plus acceptance typecheck/build,
+frozen/native/NSIS packaging and evidence reconciliation. Full app suites and
+hosted execution are not newly claimed. Synthetic installer SHA-256
+`b54e14087be426a4d37234fb14911ba6c1f045614460f3efac2c89d82dc7df73`;
+synthetic engine `2b91e2b889503de2d4351b14a686347a21025d9452a0ea51e8b3e95c03b481c0`.
+Ignored evidence: `work/ci/installed-search-2026-11-02/summary.json`, final normal/
+forced reports, ten launch journals, saved-record/idle/UI and uninstall receipts.
+Acceptance build metadata now declares `synthetic-search`; it is not the exact
+production frozen engine. See [procedure](docs/23-installed-search.md) and
+[progress](docs/progress/2026-11-02.md).
+
+Next: ordinary wizard/shortcuts, fresh-user/runtime and genuine upgrade, then
+accessibility/theme/OS acceptance. Keep remaining milestone-23 hosted/package/
+resource, licensing/source delivery/terms/signing/distribution gates and separate
+milestone-21 human usefulness open. Do not repeat passed engine-loss/search slices
+without changed binaries/regression/new scope. Provider requests stayed disabled;
+no actual key read, result-page/model/download, repository-setting, commit, push
+or release action. This session's source/test/docs remain uncommitted.
 
 ## Current checkpoint — milestone 23 engine-loss and release hardening
 

@@ -6,6 +6,8 @@ $directory = [IO.Path]::GetFullPath((Join-Path $root '.local/installed-acceptanc
 $manifestPath = Join-Path $directory 'installation.json'
 $build = Get-Content -Raw -LiteralPath (Join-Path $directory 'build.json') | ConvertFrom-Json
 if ($build.identifier -ne 'app.jobscout.installedacceptance' -or $build.product -ne 'JobScout acceptance' -or $build.version -ne '0.1.0') { throw 'Unexpected acceptance build identity.' }
+if ($build.mode -and $build.mode -notin @('production-engine','synthetic-search')) { throw 'Unexpected acceptance engine mode.' }
+if ($build.mode -eq 'synthetic-search' -and (!$build.wrapper_sha256 -or $build.engine_sha256 -eq $build.production_before.engine)) { throw 'Synthetic engine must have a distinct hash-bound wrapper.' }
 $registration = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\JobScout acceptance'
 $settingsPath = 'HKCU:\Software\jobscout\JobScout acceptance'
 $roaming = [Environment]::GetFolderPath('ApplicationData')
@@ -50,9 +52,13 @@ function Start-Ticks($value) {
     return [DateTimeOffset]::Parse($value, [Globalization.CultureInfo]::InvariantCulture).UtcDateTime.Ticks
 }
 function Owned-Processes($state) {
+    $desktopRecords = @($state.owned | Where-Object name -eq 'jobscout-desktop')
+    if ($state.owned.Count -and $desktopRecords.Count -ne 1) { throw 'Snapshot must identify one owned desktop.' }
     return @($state.owned | Where-Object {
         $member = Get-Process -Id $_.id -ErrorAction SilentlyContinue
-        $member -and $member.StartTime.ToUniversalTime().Ticks -eq (Start-Ticks $_.started)
+        # Old snapshots could include a pre-existing process whose historical
+        # parent PID was later reused for this desktop. It cannot be our child.
+        $member -and (Start-Ticks $_.started) -ge (Start-Ticks $desktopRecords[0].started) -and $member.StartTime.ToUniversalTime().Ticks -eq (Start-Ticks $_.started)
     })
 }
 if ($Action -eq 'Install') {
@@ -87,10 +93,10 @@ if ($Action -eq 'Install') {
     Invoke-Package $setup "/S /NS /D=$destination"
     Assert-Registration $destination
     if ((Get-FileHash -LiteralPath (Join-Path $destination 'jobscout-desktop.exe')).Hash -ne (Expected-DesktopHash)) { throw 'Installed desktop differs from the acceptance build.' }
-    if ((Get-FileHash -LiteralPath (Join-Path $destination 'jobscout-engine.exe')).Hash.ToLowerInvariant() -ne $build.engine_sha256) { throw 'Installed sidecar differs from production.' }
+    if ((Get-FileHash -LiteralPath (Join-Path $destination 'jobscout-engine.exe')).Hash.ToLowerInvariant() -ne $build.engine_sha256) { throw 'Installed sidecar differs from the declared acceptance engine.' }
     if (!$build.notice_sha256 -or (Get-FileHash -LiteralPath (Join-Path $destination 'licenses/THIRD-PARTY-NOTICES.txt')).Hash.ToLowerInvariant() -ne $build.notice_sha256) { throw 'Installed dependency notices differ from the reviewed bundle.' }
     Assert-ProductionUnchanged $state.before
-    [pscustomobject]@{ installed='pass'; exact_desktop_and_production_engine='pass'; dependency_notices='pass'; empty_data_and_vault_namespaces='pass'; production_profiles_unchanged='pass'; installed_bytes=(Get-ChildItem -LiteralPath $destination -File -Recurse | Measure-Object Length -Sum).Sum } | ConvertTo-Json
+    [pscustomobject]@{ installed='pass'; exact_manifest_desktop_and_engine='pass'; engine_mode=$(if ($build.mode) { $build.mode } else { 'production-engine' }); dependency_notices='pass'; empty_data_and_vault_namespaces='pass'; production_profiles_unchanged='pass'; installed_bytes=(Get-ChildItem -LiteralPath $destination -File -Recurse | Measure-Object Length -Sum).Sum } | ConvertTo-Json
     exit
 }
 $state = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
@@ -101,22 +107,36 @@ if ($Action -eq 'Snapshot') {
     $all = @(Get-CimInstance Win32_Process -Property ProcessId,ParentProcessId,ExecutablePath,Name)
     $parents = @($all | Where-Object { $_.ExecutablePath -eq (Join-Path $destination 'jobscout-desktop.exe') })
     if ($parents.Count -ne 1) { throw 'Expected exactly one installed test desktop.' }
-    $ids = @([int]$parents[0].ProcessId)
+    $desktopProcess = Get-Process -Id $parents[0].ProcessId
+    $desktopHandle = $desktopProcess.Handle
+    if ($desktopHandle -eq [IntPtr]::Zero -or $desktopProcess.HasExited -or $desktopProcess.Path -ne (Join-Path $destination 'jobscout-desktop.exe')) { throw 'Owned desktop changed during snapshot.' }
+    $captured = @{}; $captured[[int]$desktopProcess.Id] = $desktopProcess
+    $staleParentLinks = @{}
     do {
-        $next = @($all | Where-Object { $_.ParentProcessId -in $ids -and $_.ProcessId -notin $ids } | ForEach-Object { [int]$_.ProcessId })
-        $ids += $next
-    } while ($next.Count)
+        $added = 0
+        foreach ($candidate in @($all | Where-Object { $captured.ContainsKey([int]$_.ParentProcessId) -and !$captured.ContainsKey([int]$_.ProcessId) })) {
+            $parentProcess = $captured[[int]$candidate.ParentProcessId]
+            if ($parentProcess.HasExited) { throw 'Owned parent exited during snapshot.' }
+            $member = Get-Process -Id $candidate.ProcessId -ErrorAction SilentlyContinue
+            if (!$member) { continue }
+            $retainedHandle = $member.Handle
+            if ($retainedHandle -eq [IntPtr]::Zero -or $member.HasExited) { continue }
+            if ($member.StartTime.ToUniversalTime().Ticks -lt $parentProcess.StartTime.ToUniversalTime().Ticks) { $staleParentLinks[[int]$member.Id]=$true; continue }
+            if ($candidate.ExecutablePath -and $member.Path -ne $candidate.ExecutablePath) { throw 'Owned child executable changed during snapshot.' }
+            $captured[[int]$member.Id] = $member; $added++
+        }
+    } while ($added)
+    if ($desktopProcess.HasExited) { throw 'Owned desktop exited during snapshot.' }
     $members = @(); $working = 0L; $private = 0L
-    foreach ($id in $ids) {
-        $member = Get-Process -Id $id -ErrorAction SilentlyContinue
-        if ($member) {
-            $members += [pscustomobject]@{ id=$id; started=$member.StartTime.ToUniversalTime().ToString('o'); name=$member.ProcessName }
+    foreach ($member in $captured.Values) {
+        if (!$member.HasExited) {
+            $members += [pscustomobject]@{ id=$member.Id; started=$member.StartTime.ToUniversalTime().ToString('o'); name=$member.ProcessName }
             $working += $member.WorkingSet64; $private += $member.PrivateMemorySize64
         }
     }
     $state.owned = $members
     $state | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
-    [pscustomobject]@{ owned_processes=$members.Count; engine_processes=@($members | Where-Object name -eq 'jobscout-engine').Count; webview_processes=@($members | Where-Object name -eq 'msedgewebview2').Count; working_mib=[math]::Round($working/1MB,2); private_mib=[math]::Round($private/1MB,2); production_profiles_unchanged='pass'; scope='One installed acceptance snapshot; not peak RAM or live search.' } | ConvertTo-Json
+    [pscustomobject]@{ owned_processes=$members.Count; engine_processes=@($members | Where-Object name -eq 'jobscout-engine').Count; webview_processes=@($members | Where-Object name -eq 'msedgewebview2').Count; stale_parent_links_excluded=$staleParentLinks.Count; working_mib=[math]::Round($working/1MB,2); private_mib=[math]::Round($private/1MB,2); production_profiles_unchanged='pass'; scope='One installed acceptance snapshot; not peak RAM or live search.' } | ConvertTo-Json
     exit
 }
 $remaining = Owned-Processes $state
@@ -157,7 +177,8 @@ if ($Action -eq 'Terminate') {
     $desktop = @($remaining | Where-Object name -eq 'jobscout-desktop')
     if ($desktop.Count -ne 1) { throw 'Snapshot must identify exactly one live owned desktop.' }
     $member = Get-Process -Id $desktop[0].id
-    if ($member.Path -ne (Join-Path $destination 'jobscout-desktop.exe') -or $member.StartTime.ToUniversalTime().Ticks -ne (Start-Ticks $desktop[0].started)) { throw 'Owned desktop identity changed.' }
+    $retainedHandle = $member.Handle
+    if ($retainedHandle -eq [IntPtr]::Zero -or $member.HasExited -or $member.Path -ne (Join-Path $destination 'jobscout-desktop.exe') -or $member.StartTime.ToUniversalTime().Ticks -ne (Start-Ticks $desktop[0].started)) { throw 'Owned desktop identity changed.' }
     if ((Get-FileHash -LiteralPath $member.Path).Hash -ne (Expected-DesktopHash)) { throw 'Owned desktop executable changed.' }
     $member.Kill()
     if (!$member.WaitForExit(10000)) { throw 'Owned desktop termination did not finish.' }

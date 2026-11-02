@@ -28,4 +28,10 @@ certifi-updated engine and current shell, preserves production fingerprints and
 completes guarded uninstall. It does not rerun or upgrade the historical active
 PDF-parser desktop-closure observations below to a new binary.
 
-Results are recorded in the [dated progress note](progress/2026-10-22.md). Active-search closure, arbitrary engine termination, full accessibility/OS themes, interactive installer wizard, fresh-user/upgrade/runtime acquisition, workload resources and search quality remain separate gates. Dependency notices being present does not complete native/nested-vendor license or covered-source review. This procedure establishes only the observed bounded synthetic installed behavior.
+The [2026-11-02 finite synthetic-search follow-up](23-installed-search.md) passes
+normal/forced desktop closure during active broader discovery, listener/owned-tree
+exit, saved-record restart and guarded uninstall. It uses a distinct mock-transport
+frozen engine with production search/server/owner code; no exact production-engine
+or live-provider search acceptance is claimed.
+
+Historical import results are recorded in the [dated progress note](progress/2026-10-22.md); the engine-loss and synthetic-search follow-ups above establish their own bounded slices. Full accessibility/OS themes, interactive installer wizard, fresh-user/upgrade/runtime acquisition, workload resources and search quality remain separate gates. Dependency notices being present does not complete native/nested-vendor license or covered-source review. These procedures establish only the observed bounded installed behavior.
