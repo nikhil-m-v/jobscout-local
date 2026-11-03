@@ -1,6 +1,49 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-11-02 (milestone 23 finite synthetic installed active-search closure). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-11-03 (milestone 23 finite installer wizard and shortcut acceptance). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — finite installer wizard and shortcuts
+
+Continued clean `a67d578` with the Nov 2 next action. Added guarded test-only
+interactive wizard preparation/completion/cancellation and exact Start menu/Desktop
+shortcut ownership checks. Existing silent `/S /NS` installation remains supported.
+No production app/dependency/schema/setup/privacy change.
+
+The ordinary NSIS wizard passes pre-install cancellation, Back/Next destination
+retention, installation and separate finish-page launch/desktop-shortcut choices.
+Both links target the exact installed acceptance desktop without arguments and
+independently reach Workspace connected with the retained production engine.
+Each launch snapshots ten owned processes; both normal closes leave zero owned
+survivors. Guarded uninstall removes test files/registration/links/storage/settings;
+production profile fingerprints and production build artifacts remain unchanged.
+
+Pass: 90 offline Python harness/packaging/ownership tests (four new wizard tests),
+32 JavaScript report/packaging tests, helper syntax and acceptance frontend/native/
+NSIS build. Restricted package-cache/test failures have separately retained logs;
+normal Windows retries pass. Full app suites and hosted CI are not newly claimed.
+Acceptance installer SHA-256
+`c200af4f98c94e0ce4690bb589599b0b0d192dc991cf343548d92417fa114f5a`;
+engine remains `e690a89382b0988c6bc62e73119e8a36ba45738d5e391f9aeae9feb5a68aeda7`.
+Reports/packages remain ignored under `work/ci/installer-wizard-2026-11-03/` and
+the acceptance build area. Earlier synthetic package evidence is retained.
+See [procedure](docs/23-installer-wizard.md) and [progress](docs/progress/2026-11-03.md).
+
+This closes only separate-identity wizard/shortcut acceptance under the existing
+Windows account with WebView2 present. Next: finite fresh-account/existing-runtime
+and genuine different-version upgrade, then accessibility/theme/OS checks.
+Normal-identity/current-hosted-package/enforced-check/resource, licensing/source
+delivery/terms/signing/distribution gates and milestone-21 human usefulness stay
+open. Do not repeat passed lifecycle/search/wizard slices without regression,
+changed binaries or new scope. No live provider/page/model operation or real key
+read. The owner authorized source/test/docs commit/push and verified local cache
+cleanup; generated packages, evidence, dependencies and career data are excluded
+from publication and broad cleanup. Older no-push statements below are historical.
+
+Requested cleanup removed 4,112 verified ignored generated files, 2,632,269,904
+logical bytes (about 2.45 GiB): debug intermediates/linker files and Vite/Node/
+project Python caches. Production packages, dependencies, source/provenance and
+acceptance evidence/local data are retained. Per-target ignored receipt passes;
+the inaccessible `.pytest_cache` remains, with no permission changes.
 
 ## Current checkpoint — finite synthetic installed active-search closure
 

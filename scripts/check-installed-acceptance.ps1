@@ -1,5 +1,5 @@
 # Isolated release-mode installation lifecycle. UI input uses Computer Use separately.
-param([Parameter(Mandatory=$true)][ValidateSet('Install','Snapshot','Terminate','EngineTerminate','Closed','Uninstall')][string]$Action)
+param([Parameter(Mandatory=$true)][ValidateSet('Install','PrepareWizard','Wizard','CompleteWizard','Cancelled','Snapshot','Terminate','EngineTerminate','Closed','Uninstall')][string]$Action)
 $ErrorActionPreference = 'Stop'
 $root = [IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent))
 $directory = [IO.Path]::GetFullPath((Join-Path $root '.local/installed-acceptance'))
@@ -30,6 +30,7 @@ function Invoke-Package($file,$arguments) {
     if (!$package.WaitForExit(60000) -or $package.ExitCode -ne 0) { throw 'Package operation failed or timed out; inspect before retrying.' }
 }
 function Expected-DesktopHash {
+    if ((Get-FileHash -LiteralPath (Join-Path $directory 'jobscout-desktop.exe')).Hash.ToLowerInvariant() -ne $build.desktop_sha256) { throw 'Acceptance desktop reference changed.' }
     $bytes = [IO.File]::ReadAllBytes((Join-Path $directory 'jobscout-desktop.exe'))
     $text = [Text.Encoding]::ASCII.GetString($bytes)
     $marker = '__TAURI_BUNDLE_TYPE_VAR_UNK'
@@ -43,6 +44,42 @@ function Expected-DesktopHash {
 function Assert-Registration($destination) {
     $entry = Get-ItemProperty -LiteralPath $registration
     if ([IO.Path]::GetFullPath($entry.InstallLocation.Trim('"')) -ne $destination -or $entry.DisplayVersion -ne '0.1.0') { throw 'Unexpected test installation registration.' }
+}
+function Shortcut-Paths {
+    return @('Programs','DesktopDirectory') | ForEach-Object {
+        $folder = [Environment]::GetFolderPath($_)
+        if (!$folder) { throw 'Acceptance shortcut known folder is unavailable.' }
+        [IO.Path]::GetFullPath((Join-Path $folder 'JobScout acceptance.lnk'))
+    }
+}
+function Assert-WizardBinding($state) {
+    if ($state.wizard_build_sha256 -ne (Get-FileHash -LiteralPath (Join-Path $directory 'build.json')).Hash -or $build.mode -ne 'production-engine') { throw 'Wizard acceptance build changed.' }
+    if ([IO.Path]::GetDirectoryName($destination) -ne $directory -or [IO.Path]::GetFileName($destination) -notmatch '^installed-[0-9a-f]{32}$') { throw 'Invalid wizard installation destination.' }
+    $expected = @(Shortcut-Paths)
+    if (@($state.shortcut_paths).Count -ne 2 -or @($state.shortcut_paths | Where-Object { $_ -notin $expected }).Count -or @($state.shortcut_paths | Select-Object -Unique).Count -ne 2) { throw 'Wizard shortcut paths changed.' }
+}
+function Assert-Shortcuts($state) {
+    Assert-WizardBinding $state
+    $shell = New-Object -ComObject WScript.Shell
+    try {
+        foreach ($link in $state.shortcut_paths) {
+            if (!(Test-Path -LiteralPath $link -PathType Leaf) -or ((Get-Item -LiteralPath $link).Attributes -band [IO.FileAttributes]::ReparsePoint)) { throw 'Expected owned acceptance shortcut is missing or redirected.' }
+            # CreateShortcut reads an existing link; never call Save or modify it.
+            $shortcut = $shell.CreateShortcut($link)
+            if ([IO.Path]::GetFullPath($shortcut.TargetPath) -ne (Join-Path $destination 'jobscout-desktop.exe') -or $shortcut.Arguments) { throw 'Acceptance shortcut has an unexpected target or arguments.' }
+        }
+    } finally { if ([Runtime.InteropServices.Marshal]::IsComObject($shell)) { [void][Runtime.InteropServices.Marshal]::FinalReleaseComObject($shell) } }
+}
+function Assert-InstalledPayload($destination) {
+    Assert-Registration $destination
+    if ((Get-FileHash -LiteralPath (Join-Path $destination 'jobscout-desktop.exe')).Hash -ne (Expected-DesktopHash)) { throw 'Installed desktop differs from the acceptance build.' }
+    if ((Get-FileHash -LiteralPath (Join-Path $destination 'jobscout-engine.exe')).Hash.ToLowerInvariant() -ne $build.engine_sha256) { throw 'Installed sidecar differs from the declared acceptance engine.' }
+    if (!$build.notice_sha256 -or (Get-FileHash -LiteralPath (Join-Path $destination 'licenses/THIRD-PARTY-NOTICES.txt')).Hash.ToLowerInvariant() -ne $build.notice_sha256) { throw 'Installed dependency notices differ from the reviewed bundle.' }
+}
+function Assert-WizardExited($state) {
+    if (!$state.wizard_process) { throw 'Start the prepared wizard first.' }
+    $process = Get-Process -Id $state.wizard_process.id -ErrorAction SilentlyContinue
+    if ($process -and $process.StartTime.ToUniversalTime().Ticks -eq (Start-Ticks $state.wizard_process.started)) { throw 'The prepared installer is still running.' }
 }
 function Start-Ticks($value) {
     # PowerShell 7 can deserialize ISO JSON timestamps to DateTime, while
@@ -61,13 +98,16 @@ function Owned-Processes($state) {
         $member -and (Start-Ticks $_.started) -ge (Start-Ticks $desktopRecords[0].started) -and $member.StartTime.ToUniversalTime().Ticks -eq (Start-Ticks $_.started)
     })
 }
-if ($Action -eq 'Install') {
+if ($Action -in @('Install','PrepareWizard')) {
+    if ($Action -eq 'PrepareWizard' -and $build.mode -ne 'production-engine') { throw 'Interactive wizard acceptance requires the exact production engine.' }
     if (Test-Path -LiteralPath $manifestPath) { throw 'Finish the existing acceptance installation first.' }
     foreach ($key in @($registration,'HKLM:\Software\Microsoft\Windows\CurrentVersion\Uninstall\JobScout acceptance','HKLM:\Software\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\JobScout acceptance')) {
         if (Test-Path -LiteralPath $key) { throw 'Refusing to replace an existing acceptance installation.' }
     }
     if (Get-Process jobscout-desktop -ErrorAction SilentlyContinue) { throw 'Close existing JobScout windows first; none will be killed.' }
     if (Test-Path -LiteralPath $settingsPath) { throw 'Acceptance installer settings must not already exist.' }
+    $shortcutPaths = @(Shortcut-Paths)
+    foreach ($link in $shortcutPaths) { if (Test-Path -LiteralPath $link) { throw 'Acceptance shortcuts must not already exist.' } }
     $runtime = $false
     foreach ($key in @('HKCU:\Software\Microsoft\EdgeUpdate\Clients','HKLM:\Software\WOW6432Node\Microsoft\EdgeUpdate\Clients')) {
         if (Test-Path -LiteralPath $key) {
@@ -89,12 +129,19 @@ if ($Action -eq 'Install') {
     $destination = [IO.Path]::GetFullPath((Join-Path $directory ('installed-' + [guid]::NewGuid().ToString('N'))))
     if (!$destination.StartsWith($directory + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase) -or (Test-Path -LiteralPath $destination)) { throw 'Invalid new test destination.' }
     $state = [pscustomobject]@{ destination=$destination; identity=$build.identifier; before=[pscustomobject](Fingerprints); owned=@(); data_paths=$dataPaths }
+    if ($Action -eq 'PrepareWizard') {
+        $state | Add-Member -NotePropertyName wizard_build_sha256 -NotePropertyValue (Get-FileHash -LiteralPath (Join-Path $directory 'build.json')).Hash
+        $state | Add-Member -NotePropertyName shortcut_paths -NotePropertyValue $shortcutPaths
+        $state | Add-Member -NotePropertyName wizard_process -NotePropertyValue $null
+        $state | Add-Member -NotePropertyName wizard_complete -NotePropertyValue $false
+    }
     $state | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
+    if ($Action -eq 'PrepareWizard') {
+        [pscustomobject]@{ prepared='pass'; destination=$destination; production_profiles_unchanged='pass'; next='Run -Action Wizard. Keep this exact destination, select Create desktop shortcut and clear Run JobScout acceptance at Finish.' } | ConvertTo-Json
+        exit
+    }
     Invoke-Package $setup "/S /NS /D=$destination"
-    Assert-Registration $destination
-    if ((Get-FileHash -LiteralPath (Join-Path $destination 'jobscout-desktop.exe')).Hash -ne (Expected-DesktopHash)) { throw 'Installed desktop differs from the acceptance build.' }
-    if ((Get-FileHash -LiteralPath (Join-Path $destination 'jobscout-engine.exe')).Hash.ToLowerInvariant() -ne $build.engine_sha256) { throw 'Installed sidecar differs from the declared acceptance engine.' }
-    if (!$build.notice_sha256 -or (Get-FileHash -LiteralPath (Join-Path $destination 'licenses/THIRD-PARTY-NOTICES.txt')).Hash.ToLowerInvariant() -ne $build.notice_sha256) { throw 'Installed dependency notices differ from the reviewed bundle.' }
+    Assert-InstalledPayload $destination
     Assert-ProductionUnchanged $state.before
     [pscustomobject]@{ installed='pass'; exact_manifest_desktop_and_engine='pass'; engine_mode=$(if ($build.mode) { $build.mode } else { 'production-engine' }); dependency_notices='pass'; empty_data_and_vault_namespaces='pass'; production_profiles_unchanged='pass'; installed_bytes=(Get-ChildItem -LiteralPath $destination -File -Recurse | Measure-Object Length -Sum).Sum } | ConvertTo-Json
     exit
@@ -103,6 +150,38 @@ $state = Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json
 $destination = [IO.Path]::GetFullPath($state.destination)
 if ($state.identity -ne $build.identifier -or !$destination.StartsWith($directory + [IO.Path]::DirectorySeparatorChar,[StringComparison]::OrdinalIgnoreCase)) { throw 'Invalid owned installation manifest.' }
 Assert-ProductionUnchanged $state.before
+if ($state.wizard_build_sha256) {
+    Assert-WizardBinding $state
+    if ($Action -eq 'Wizard') {
+        if ($state.wizard_process -or (Test-Path -LiteralPath $destination) -or (Test-Path -LiteralPath $registration)) { throw 'This prepared wizard has already started or installation state changed.' }
+        foreach ($path in @($state.shortcut_paths) + @($dataPaths) + @($settingsPath)) { if (Test-Path -LiteralPath $path) { throw 'Wizard baseline changed; retain the manifest for inspection.' } }
+        $setup = Join-Path $directory 'setup.exe'
+        if ((Get-FileHash -LiteralPath $setup).Hash.ToLowerInvariant() -ne $build.installer_sha256) { throw 'Acceptance installer changed.' }
+        # This action intentionally opens an interactive wizard for observed UI acceptance.
+        if (Get-Process jobscout-desktop -ErrorAction SilentlyContinue) { throw 'Close existing JobScout windows before starting the wizard.' }
+        $process = Start-Process -FilePath $setup -ArgumentList "/D=$destination" -WindowStyle Normal -PassThru
+        $state.wizard_process = [pscustomobject]@{ id=$process.Id; started=$process.StartTime.ToUniversalTime().ToString('o') }
+        $state | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
+        [pscustomobject]@{ wizard_started='pass'; destination=$destination } | ConvertTo-Json
+        exit
+    }
+    if ($Action -in @('CompleteWizard','Cancelled')) {
+        Assert-WizardExited $state
+        if ($Action -eq 'Cancelled') {
+            foreach ($path in @($destination,$registration,$settingsPath) + @($state.shortcut_paths) + @($dataPaths)) { if (Test-Path -LiteralPath $path) { throw 'Cancelled wizard left installation state; no files or settings were removed.' } }
+            Remove-Item -LiteralPath $manifestPath
+            [pscustomobject]@{ cancellation_left_no_installation='pass'; production_profiles_unchanged='pass' } | ConvertTo-Json
+            exit
+        }
+        Assert-InstalledPayload $destination
+        Assert-Shortcuts $state
+        $state.wizard_complete = $true
+        $state | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
+        [pscustomobject]@{ interactive_install='pass'; exact_payloads='pass'; start_menu_and_desktop_targets='pass'; production_profiles_unchanged='pass'; installed_bytes=(Get-ChildItem -LiteralPath $destination -File -Recurse | Measure-Object Length -Sum).Sum } | ConvertTo-Json
+        exit
+    }
+    if (!$state.wizard_complete) { throw 'Complete or cancel the prepared wizard before lifecycle actions.' }
+} elseif ($Action -in @('Wizard','CompleteWizard','Cancelled')) { throw 'Prepare a guarded interactive wizard first.' }
 if ($Action -eq 'Snapshot') {
     $all = @(Get-CimInstance Win32_Process -Property ProcessId,ParentProcessId,ExecutablePath,Name)
     $parents = @($all | Where-Object { $_.ExecutablePath -eq (Join-Path $destination 'jobscout-desktop.exe') })
@@ -192,10 +271,14 @@ if ($Action -eq 'Closed') {
     exit
 }
 Assert-Registration $destination
+if ($state.wizard_build_sha256) { Assert-Shortcuts $state }
 Invoke-Package (Join-Path $destination 'uninstall.exe') '/S'
 $deadline = [DateTime]::UtcNow.AddSeconds(30)
 while (((Test-Path -LiteralPath $destination) -or (Test-Path -LiteralPath $registration)) -and [DateTime]::UtcNow -lt $deadline) { Start-Sleep -Milliseconds 200 }
 if ((Test-Path -LiteralPath $destination) -or (Test-Path -LiteralPath $registration)) { throw 'Uninstall incomplete; no manual installation-file deletion.' }
+if ($state.wizard_build_sha256) {
+    foreach ($link in $state.shortcut_paths) { if (Test-Path -LiteralPath $link) { throw 'Uninstall left an acceptance shortcut; no manual shortcut deletion.' } }
+}
 Assert-ProductionUnchanged $state.before
 # Only the initially absent, exact test identity directories may be removed.
 foreach ($data in $dataPaths) {

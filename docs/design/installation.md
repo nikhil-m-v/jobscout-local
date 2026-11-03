@@ -4,7 +4,8 @@ Distribution update — 2026-10-20: the installer is the public application deli
 
 Release boundary — 2026-10-10: [v1.0](../releases.md) guides application/personal storage, provider configuration, local verification, setup-later and first use. A local model/runtime is not required or downloaded by v1.0 setup. Model/runtime sections below remain the brief for later optional matching/AI releases; apply their licence, size, hardware, cancellation, reuse and recovery rules when introduced. This planning decision does not change the installer or complete acceptance.
 
-Status: initial product design; this document describes the planned experience, not an implemented installer.
+Status: product design brief with the bounded implemented/verified slices below;
+the complete visual, first-run and release experience remains unfinished.
 
 Implemented first app slice, 2026-10-17: [22A optional setup guide](../architecture/0038-guided-core-setup.md) opens from the resume landing screen or Settings. Three steps cover local privacy/storage, optional Tavily setup and first use, with Back/Continue/Finish later and a step-only local progress marker/session fallback. Key controls remain closed until explicitly opened; no check/search or model download is automatic. Existing data locations are explained, not moved; folder/device/disk and installer work below remain planned. Existing installs keep the discovery landing page. This marker is retained with display preferences by career-data deletion and never represents provider readiness or authorization. Existing key-storage/review-send/external-link recovery applies without a new dependency or migration. Browser/mock evidence is not installed acceptance.
 
@@ -15,6 +16,16 @@ Implemented continuation, 2026-10-18: 22B/22C provide explicit storage/device ch
 Verified continuation, 2026-10-20: the original packaging blocker above is resolved. Restored C++/SDK tools and paired native packaging pass; the local 0.1.0 installer includes 22A–22D. The [bounded installed walkthrough](../22d-installed-acceptance.md) passes with synthetic records and a separate app identity: invalid-path recovery, reviewed copy, retained-copy disclosure, local check, normal close/restart, selected-storage persistence, later note saving and guarded uninstall. Normal production data fingerprints stay unchanged. The native folder dialog and automatic recovery-copy restoration/cleanup remain unimplemented; wider wizard/shortcuts, upgrade/fresh-user/runtime, accessibility/OS/themes, active-work/abrupt-exit and resource/CI evidence remain owner 23. These observations do not complete the broader design brief below.
 
 Help a person reach their first useful resume analysis without a terminal or developer knowledge. Use two connected stages: the Windows installer handles the app location and shortcuts; the app's first-run wizard handles models, credentials, and personal settings under the user's own account. Both stages share the same visual identity. Keep API keys out of elevated installer processes.
+
+Verified continuation, 2026-11-03: the [finite ordinary NSIS wizard and shortcut
+walkthrough](../23-installer-wizard.md) passes cancellation, Back/Next destination
+retention, installation, separate Run app/Desktop shortcut choices, both exact
+shortcut launches to connected startup, normal close and guarded uninstall/link
+removal. This uses the separate acceptance identity, exact production engine,
+existing Windows account and existing WebView2. Production artifacts/data remain
+unchanged. Fresh-user/missing-runtime/genuine-upgrade, normal-identity, full
+accessibility/theme/OS and broader installer visual-design acceptance stay open;
+the stock NSIS presentation does not fulfill the complete visual brief.
 
 ## Visual direction
 
