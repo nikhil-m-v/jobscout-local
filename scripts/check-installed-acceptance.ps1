@@ -1,11 +1,17 @@
 # Isolated release-mode installation lifecycle. UI input uses Computer Use separately.
-param([Parameter(Mandatory=$true)][ValidateSet('Install','PrepareWizard','Wizard','CompleteWizard','Cancelled','Snapshot','Terminate','EngineTerminate','Closed','Uninstall')][string]$Action)
+param([Parameter(Mandatory=$true)][ValidateSet('Install','PrepareWizard','Wizard','CompleteWizard','Cancelled','Snapshot','Terminate','EngineTerminate','Closed','Upgrade','Uninstall')][string]$Action)
 $ErrorActionPreference = 'Stop'
 $root = [IO.Path]::GetFullPath((Split-Path $PSScriptRoot -Parent))
 $directory = [IO.Path]::GetFullPath((Join-Path $root '.local/installed-acceptance'))
 $manifestPath = Join-Path $directory 'installation.json'
-$build = Get-Content -Raw -LiteralPath (Join-Path $directory 'build.json') | ConvertFrom-Json
-if ($build.identifier -ne 'app.jobscout.installedacceptance' -or $build.product -ne 'JobScout acceptance' -or $build.version -ne '0.1.0') { throw 'Unexpected acceptance build identity.' }
+$buildDirectory = $directory
+$existingState = if (Test-Path -LiteralPath $manifestPath) { Get-Content -Raw -LiteralPath $manifestPath | ConvertFrom-Json } else { $null }
+if ($existingState.upgrade_pending) { throw 'Previous upgrade is incomplete; retain installation and inspect the transition before further actions.' }
+if ($existingState.upgraded) { $buildDirectory = Join-Path $root '.local/installed-acceptance-upgrade' }
+$build = Get-Content -Raw -LiteralPath (Join-Path $buildDirectory 'build.json') | ConvertFrom-Json
+$expectedVersion = if ($existingState.upgraded) { '0.1.1' } else { '0.1.0' }
+if ($build.identifier -ne 'app.jobscout.installedacceptance' -or $build.product -ne 'JobScout acceptance' -or $build.version -ne $expectedVersion) { throw 'Unexpected acceptance build identity.' }
+if ($existingState.upgraded -and (Get-FileHash -LiteralPath (Join-Path $buildDirectory 'build.json')).Hash -ne $existingState.upgrade_build_sha256) { throw 'Upgraded build binding changed.' }
 if ($build.mode -and $build.mode -notin @('production-engine','synthetic-search')) { throw 'Unexpected acceptance engine mode.' }
 if ($build.mode -eq 'synthetic-search' -and (!$build.wrapper_sha256 -or $build.engine_sha256 -eq $build.production_before.engine)) { throw 'Synthetic engine must have a distinct hash-bound wrapper.' }
 $registration = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\JobScout acceptance'
@@ -30,8 +36,8 @@ function Invoke-Package($file,$arguments) {
     if (!$package.WaitForExit(60000) -or $package.ExitCode -ne 0) { throw 'Package operation failed or timed out; inspect before retrying.' }
 }
 function Expected-DesktopHash {
-    if ((Get-FileHash -LiteralPath (Join-Path $directory 'jobscout-desktop.exe')).Hash.ToLowerInvariant() -ne $build.desktop_sha256) { throw 'Acceptance desktop reference changed.' }
-    $bytes = [IO.File]::ReadAllBytes((Join-Path $directory 'jobscout-desktop.exe'))
+    if ((Get-FileHash -LiteralPath (Join-Path $buildDirectory 'jobscout-desktop.exe')).Hash.ToLowerInvariant() -ne $build.desktop_sha256) { throw 'Acceptance desktop reference changed.' }
+    $bytes = [IO.File]::ReadAllBytes((Join-Path $buildDirectory 'jobscout-desktop.exe'))
     $text = [Text.Encoding]::ASCII.GetString($bytes)
     $marker = '__TAURI_BUNDLE_TYPE_VAR_UNK'
     $offset = $text.IndexOf($marker,[StringComparison]::Ordinal)
@@ -43,7 +49,28 @@ function Expected-DesktopHash {
 }
 function Assert-Registration($destination) {
     $entry = Get-ItemProperty -LiteralPath $registration
-    if ([IO.Path]::GetFullPath($entry.InstallLocation.Trim('"')) -ne $destination -or $entry.DisplayVersion -ne '0.1.0') { throw 'Unexpected test installation registration.' }
+    if ([IO.Path]::GetFullPath($entry.InstallLocation.Trim('"')) -ne $destination -or $entry.DisplayVersion -ne $build.version) { throw 'Unexpected test installation registration.' }
+}
+function Assert-UpgradeBuild($candidate) {
+    if ($state.upgraded -or $state.wizard_build_sha256 -or $build.version -ne '0.1.0' -or $build.mode -ne 'production-engine') { throw 'Upgrade requires a closed original silent production-engine fixture.' }
+    if ($candidate.identifier -ne $build.identifier -or $candidate.product -ne $build.product -or $candidate.version -ne '0.1.1' -or $candidate.from_version -ne $build.version -or $candidate.fixture -ne 'version-only-upgrade' -or $candidate.mode -ne 'production-engine') { throw 'Unexpected higher-version fixture identity.' }
+    if ($candidate.engine_sha256 -ne $build.engine_sha256 -or $candidate.notice_sha256 -ne $build.notice_sha256 -or $candidate.desktop_sha256 -eq $build.desktop_sha256 -or $candidate.installer_sha256 -eq $build.installer_sha256) { throw 'Upgrade must change the versioned desktop/installer and retain engine/notices.' }
+    foreach ($name in @('desktop','engine','installer')) {
+        if (!$candidate.production_before.$name -or $candidate.production_before.$name -ne $build.production_before.$name) { throw 'Upgrade production artifact binding changed.' }
+    }
+}
+function Test-DataFingerprints {
+    $result = @{}
+    foreach ($data in $dataPaths) {
+        if (Test-Path -LiteralPath $data) {
+            if ((Get-Item -LiteralPath $data).Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Refusing redirected test data.' }
+            foreach ($item in Get-ChildItem -LiteralPath $data -Recurse -Force) {
+                if ($item.Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Refusing nested redirected test data.' }
+                if (!$item.PSIsContainer) { $result[$item.FullName] = (Get-FileHash -LiteralPath $item.FullName).Hash }
+            }
+        }
+    }
+    return $result
 }
 function Shortcut-Paths {
     return @('Programs','DesktopDirectory') | ForEach-Object {
@@ -72,6 +99,7 @@ function Assert-Shortcuts($state) {
 }
 function Assert-InstalledPayload($destination) {
     Assert-Registration $destination
+    if ((Get-Item -LiteralPath (Join-Path $destination 'jobscout-desktop.exe')).VersionInfo.ProductVersion -ne $build.version) { throw 'Installed desktop product version differs from the declared build.' }
     if ((Get-FileHash -LiteralPath (Join-Path $destination 'jobscout-desktop.exe')).Hash -ne (Expected-DesktopHash)) { throw 'Installed desktop differs from the acceptance build.' }
     if ((Get-FileHash -LiteralPath (Join-Path $destination 'jobscout-engine.exe')).Hash.ToLowerInvariant() -ne $build.engine_sha256) { throw 'Installed sidecar differs from the declared acceptance engine.' }
     if (!$build.notice_sha256 -or (Get-FileHash -LiteralPath (Join-Path $destination 'licenses/THIRD-PARTY-NOTICES.txt')).Hash.ToLowerInvariant() -ne $build.notice_sha256) { throw 'Installed dependency notices differ from the reviewed bundle.' }
@@ -270,6 +298,38 @@ if ($Action -eq 'Closed') {
     [pscustomobject]@{ remaining_owned_processes=0; production_profiles_unchanged='pass' } | ConvertTo-Json
     exit
 }
+if ($Action -eq 'Upgrade') {
+    if (!$state.owned.Count) { throw 'Launch, snapshot and close the original installed app before upgrading.' }
+    Assert-InstalledPayload $destination
+    $upgradeDirectory = Join-Path $root '.local/installed-acceptance-upgrade'
+    foreach ($path in @($upgradeDirectory,(Join-Path $upgradeDirectory 'build.json'),(Join-Path $upgradeDirectory 'setup.exe'),(Join-Path $upgradeDirectory 'jobscout-desktop.exe'))) {
+        if ((Get-Item -LiteralPath $path).Attributes -band [IO.FileAttributes]::ReparsePoint) { throw 'Refusing redirected upgrade fixture.' }
+    }
+    $candidate = Get-Content -Raw -LiteralPath (Join-Path $upgradeDirectory 'build.json') | ConvertFrom-Json
+    Assert-UpgradeBuild $candidate
+    if ((Get-FileHash -LiteralPath (Join-Path $upgradeDirectory 'setup.exe')).Hash.ToLowerInvariant() -ne $candidate.installer_sha256 -or (Get-FileHash -LiteralPath (Join-Path $upgradeDirectory 'jobscout-desktop.exe')).Hash.ToLowerInvariant() -ne $candidate.desktop_sha256) { throw 'Upgrade fixture bytes changed.' }
+    $beforeData = Test-DataFingerprints
+    if (!$beforeData.Count) { throw 'Upgrade needs retained synthetic data.' }
+    $oldInstaller = $build.installer_sha256
+    # Save the transition BEFORE executing: failure must retain explicit state,
+    # never fall through to uninstall or silently adopt the new installation.
+    $state | Add-Member -NotePropertyName upgrade_pending -NotePropertyValue $true
+    $state | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
+    Invoke-Package (Join-Path $upgradeDirectory 'setup.exe') "/S /NS /UPDATE /D=$destination"
+    $build = $candidate; $buildDirectory = $upgradeDirectory
+    Assert-InstalledPayload $destination
+    $afterData = Test-DataFingerprints
+    if ($beforeData.Count -ne $afterData.Count) { throw 'Upgrade changed test data files; retain installation.' }
+    foreach ($name in $beforeData.Keys) { if ($beforeData[$name] -ne $afterData[$name]) { throw 'Upgrade changed test data bytes; retain installation.' } }
+    Assert-ProductionUnchanged $state.before
+    $state.upgrade_pending = $false
+    $state | Add-Member -NotePropertyName upgraded -NotePropertyValue $true
+    $state | Add-Member -NotePropertyName upgrade_build_sha256 -NotePropertyValue (Get-FileHash -LiteralPath (Join-Path $upgradeDirectory 'build.json')).Hash
+    $state | ConvertTo-Json -Depth 6 | Set-Content -LiteralPath $manifestPath -Encoding UTF8
+    [pscustomobject]@{ upgrade='pass'; from_version='0.1.0'; to_version=$build.version; original_installer_sha256=$oldInstaller; upgrade_installer_sha256=$build.installer_sha256; same_destination='pass'; exact_payloads='pass'; test_data_files_unchanged=$beforeData.Count; production_profiles_unchanged='pass'; scope='Real version-only NSIS /UPDATE fixture; no historical schema migration or interactive upgrade-page claim.' } | ConvertTo-Json
+    exit
+}
+if ($Action -ne 'Uninstall') { throw 'Unsupported action for this installation state.' }
 Assert-Registration $destination
 if ($state.wizard_build_sha256) { Assert-Shortcuts $state }
 Invoke-Package (Join-Path $destination 'uninstall.exe') '/S'

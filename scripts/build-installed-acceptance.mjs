@@ -9,10 +9,13 @@ import { generateNotices, checkNoticeInventory } from './generate-notices.mjs';
 import { sslRuntimeDataArgs } from './engine-runtime-data.mjs';
 
 const syntheticSearch = process.argv[2] === '--synthetic-search';
-if (process.platform !== 'win32' || (process.argv.length !== 2 && !(syntheticSearch && process.argv.length === 3))) {
-  throw new Error('Windows only. Optional --synthetic-search; no live-provider options.');
+const upgradeFixture = process.argv[2] === '--upgrade-fixture';
+if (process.platform !== 'win32' || (process.argv.length !== 2 && !((syntheticSearch || upgradeFixture) && process.argv.length === 3))) {
+  throw new Error('Windows only. Optional --synthetic-search OR --upgrade-fixture; no live-provider options.');
 }
-const directory = path.join(root, '.local/installed-acceptance');
+// A real higher-version NSIS package, never a production version change.
+const version = upgradeFixture ? '0.1.1' : '0.1.0';
+const directory = path.join(root, upgradeFixture ? '.local/installed-acceptance-upgrade' : '.local/installed-acceptance');
 if (!process.env.npm_execpath) throw new Error('Run npm run acceptance:installed:build so dependency notices can be collected.');
 const release = path.join(path.resolve(root, process.env.CARGO_TARGET_DIR ?? 'apps/desktop/src-tauri/target'), 'release');
 const desktop = path.join(release, 'jobscout-desktop.exe');
@@ -20,10 +23,33 @@ const engine = path.join(root, 'apps/desktop/src-tauri/binaries/jobscout-engine-
 const normalInstaller = path.join(release, 'bundle/nsis/JobScout_0.1.0_x64-setup.exe');
 const sha = file => createHash('sha256').update(readFileSync(file)).digest('hex');
 for (const file of [desktop, engine, normalInstaller]) if (!existsSync(file)) throw new Error('Build the paired production release first.');
-if (existsSync(path.join(directory, 'installation.json'))) throw new Error('Finish the previous isolated installation before rebuilding.');
+if (existsSync(path.join(root, '.local/installed-acceptance/installation.json'))) throw new Error('Finish the previous isolated installation before rebuilding.');
+if (upgradeFixture && existsSync(path.join(directory, 'build.json'))) throw new Error('Retain the existing upgrade fixture; do not overwrite it.');
 mkdirSync(directory, { recursive: true });
-const notices = generateNotices(engine);
-const noticeConfig = JSON.parse(readFileSync(notices.overlay, 'utf8'));
+let notices;
+if (upgradeFixture) {
+  // Bind this version-only fixture to the retained 0.1.0 package. Recollecting
+  // against a changed host Python would misdescribe the retained frozen engine.
+  const baseDirectory = path.join(root, '.local/installed-acceptance');
+  const base = JSON.parse(readFileSync(path.join(baseDirectory, 'build.json'), 'utf8'));
+  const overlay = path.join(baseDirectory, 'tauri.json');
+  const config = JSON.parse(readFileSync(overlay, 'utf8'));
+  const resources = Object.entries(config.bundle?.resources ?? {});
+  if (base.identifier !== 'app.jobscout.installedacceptance' || base.product !== 'JobScout acceptance' ||
+      base.version !== '0.1.0' || base.mode !== 'production-engine' || base.engine_sha256 !== sha(engine) ||
+      base.desktop_sha256 !== sha(path.join(baseDirectory, 'jobscout-desktop.exe')) ||
+      base.installer_sha256 !== sha(path.join(baseDirectory, 'setup.exe')) || resources.length !== 1 ||
+      resources[0][1] !== 'licenses/THIRD-PARTY-NOTICES.txt') throw new Error('Retained base package binding changed.');
+  const noticeFile = path.resolve(resources[0][0]);
+  const noticeParent = path.dirname(noticeFile);
+  if (path.dirname(noticeParent) !== path.join(root, 'work/notices') || path.basename(noticeFile) !== 'THIRD-PARTY-NOTICES.txt' ||
+      checkNoticeInventory(noticeParent, engine).sha256 !== base.notice_sha256) throw new Error('Retained notice/engine binding changed.');
+  notices = { directory: noticeParent, overlay };
+} else {
+  notices = generateNotices(engine);
+}
+const retainedOverlay = JSON.parse(readFileSync(notices.overlay, 'utf8'));
+const noticeConfig = { bundle: { resources: retainedOverlay.bundle.resources } };
 const before = { desktop: sha(desktop), engine: sha(engine), installer: sha(normalInstaller) };
 let acceptanceEngine = engine;
 let externalBin;
@@ -51,7 +77,7 @@ const backup = path.join(directory, 'production-desktop.backup');
 copyFileSync(desktop, backup);
 const config = path.join(directory, 'tauri.json');
 writeFileSync(config, JSON.stringify({
-  productName: 'JobScout acceptance', identifier: 'app.jobscout.installedacceptance',
+  productName: 'JobScout acceptance', identifier: 'app.jobscout.installedacceptance', version,
   bundle: { ...noticeConfig.bundle, ...(externalBin ? { externalBin } : {}) },
   app: { windows: [{ label: 'main', title: syntheticSearch ? 'JobScout — Synthetic installed search' : 'JobScout — Installed acceptance', width: 1280, height: 900, minWidth: 760, minHeight: 640, backgroundColor: '#fafbf7' }] },
 }, null, 2));
@@ -63,11 +89,12 @@ try {
   });
   if (result.error || result.status !== 0) throw new Error('Isolated release packaging failed; production desktop is restored.');
   const noticeInventory = checkNoticeInventory(notices.directory, engine);
-  const installer = path.join(release, 'bundle/nsis/JobScout acceptance_0.1.0_x64-setup.exe');
+  const installer = path.join(release, `bundle/nsis/JobScout acceptance_${version}_x64-setup.exe`);
   copyFileSync(desktop, path.join(directory, 'jobscout-desktop.exe'));
   copyFileSync(installer, path.join(directory, 'setup.exe'));
   writeFileSync(path.join(directory, 'build.json'), JSON.stringify({
-    identifier: 'app.jobscout.installedacceptance', product: 'JobScout acceptance', version: '0.1.0',
+    identifier: 'app.jobscout.installedacceptance', product: 'JobScout acceptance', version,
+    ...(upgradeFixture ? { fixture: 'version-only-upgrade', from_version: '0.1.0' } : {}),
     mode: syntheticSearch ? 'synthetic-search' : 'production-engine',
     engine_sha256: sha(acceptanceEngine), desktop_sha256: sha(desktop), installer_sha256: sha(installer),
     notice_sha256: noticeInventory.sha256,

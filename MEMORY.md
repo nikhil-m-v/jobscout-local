@@ -1,6 +1,29 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-11-03 (milestone 23 finite installer wizard and shortcut acceptance). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-11-04 (milestone 23 version-only upgrade harness publication). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — version-only upgrade harness publication
+
+The owner requested committing and pushing the latest local source/test/docs.
+Added a separate-identity 0.1.1 version-only installer fixture, guarded upgrade
+transition and complete synthetic-record comparison helper. Production version
+remains 0.1.0; the fixture retains the production engine and dependency notices.
+The procedure distinguishes existing-account pristine app storage from a fresh
+Windows user and version replacement from historical schema migration.
+
+Publication validation passes 94 offline Python harness/packaging/ownership tests,
+32 JavaScript report/packaging tests and builder syntax. A restricted Python run
+stalled; only its exact owned process was stopped and the normal Windows retry
+passed. No installed upgrade walkthrough or package rebuild was performed in this
+publication session, so installed acceptance and hosted CI are not newly claimed.
+Generated packages, raw evidence and local data remain excluded from publication.
+See [procedure](docs/23-installed-upgrade.md) and [progress](docs/progress/2026-11-04.md).
+
+Next: execute the finite documented pristine-profile/version-only upgrade
+walkthrough and retain exact package, record-preservation, closure and uninstall
+evidence. Fresh-user/missing-runtime, historical migration, accessibility/theme/OS,
+normal-identity, hosted/enforced-check and release/license/source-delivery gates
+remain open; milestone-21 human usefulness acceptance remains separate.
 
 ## Current checkpoint — finite installer wizard and shortcuts
 
