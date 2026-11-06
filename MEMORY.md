@@ -1,6 +1,110 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-11-04 (milestone 23 version-only upgrade harness publication). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-11-06 (milestone 23 bounded installed Narrator/contrast/scaling follow-up). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — installed Narrator, forced colors and scaling
+
+Continued the Nov 5 separate production-engine identity. GitHub connector searches
+for all/open repository PRs returned none before the local fix. Actual Narrator
+speech recap verifies sampled landmarks/headings, checkbox unchecked/checked
+activation, tracker stage/value, private notes/help and keyboard reachability of
+Save. Fixed a concrete speech problem: entering a saved-job list item read its
+entire card as a concatenated name. Each item now references its own job heading;
+rebuilt installed Narrator announces the title/heading without the card dump.
+Details/editor content remain exposed. No engine/dependency/storage/privacy change.
+
+Actual Windows Night sky and Desert contrast themes render readable sampled
+controls/fields/focus/selection; high-contrast flags read enabled. Settings text
+size 200% enlarges content and wraps navigation/body text at default/narrow width.
+Supported display scale 100→150→100% gives owned desktop DPI 96→144→96, with
+readable Settings/tracker and scrolling to notes/Save/Discard. These mode/scaling
+samples use the retained Nov 5 package; only affected list naming/Narrator heading
+navigation is newly repeated on the rebuilt package. Current OS readback is
+26300.9711/26H2, different from Nov 5's reported OS; one active display only.
+
+Both synthetic databases stay byte-identical during display inspection. Both
+normal closes leave zero owned survivors and both guarded uninstalls pass.
+Production fingerprints and paired production artifact hashes are unchanged.
+Original contrast/text/display scale, captured pointer/Narrator/contrast-history
+preference presence/types/values, theme bytes and app color/transparency/animation
+readbacks are restored, including a verification after uninstall. Narrator was
+originally off and is off again. Restoration covers captured readbacks, not every
+registry byte/unobserved subkey; ExpandString values were captured expanded.
+
+All 168 frontend tests, typecheck/frontend/native/NSIS builds and exact installed
+payload guards pass. Installer SHA-256
+`014c9e0544bf386b02a4377d3f3f2b0a6c685b36757b2989b63d659945e55a95`;
+production engine/notices retained. No provider/key/page/model/release action.
+Full engine suites and hosted CI are not newly claimed. Publication follow-up:
+the owner requested committing and pushing the Nov 5–6 source/test/docs payload.
+The 97 offline Python harness/packaging/ownership tests, 37 JavaScript report/
+packaging tests, 70 contrast checks and builder syntax pass again. Earlier local/
+uncommitted statements describe implementation checkpoints. Generated installers,
+raw evidence and local data stay excluded; source publication grants no release
+or license clearance. Evidence is ignored in
+`work/ci/installed-accessibility-2026-11-06/`; see
+[progress](docs/progress/2026-11-06.md) and [procedure](docs/23-installed-accessibility.md).
+
+Next: finite 200%-text minimum-height tracker and Narrator import/setup/error
+navigation. Complete 200% tracker editing, every dialog/state, audible voice
+quality, combined modes, custom scaling/sign-out, other screen readers, active
+monitor transitions and broader Windows/WCAG acceptance remain open. Keep prior
+normal-identity, fresh-user/runtime, installed higher-version/historical migration,
+hosted/enforced-check/resource, licensing/source delivery, signing/distribution and
+milestone-21 human usefulness gates separate.
+
+## Current checkpoint — bounded installed accessibility and display preferences
+
+Completed a finite separate-identity installed production-application pass for
+Light, Dark, Follow system, actual Windows app color/transparency preferences,
+keyboard navigation and readable layout at 1280 × 900 and minimum 760 × 640 client
+areas. Light/Dark keyboard activation, visible focus, skip-link destination and
+next Tab, native selector arrows/Enter, setup entry and tracker notes/Save scrolling
+pass. Light and both explicit reduction choices persist across normal restart.
+Windows client-animation changes were read back; frame-timed animation suppression
+and computed media matching were not established.
+
+Found and fixed weak editable-field boundaries: original divider tokens gave
+about 1.34:1 Light / 1.39:1 Dark against field fill. Dedicated control borders now
+give 3.66:1 / 3.52:1 against card fill, with a system-color forced-colors fallback.
+Seventy source contrast checks pass (58 normal-text and 12 boundary/focus pairs).
+Rebuilt and installed the fix; affected tracker fields pass both palettes at both
+sizes and Follow system still changes live. Earlier keyboard/restart/reduction
+observations remain bound to the retained pre-fix package, whose application JS
+and engine behavior are unchanged by this CSS fix.
+
+Added a finite OS display-preference helper with durable original baseline and
+verified restoration, an offline contrast audit and regressions. Added explicit
+`--retained-notices` acceptance packaging: exact old package/engine/notices plus
+current npm and Cargo dependency metadata must match before reuse. Default native
+notice recollection correctly rejected drifted host inputs. Restricted NSIS cache
+access failed; normal Windows packaging passes with the retained production engine.
+No new native provenance/license/source-delivery clearance follows.
+
+Final installer SHA-256
+`e195dc7b5f4cf1152418806ccf3bf4ab8c669eb85842061a8c31efbd50dbac7c`;
+engine remains `e690a89382b0988c6bc62e73119e8a36ba45738d5e391f9aeae9feb5a68aeda7`.
+Both synthetic databases remain byte-identical during their display inspections.
+All three normal closes leave zero owned survivors; both guarded uninstalls remove
+test files/registration/storage. Production fingerprints/build artifacts remain
+unchanged. Original Windows app color, transparency and animation settings are
+restored and verified, including after final uninstall. No provider/search/page/
+model/release operation; test key namespaces remain empty. Source changes are local.
+
+Validation: 97 offline Python harness/packaging/ownership tests, 167 frontend tests,
+37 JavaScript report/packaging tests, builder syntax and frontend/native/NSIS build
+pass. The initial restricted display tests failed on temporary-directory access;
+workspace-local scratch retries pass. Full engine suites and hosted CI are not
+newly claimed because production engine behavior is unchanged.
+
+See [procedure](docs/23-installed-accessibility.md) and
+[progress](docs/progress/2026-11-05.md). Raw evidence and packages stay ignored.
+Next: a bounded screen-reader/forced-colors/text-scaling and DPI follow-up; do not
+repeat passed samples without a regression or changed relevant code. Broader OS,
+normal-identity, fresh-Windows-user/missing-runtime, installed version-only upgrade
+walkthrough/historical migration, hosted/enforced checks, license/source delivery,
+signing/distribution and milestone-21 human usefulness remain separate. This session
+does not turn the preceding upgrade harness checkpoint into installed evidence.
 
 ## Current checkpoint — version-only upgrade harness publication
 

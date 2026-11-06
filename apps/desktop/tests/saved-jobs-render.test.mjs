@@ -16,6 +16,21 @@ const job = { title: '<script>steal()</script>', snippet: 'Must work with ET tim
 Object.assign(job, { stage: 'applied', notes: '<script>PRIVATE_SYNTHETIC_NOTE</script>', revision: 1 });
 const saved = { jobs: [job], ready: true, busy: false, connected: true, error: '', notice: '', drafts: {}, reload() {}, remove() {}, update() {}, setDraft() {}, clearDraft() {} };
 function render(extra = {}) { return renderToStaticMarkup(React.createElement(exports.SavedJobs, { saved: { ...saved, ...extra } })); }
+
+test('saved list items are named by their own heading without repeating notes or card contents', () => {
+  const other = { ...job, id: '00000000-0000-4000-8000-000000000002', title: 'Second synthetic job' };
+  const markup = render({ jobs: [job, other] });
+  for (const entry of [job, other]) {
+    const titleId = `saved-title-${entry.id}`;
+    assert.ok(markup.includes(`<li aria-labelledby="${titleId}"><article><h2 id="${titleId}">`));
+    assert.equal(markup.split(`id="${titleId}"`).length - 1, 1);
+  }
+  // Naming the item must preserve the separately readable details and editor labels.
+  assert.ok(markup.includes('&lt;script&gt;PRIVATE_SYNTHETIC_NOTE&lt;/script&gt;'));
+  const editing = render({ drafts: { [job.id]: { stage: 'applied', notes: job.notes, revision: 1 } } });
+  assert.ok(editing.includes(`aria-labelledby="saved-title-${job.id}"`));
+  assert.ok(editing.includes(`for="notes-${job.id}"`));
+});
 test('saved snapshots keep source, timestamps, uncertainty and safely escaped content', () => {
   const markup = render();
   assert.ok(markup.includes('&lt;script&gt;steal()&lt;/script&gt;'));

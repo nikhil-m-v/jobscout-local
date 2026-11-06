@@ -32,7 +32,7 @@ export function SavedJobs({ saved }: { saved: ReturnType<typeof useSavedJobs> })
         const draft = saved.drafts[job.id];
         const locked = !saved.ready || !saved.connected || saved.busy;
         const stale = draft && draft.revision !== job.revision;
-        return <li key={job.id}><article><h2>{job.title}</h2>
+        return <li key={job.id} aria-labelledby={`saved-title-${job.id}`}><article><h2 id={`saved-title-${job.id}`}>{job.title}</h2>
           <p className="criteria-help">Stage: <strong>{jobStages[job.stage]}</strong> · Recorded by you</p>
           <p className="criteria-help">Source: {source.host} · Tavily{source.source && ` · Requested source: ${source.source}`}</p>
           {source.scope === 'outside' && <p className="criteria-help">Returned host is outside the requested source scope. Kept for review.</p>}

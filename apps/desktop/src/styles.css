@@ -12,6 +12,7 @@
   --ink: #1d1d1f;
   --muted: #646469;
   --line: #dedee3;
+  --control-line: #85858c;
   --hover: #e8e8ed;
   --selected: #e6e6eb;
   --accent: #216348;
@@ -35,6 +36,7 @@
   --ink: #f5f5f7;
   --muted: #aeafb7;
   --line: #38383e;
+  --control-line: #747480;
   --hover: #29292f;
   --selected: #303037;
   --accent: #9acbb1;
@@ -410,3 +412,15 @@ svg { flex-shrink: 0; }
 .location-retained { margin: 16px 0; }
 .location-retained summary { cursor: pointer; }
 .setup-location .criteria-actions { flex-wrap: wrap; margin-top: 16px; }
+
+/* Editable fields need a distinct boundary, independent of subtle panel dividers. */
+.provider-key-row input, .criteria-field select, .review-editor, .query-editor,
+.location-input, .job-tracking-editor select, .job-tracking-editor textarea {
+  border: 1px solid var(--control-line);
+}
+@media (forced-colors: active) {
+  .provider-key-row input, .criteria-field select, .review-editor, .query-editor,
+  .location-input, .job-tracking-editor select, .job-tracking-editor textarea {
+    border-color: CanvasText;
+  }
+}

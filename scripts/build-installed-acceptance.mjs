@@ -7,11 +7,13 @@ import path from 'node:path';
 import { root, pythonExecutable } from './python.mjs';
 import { generateNotices, checkNoticeInventory } from './generate-notices.mjs';
 import { sslRuntimeDataArgs } from './engine-runtime-data.mjs';
+import { assertRetainedNoticeInputs } from './retained-notice-inputs.mjs';
 
 const syntheticSearch = process.argv[2] === '--synthetic-search';
 const upgradeFixture = process.argv[2] === '--upgrade-fixture';
-if (process.platform !== 'win32' || (process.argv.length !== 2 && !((syntheticSearch || upgradeFixture) && process.argv.length === 3))) {
-  throw new Error('Windows only. Optional --synthetic-search OR --upgrade-fixture; no live-provider options.');
+const retainedNotices = process.argv[2] === '--retained-notices';
+if (process.platform !== 'win32' || (process.argv.length !== 2 && !((syntheticSearch || upgradeFixture || retainedNotices) && process.argv.length === 3))) {
+  throw new Error('Windows only. Optional --synthetic-search OR --upgrade-fixture OR --retained-notices; no live-provider options.');
 }
 // A real higher-version NSIS package, never a production version change.
 const version = upgradeFixture ? '0.1.1' : '0.1.0';
@@ -27,9 +29,11 @@ if (existsSync(path.join(root, '.local/installed-acceptance/installation.json'))
 if (upgradeFixture && existsSync(path.join(directory, 'build.json'))) throw new Error('Retain the existing upgrade fixture; do not overwrite it.');
 mkdirSync(directory, { recursive: true });
 let notices;
-if (upgradeFixture) {
-  // Bind this version-only fixture to the retained 0.1.0 package. Recollecting
+if (upgradeFixture || retainedNotices) {
+  // Bind to the retained 0.1.0 production engine and notices. Recollecting
   // against a changed host Python would misdescribe the retained frozen engine.
+  // --retained-notices is for frontend-only acceptance with unchanged dependency
+  // manifests. It grants no new native provenance or release/license clearance.
   const baseDirectory = path.join(root, '.local/installed-acceptance');
   const base = JSON.parse(readFileSync(path.join(baseDirectory, 'build.json'), 'utf8'));
   const overlay = path.join(baseDirectory, 'tauri.json');
@@ -44,6 +48,19 @@ if (upgradeFixture) {
   const noticeParent = path.dirname(noticeFile);
   if (path.dirname(noticeParent) !== path.join(root, 'work/notices') || path.basename(noticeFile) !== 'THIRD-PARTY-NOTICES.txt' ||
       checkNoticeInventory(noticeParent, engine).sha256 !== base.notice_sha256) throw new Error('Retained notice/engine binding changed.');
+  if (retainedNotices) {
+    const metadata = (executable, args) => {
+      const result = spawnSync(executable, args, { cwd: root, encoding: 'utf8', windowsHide: true, timeout: 60_000, maxBuffer: 32 * 1024 * 1024 });
+      if (result.error || result.status !== 0) throw new Error('Cannot verify retained dependency metadata.');
+      return JSON.parse(result.stdout);
+    };
+    assertRetainedNoticeInputs(
+      JSON.parse(readFileSync(path.join(noticeParent, 'npm.json'), 'utf8')),
+      metadata(process.execPath, [process.env.npm_execpath, 'ls', '--omit=dev', '--all', '--long', '--json', '--workspace', '@jobscout/desktop']),
+      JSON.parse(readFileSync(path.join(noticeParent, 'cargo.json'), 'utf8')),
+      metadata('cargo', ['metadata', '--manifest-path', 'apps/desktop/src-tauri/Cargo.toml', '--locked', '--offline', '--format-version', '1', '--filter-platform', 'x86_64-pc-windows-msvc']),
+    );
+  }
   notices = { directory: noticeParent, overlay };
 } else {
   notices = generateNotices(engine);
@@ -96,6 +113,7 @@ try {
     identifier: 'app.jobscout.installedacceptance', product: 'JobScout acceptance', version,
     ...(upgradeFixture ? { fixture: 'version-only-upgrade', from_version: '0.1.0' } : {}),
     mode: syntheticSearch ? 'synthetic-search' : 'production-engine',
+    ...(retainedNotices ? { retained_notices: true } : {}),
     engine_sha256: sha(acceptanceEngine), desktop_sha256: sha(desktop), installer_sha256: sha(installer),
     notice_sha256: noticeInventory.sha256,
     notice_scope: 'Production dependency bundle; no synthetic-sidecar inventory or license clearance claimed.',
