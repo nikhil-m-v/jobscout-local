@@ -72,6 +72,16 @@ Prefer reusing an existing compatible Ollama installation. Treat its model stora
 
 ## Model selection
 
+Implemented first slice — 2026-11-08: [24A](../architecture/0045-optional-embedding-catalog.md)
+adds a built-in, initially collapsed embedding catalog in Settings and First use.
+It presents two named package variants with license references, dated approximate
+download sizes, language/context guidance and explicit unmeasured resource/quality
+limits. No model is selected; model selection, downloads and reuse are not yet
+enabled. Reference buttons open only fixed official pages after user activation.
+Opening the catalog does not inspect models, save consent or block Finish later.
+24B–24D own exact artifact/source review, separate model-storage/space preflight,
+compatible reuse, background acquisition/cancellation/recovery and verification.
+
 Core discovery now has two model-free entry paths: reviewed resume text produces local supported-category suggestions and an automatic query preview; skipping a resume uses manual preferences/skills. Results offer local snippet-category filters and shared-skill ordering. No new setup permission, secret, model or storage path is required. Explain the limited catalog and word-based uncertainty, with retry/manual recovery when assistance is unavailable. A future local-LLM summary must remain optional, require compatible model selection through this guided setup, preserve the deterministic fallback, and never copy private prose into provider queries. Upgrades package the assistance engine and frontend/native bridge together, with no database migration.
 
 Each model card displays the exact model/version, license link, download size, recommended memory guidance, supported languages, and a plain explanation of the quality/speed tradeoff. Suggested groups are Lightweight and Balanced; the final default depends on measured device compatibility. CPU use must remain possible when supported, with an honest notice that analysis may take longer.

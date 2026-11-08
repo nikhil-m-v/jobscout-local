@@ -412,6 +412,19 @@ svg { flex-shrink: 0; }
 .location-path, .location-retained li { overflow-wrap: anywhere; }
 .location-retained { margin: 16px 0; }
 .location-retained summary { cursor: pointer; }
+.embedding-catalog > p { margin-top: 10px; }
+.embedding-catalog details { margin-top: 18px; }
+.embedding-catalog summary { cursor: pointer; color: var(--accent); font-weight: 600; }
+.embedding-catalog summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.embedding-model-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr)); gap: 16px; margin-block: 20px; }
+.embedding-model-card { min-width: 0; padding: 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); }
+.embedding-model-card > p { margin-block: 10px; font-size: 13px; line-height: 1.65; }
+.embedding-model-card h3, .embedding-model-card h4 { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -.035em; }
+.embedding-model-variant { overflow-wrap: anywhere; color: var(--muted); user-select: text; }
+.embedding-model-facts { display: grid; gap: 10px; margin-block: 20px; font-size: 13px; }
+.embedding-model-facts div { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.embedding-model-facts dt { color: var(--muted); }
+.embedding-model-facts dd { margin: 0; }
 .setup-location .criteria-actions { flex-wrap: wrap; margin-top: 16px; }
 
 /* Editable fields need a distinct boundary, independent of subtle panel dividers. */

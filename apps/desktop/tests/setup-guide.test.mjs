@@ -69,6 +69,8 @@ test('online setup starts closed and does not mount key controls; continuing can
 });
 
 test('first-use guidance distinguishes connected storage, storage failure and offline recovery from search readiness', () => {
+  assert.ok(render('start').includes('Optional semantic matching'));
+  assert.ok(!render('workspace').includes('Optional semantic matching'));
   assert.ok(render('start').includes('Run local check'));
   assert.ok(!render('workspace').includes('Run local check'));
   assert.ok(render('start').includes('Connected. Local storage is responding.'));

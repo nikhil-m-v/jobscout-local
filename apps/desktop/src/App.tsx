@@ -17,6 +17,7 @@ import { SavedJobs } from './components/SavedJobs';
 import { DataControls } from './components/DataControls';
 import { useDataControls } from './hooks/useDataControls';
 import { SetupGuide } from './components/SetupGuide';
+import { EmbeddingModels } from './components/EmbeddingModels';
 import { readSetupProgress, saveSetupProgress, type SetupStep } from './lib/setup-progress';
 
 type Page = 'discover' | 'saved' | 'settings' | 'setup';
@@ -74,6 +75,7 @@ function Settings({ engine, preferences, dataControls, workBusy, openSetup }: { 
     <section className="settings-panel" aria-labelledby="ai-title"><div className="settings-title"><span className="icon-tile lavender"><Sparkles size={20} /></span><div><h2 id="ai-title">Local AI</h2><p>A model that runs where your information lives.</p></div><span className={`status-text ${ai?.status === 'available' ? 'positive' : ''}`}>{ai?.status === 'available' ? 'Ollama connected' : ai?.status === 'error' ? 'Needs attention' : 'Not connected'}</span></div>
       <div className="ai-explanation"><h3>{ai?.status === 'available' ? `${ai.installed_models} installed ${ai.installed_models === 1 ? 'model' : 'models'} detected` : ai?.status === 'error' ? 'Ollama did not return a usable response.' : ai?.status === 'unavailable' ? 'Ollama is not running yet.' : 'Connect the workspace to check local AI.'}</h3><p>We are building a guided model picker and download experience. For now, JobScout checks whether Ollama is available. A connected runtime does not mean a suitable model has been selected.</p><button className="button secondary" onClick={() => { setLinkError(false); void openOllamaWebsite().catch(() => setLinkError(true)); }}>Visit Ollama <ArrowUpRight size={14} /></button>{linkError && <p className="inline-error" role="alert">The website could not be opened. Visit ollama.com in your browser.</p>}</div>
     </section>
+    <EmbeddingModels />
     <section className="coming-panel"><CircleHelp size={20} /><div><h3>More setup, less guesswork.</h3><p>Online search is available in Discover after you prepare and review a query. Saving a key sends nothing to Tavily. Choose a personal-data folder in the setup guide. Optional model downloads are planned.</p></div><span className="badge">COMING NEXT</span></section>
   </>;
 }

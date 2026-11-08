@@ -1,6 +1,44 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-11-08 (milestone 23 installed setup-heading focus and bounded import/error navigation). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-11-08 (owner-directed milestone 24A offline embedding catalog). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — milestone 24A embedding catalog preview
+
+The owner explicitly deferred remaining milestone-23 accessibility acceptance and
+requested milestone 24. Continue feature work with 24B, not the old accessibility
+next action below. Milestone 23, including incomplete 200%-text tracker acceptance,
+stays open; no v1.0 release gate, version or distribution approval is waived.
+The release sequencing amendment permits independent optional-model development.
+
+Implemented a versioned offline catalog preview in Settings and setup → First
+use. MiniLM L6 v2 and Nomic Embed Text v1.5 have named Ollama variants, dated
+publisher estimates, Apache-2.0 references and input/resource limits. Default is
+no selected model. No download, installed-model inspection, inference, derived
+storage or consent persistence is added. Reading/expanding sends nothing online;
+explicit reference buttons open only four fixed official URLs. Exact native
+permissions and runtime resolver reject arbitrary references. Models remain
+optional; Finish later returns to resume import. No engine/dependency/schema or
+provider-permission change. The new external permissions cover references only.
+
+All 173 frontend tests, typecheck/frontend build and separate native/NSIS packaging
+pass. Synthetic browser Light/Dark and 760 × 640 checks show readable cards,
+keyboard reference focus, no horizontal overflow and an intact setup skip path.
+No external reference button, live search, model/runtime download or inference
+was activated. Native reference opening/installed acceptance and hosted CI are
+not newly claimed. Production artifact hashes are preserved by the builder;
+generated packages/screenshots stay ignored under
+`work/ci/milestone24-catalog-2026-11-08/`. The owner authorized committing and
+pushing this source/test/docs payload to the existing remote. Packages, screenshots,
+raw evidence and local data remain excluded; no release approval is implied.
+
+Next: 24B exact artifact/manifest/license/notice review, separate model-storage
+and total-space preflight, disclosed compatible-model reuse without altering
+shared runtime/models. 24C owns reviewed background acquisition/cancel/recovery;
+24D owns verification/resource/offline/installed acceptance. The approximate UI
+catalog is not an acquisition manifest, model-quality recommendation or integrity
+pin. No CPU/RAM readiness or speed promise is established. See
+[decision 0045](docs/architecture/0045-optional-embedding-catalog.md) and
+[progress](docs/progress/2026-11-08.md#milestone-24a--offline-embedding-catalog).
 
 ## Current checkpoint — setup step orientation with Narrator
 

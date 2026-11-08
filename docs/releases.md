@@ -16,12 +16,20 @@ Current continuation: [21K dispositions and local review pack](21k-dispositions-
 
 ## Release boundaries
 
+Owner-directed development amendment — 2026-11-08: defer the remaining milestone
+23 accessibility acceptance and begin milestone 24 now. Independent optional
+semantic-matching development may proceed before v1.0 release acceptance. This
+supersedes the earlier sequencing-only “Start after v1.0” requirement; it does not close
+milestone 23, waive any release gate, approve a release/version change or move
+milestones 24–26 into the v1.0 scope. The first slice is the
+[24A offline model catalog preview](architecture/0045-optional-embedding-catalog.md).
+
 2026-10-17 continuation: the owner requested automated diagnostic summaries and a return to feature work. The [delivery amendment](architecture/0037-finite-search-quality-delivery.md#delivery-amendment--2026-10-17) defers exhaustive manual grading while preserving pending human scope/quality gates. [22A](architecture/0038-guided-core-setup.md) implements an optional local three-step setup guide; full milestone 22, useful-scope acceptance and owner 23 gates remain. The guide and accumulated documentation are published as `957dc6c`, with exact remote main verified. No version change, installer update or release acceptance is implied.
 
 | Release | Useful outcome | Scope and entry gate |
 |---|---|---|
 | **v1.0 — Private job-search core** | Review a resume locally, find and assess jobs, save useful jobs and track applications on Windows | Foundations and milestones 17–23. Model-free deterministic matching, one search provider, saving/tracking, data controls, core setup and hardening. Complete the gates below before release |
-| **v1.1 — Optional semantic matching** | Improve matching beyond literal words, evaluated locally | Milestones 24–26: reviewed embedding acquisition, local evidence features and weighted ranking. Start after v1.0; demonstrate quality gains, resource bounds and deletion behavior |
+| **v1.1 — Optional semantic matching** | Improve matching beyond literal words, evaluated locally | Milestones 24–26: reviewed embedding acquisition, local evidence features and weighted ranking. Owner-authorized development can proceed while v1.0 gates remain open; demonstrate quality gains, resource bounds and deletion behavior before release |
 | **v1.2 — Optional local AI assistance** | Review grounded profile suggestions and explanations locally | Milestones 27–30: runtime/model setup, cancellable inference, evidence-backed summaries and optional evaluated reranking. Start from a stable matching baseline; verify factual fidelity, licensing, hardware and privacy |
 | **Later releases — separately scoped** | Skills/certification advice, resume tailoring, application preparation/submission and background discovery | Define one narrow release before starting each capability. Submission and unattended features require their own privacy/consent/recovery gates |
 

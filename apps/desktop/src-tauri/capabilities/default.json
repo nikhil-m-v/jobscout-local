@@ -1,7 +1,37 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "main-window",
-  "description": "Local app window; external navigation restricted to official runtime and provider setup pages.",
-  "windows": ["main"],
-  "permissions": ["core:default", {"identifier": "opener:allow-open-url", "allow": [{"url": "https://ollama.com/download/windows"}, {"url": "https://app.tavily.com"}, {"url": "https://help.tavily.com/articles/9170796666-how-can-i-create-an-api-key"}]}]
+  "description": "Local app window; external navigation restricted to official runtime, provider setup and reviewed embedding model reference pages.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default",
+    {
+      "identifier": "opener:allow-open-url",
+      "allow": [
+        {
+          "url": "https://ollama.com/download/windows"
+        },
+        {
+          "url": "https://app.tavily.com"
+        },
+        {
+          "url": "https://help.tavily.com/articles/9170796666-how-can-i-create-an-api-key"
+        },
+        {
+          "url": "https://ollama.com/library/all-minilm:l6-v2"
+        },
+        {
+          "url": "https://ollama.com/library/all-minilm:l6-v2/blobs/c71d239df917"
+        },
+        {
+          "url": "https://ollama.com/library/nomic-embed-text:v1.5"
+        },
+        {
+          "url": "https://ollama.com/library/nomic-embed-text:v1.5/blobs/c71d239df917"
+        }
+      ]
+    }
+  ]
 }
