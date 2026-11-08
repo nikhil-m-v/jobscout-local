@@ -73,6 +73,9 @@ identities, results, the editable-field contrast fix and remaining checks.
 The [November 6 follow-up](progress/2026-11-06.md) records the bounded Narrator,
 actual Windows contrast-theme and text/display-scaling sample, including its
 separate pre-fix and rebuilt-package observations.
+The [November 8 follow-up](progress/2026-11-08.md) records the setup-heading focus
+fix, actual import/error and setup Narrator samples, final keyboard outline check,
+and an explicitly incomplete 200%-text propagation attempt.
 The final production-identity release installer remains separate from this
 production-code package under a synthetic identity.
 
@@ -98,6 +101,14 @@ describes this live transcription. A UI Automation tree alone is not speech
 evidence. Do not enable online image descriptions, open external links or download
 voices. Stop Narrator after the sample if it was originally off.
 
+For setup, verify that entry and Continue/Back announce the current step heading,
+then that the next Tab reaches that step's first control. Check the visible
+heading outline separately from Narrator's own cursor rectangle. Do not activate
+key setup, storage copying or a local write probe merely to test navigation.
+For import, keep native picker cancellation, parser-error speech and successful
+document review as separate cases; presence in a tree does not prove a message
+was spoken.
+
 Apply actual Windows contrast themes through Settings and inspect the installed
 app, including fields, selection, focus, disabled controls and scrolling. Keep a
 dark and light system palette distinct from JobScout's own Light/Dark settings.
@@ -108,6 +119,11 @@ independently. Apply supported text-size and display-scale values through Settin
 record the exact value and the owned desktop's native DPI, and distinguish native
 client pixels from the UI tool's logical screenshot dimensions. Sample layout and
 keyboard reachability, then restore the original values through Settings.
+Require agreement between the selected/applied text-size UI, an independent
+readback and actual enlarged app content before counting enlarged-content layout
+or tracker acceptance. If these disagree, retain the discrepancy and restart
+observation, restore the baseline, and leave that acceptance slice incomplete.
+An absent expected readback is not proof that the requested scale reached the app.
 
 After a fix, rebuild/install and repeat its affected screen-reader case. Retain
 pre-fix evidence for unchanged modes rather than claiming all samples ran on the

@@ -57,6 +57,7 @@ button:disabled { cursor: wait; opacity: .65; }
 a { color: inherit; }
 button, a, select { outline-offset: 4px; -webkit-tap-highlight-color: transparent; }
 button:focus-visible, a:focus-visible, select:focus-visible { outline: 2px solid var(--accent); }
+#setup-step-title:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
 h1, h2, h3, p { margin: 0; }
 h1, h2, h3 { font-weight: 600; letter-spacing: -.035em; }
 h1 { font-size: 30px; line-height: 1.25; }

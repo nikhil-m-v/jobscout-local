@@ -16,6 +16,15 @@ new Function('require', 'exports', compiled)(require, exports);
 const health = { status: 'ready', version: '0.1.0', database: 'ready', local_ai: { provider: 'ollama', status: 'unavailable', installed_models: 0 } };
 const render = (step, extra = {}) => renderToStaticMarkup(React.createElement(exports.SetupGuide, { progress: { step, remembered: true }, health, checking: false, refresh() {}, leave() {}, changeStep() {}, ...extra }));
 
+test('each setup step exposes one named heading for entry focus outside the Tab sequence', () => {
+  for (const [step, title] of Object.entries({ workspace: 'A private place to start.', search: 'Online search, when you want it.', start: 'Your next step is yours.' })) {
+    const markup = render(step);
+    assert.equal((markup.match(/id="setup-step-title"/g) ?? []).length, 1);
+    assert.ok(markup.includes(`<h2 id="setup-step-title" tabindex="-1">${title}</h2>`));
+    assert.equal((markup.match(/aria-current="step"/g) ?? []).length, 1);
+  }
+});
+
 test('only a fixed display step survives reopening; malformed or absent progress starts safely', () => {
   const values = new Map();
   const storage = { getItem: key => values.get(key) ?? null, setItem: (key, value) => values.set(key, value) };

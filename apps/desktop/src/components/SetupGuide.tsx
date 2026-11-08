@@ -28,7 +28,7 @@ export function SetupGuide({ progress, changeStep, health, checking, refresh, le
     <ol className="flow-steps" aria-label="Setup progress">{setupSteps.map((item, index) => <li key={item} aria-current={step === item ? 'step' : undefined}><span>{index + 1}</span>{labels[item]}</li>)}</ol>
     <section className="settings-panel" aria-labelledby="setup-step-title">
       {step === 'workspace' && <>
-        <div className="settings-title"><span className="icon-tile green"><ShieldCheck size={20} /></span><div><h2 id="setup-step-title">A private place to start.</h2><p>Understand what stays here before adding a resume.</p></div></div>
+        <div className="settings-title"><span className="icon-tile green"><ShieldCheck size={20} /></span><div><h2 id="setup-step-title" tabIndex={-1}>A private place to start.</h2><p>Understand what stays here before adding a resume.</p></div></div>
         <dl className="privacy-details">
           <div><dt>Application files</dt><dd>The installer manages the app and its bundled engine.</dd></div>
           <div><dt>Your career records</dt><dd>Saved profile text, saved jobs, application stages and notes live in this workspace’s local database. Original resume files stay where you keep them.</dd></div>
@@ -39,13 +39,13 @@ export function SetupGuide({ progress, changeStep, health, checking, refresh, le
         <SetupLocation workBusy={workBusy} changed={() => { setStorageRevision(value => value + 1); refresh(); }} />
       </>}
       {step === 'search' && <>
-        <div className="settings-title"><span className="icon-tile peach"><Search size={20} /></span><div><h2 id="setup-step-title">Online search, when you want it.</h2><p>You can import, review and save resume text without configuring a provider.</p></div></div>
+        <div className="settings-title"><span className="icon-tile peach"><Search size={20} /></span><div><h2 id="setup-step-title" tabIndex={-1}>Online search, when you want it.</h2><p>You can import, review and save resume text without configuring a provider.</p></div></div>
         <p className="resume-guidance">Tavily receives only the generic job criteria you review and explicitly send. Your resume, profile and private notes stay on this computer. Searches may use provider credits; Tavily can see your IP address and API-account association.</p>
         <p className="criteria-help">Saving a key locally does not send a search or authorize one. The optional connection check has its own review and send action. Provider links open external websites with their own data practices.</p>
         <button className="button secondary" aria-expanded={showProvider} aria-controls="setup-provider" onClick={() => setShowProvider(value => !value)}>{showProvider ? 'Close key setup' : 'Set up Tavily'}</button>
       </>}
       {step === 'start' && <>
-        <div className="settings-title"><span className="icon-tile green"><Monitor size={20} /></span><div><h2 id="setup-step-title">Your next step is yours.</h2><p>Start with a resume, or choose job options manually.</p></div></div>
+        <div className="settings-title"><span className="icon-tile green"><Monitor size={20} /></span><div><h2 id="setup-step-title" tabIndex={-1}>Your next step is yours.</h2><p>Start with a resume, or choose job options manually.</p></div></div>
         <div className="status-row"><div><h3>Local workspace</h3><p role="status">{checking ? 'Checking your local workspace…' : health?.database === 'ready' ? 'Connected. Local storage is responding.' : health ? 'Local storage needs attention before saving records.' : 'Workspace unavailable. Check again before importing or saving.'}</p></div><button className="button secondary" disabled={checking} onClick={refresh}><RefreshCw size={14} className={checking ? 'spinning' : ''} />{checking ? 'Checking…' : 'Check again'}</button></div>
         <SetupCheck />
         <p className="resume-guidance">Online search needs a saved Tavily key and a fresh review of the exact query. This guide does not check Tavily automatically or verify job availability.</p>

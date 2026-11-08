@@ -4,7 +4,28 @@ Release scope adopted 2026-10-10: **v1.0 is the model-free Windows core through 
 
 Baseline: 2026-09-29. Rows remain small meaningful deliveries; difficult milestones can span several sessions. Reorder when evidence warrants it and preserve a working app. No deadline, automation or reminder is implied.
 
-## Current implementation — milestone 23 hardening, 2026-11-01
+## Current implementation — milestone 23 accessibility, 2026-11-08
+
+The [November 8 continuation](progress/2026-11-08.md) fixes setup-step orientation:
+entry and Continue/Back now focus the current heading. Installed Narrator verifies
+all three titles and a backward transition; the final CSS-only package adds a
+visible accent outline and passes keyboard entry/next Tab at native 760 × 640.
+Bounded original-package resume-picker/parser-error speech also passes within its
+documented scope. All 169 frontend tests, typecheck, frontend/native/NSIS builds
+and 70 semantic contrast checks pass. Synthetic records, production fingerprints
+and paired artifacts are preserved; captured OS preferences are restored and
+separate test installations removed. The owner authorized source/test/docs commit and push; generated packages and raw evidence remain excluded.
+
+Milestone 23 remains **in progress**. The 200%-text tracker pass is incomplete:
+Settings visibly applied the scale, but independent readback stayed absent and
+web content did not visibly enlarge, including after restart. Next: resolve that
+propagation discrepancy, then complete 200%-text tracker editing at the measured
+minimum client area. Broader accessibility/combined modes, normal-identity,
+fresh-user/runtime/upgrade, hosted/enforced checks, resource, licensing/source
+delivery/signing/distribution and milestone-21 human usefulness gates stay open.
+Continuation does not authorize live acquisition or release publication.
+
+## Earlier implementation — milestone 23 hardening, 2026-11-01
 
 The [current hardening continuation](progress/2026-11-01.md) completes the certifi
 security-update handoff, fixes terminal engine-loss UI recovery, adds a CI-gated

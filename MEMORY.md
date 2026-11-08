@@ -1,6 +1,44 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-11-06 (milestone 23 bounded installed Narrator/contrast/scaling follow-up). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-11-08 (milestone 23 installed setup-heading focus and bounded import/error navigation). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — setup step orientation with Narrator
+
+Continued clean `cf73f32` under the separate production-engine acceptance identity.
+Actual Narrator speech confirms the resume chooser/guidance, native Open dialog
+and corrupt synthetic PDF error. Picker cancellation restores the chooser and
+exposes a status message; automatic speech of that cancellation message was not
+established. No real resume, provider/key/page/model or release action.
+
+Found and fixed setup-step orientation: Continue previously announced only the
+main landmark/loading completion. Setup entry and step changes now focus the
+current level-2 heading, outside the normal Tab sequence. Installed Narrator
+announces all three step titles, including a backward transition; next Tab reaches
+each step's first control. A final CSS-only rebuild adds the shared accent outline;
+installed keyboard entry/outline/next Tab pass at native 760 × 640, 96 DPI in Dark.
+Narrator observations remain bound to the preceding focus package. No dependency,
+engine, storage, provider boundary or setup-permission change.
+
+All 169 frontend tests, typecheck, both frontend/native/NSIS builds and 70 semantic
+contrast checks pass. Final acceptance installer: 23,447,578 bytes, SHA-256
+`9402f3748a2af7c66899f3b25d12a34dd4ddf7cc9ba8dc6a4db2af982da22438`.
+The production engine/notices are retained with dependency metadata verification.
+All three synthetic databases stay byte-identical; four normal closes leave zero
+owned survivors and all three guarded uninstalls pass. Production fingerprints
+and paired artifact hashes stay unchanged. Captured OS preferences/theme bytes
+are restored and verified after uninstall; Narrator is off. Evidence is ignored in
+`work/ci/installed-accessibility-2026-11-08/`. The owner authorized source/test/docs commit and push; generated packages and raw evidence remain excluded.
+
+The planned 200%-text tracker pass is **incomplete**. Windows Settings visibly
+applied 200%, but TextScaleFactor stayed absent in both registry views and app
+content did not visibly enlarge, including after clean restart. Settings was
+restored to 100%; original absence was preserved. Do not count this as enlarged
+tracker acceptance or silently extend Nov 6's separate observations. Next: resolve
+the Settings/readback/webview propagation discrepancy, then complete 200%-text
+tracker editing at the measured minimum client size. Full accessibility/combined
+modes, other OS environments and prior milestone-23 release/CI/license/upgrade
+gates and milestone-21 human usefulness remain open. See
+[progress](docs/progress/2026-11-08.md) and [procedure](docs/23-installed-accessibility.md).
 
 ## Current checkpoint — installed Narrator, forced colors and scaling
 

@@ -150,7 +150,8 @@ function Workspace({ engine, dataControls, initialPage }: { engine: Engine; data
   }, [optionsAvailable, discoveryStep]);
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' });
-    document.getElementById('main-content')?.focus({ preventScroll: true });
+    const target = page === 'setup' ? 'setup-step-title' : 'main-content';
+    document.getElementById(target)?.focus({ preventScroll: true });
   }, [page, discoveryStep, setupProgress.step]);
   return <div className="app-shell focused-shell"><a className="skip-link" href="#main-content">Skip to main content</a>
     <div className="workspace"><header className="topbar"><a href="#" className="brand" onClick={event => { event.preventDefault(); if (!dataControls.blocked) setPage('discover'); }} aria-label="JobScout home"><span className="brand-mark"><Sparkles size={21} /></span>jobscout<span className="brand-period">.</span></a><nav className="flow-nav" aria-label="Main navigation">{page !== 'discover' && <button className="button secondary" disabled={dataControls.blocked} onClick={() => setPage('discover')}>Back to job search</button>}<button className="button secondary" disabled={dataControls.blocked} aria-current={page === 'saved' ? 'page' : undefined} onClick={() => setPage('saved')}>Saved jobs</button><button className="button secondary" aria-current={page === 'settings' ? 'page' : undefined} onClick={() => setPage('settings')}><Settings2 size={16} />Settings</button></nav></header>
