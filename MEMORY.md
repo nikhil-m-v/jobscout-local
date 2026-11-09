@@ -1,6 +1,33 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-11-08 (owner-directed milestone 24A offline embedding catalog). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-11-09 (milestone 24B offline preflight foundation). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — milestone 24B offline preflight foundation
+
+Continued milestone 24 at the owner's request, excluding accessibility work.
+Added an engine-owned, offline byte verifier and conservative single-volume
+space planner. Full SHA-256 plus exact nonempty byte size identifies artifacts;
+verification uses bounded reads and cancellation. Reuse of exact verified blobs
+in place avoids transfer/final-copy costs; it proves neither recipe compatibility
+nor runtime readiness. Mandatory explicit temporary/runtime/recovery/reserve
+costs prevent silently omitting unknown overhead. Unknown free space stays unknown;
+invalid counts, overflow, duplicate/conflicting pins and unrelated reuse fail closed.
+
+This is **partial 24B**, not enabled acquisition. No production manifest/pin,
+path inspection, file picker, runtime inventory, endpoint, UI, persistence,
+dependency, download or inference is added. Callers must later select stable
+regular files explicitly, schedule hashing off the UI thread, inspect a separate
+fixed-drive destination and reverify before use. Exact artifact/license/NOTICE
+review and runtime/storage integration remain next; do not treat supplied internal
+pins or space sufficiency as license clearance, consent or model readiness.
+All 46 focused tests pass. Broader engine commands stalled and were stopped;
+the narrowed retry reached the existing storage-route checks after passing the
+46 new tests. Cause unresolved; full engine regression acceptance is unconfirmed.
+See [progress](docs/progress/2026-11-09.md) and decision 0045. Prior release and
+accessibility gates remain open; production installers do not include this work.
+The owner authorized committing and pushing this six-file source/test/docs
+payload to the existing remote. Generated evidence, model bytes and local data
+remain excluded; publication does not imply completed 24B or release acceptance.
 
 ## Current checkpoint — milestone 24A embedding catalog preview
 

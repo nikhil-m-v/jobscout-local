@@ -1,7 +1,9 @@
 # 0045 — Optional embedding catalog and staged acquisition
 
 Date: 2026-11-08. Status: 24A catalog preview implemented; acquisition and reuse
-are not enabled. The owner explicitly deferred remaining accessibility acceptance
+are not enabled. A 2026-11-09 offline 24B preflight foundation is implemented
+below; exact production manifests and integrated destination/reuse review remain
+pending. The owner explicitly deferred remaining accessibility acceptance
 and requested milestone 24 development ahead of the unfinished v1.0 release gates.
 This changes development order, not release approval or the version number.
 
@@ -80,6 +82,39 @@ display/setup preferences retain their prior semantics. Add inventory, recovery,
 upgrade and deletion controls before retaining any future model-related state.
 
 ## Remaining finite slices
+
+### Implemented 24B foundation (2026-11-09)
+
+`embedding_preflight.py` separates byte identity from space budgeting. Its
+internal immutable artifact pins require full lowercase SHA-256 and exact positive
+byte counts. A bounded binary-stream verifier checks size and digest, reads no
+more than the expected length plus one byte, supports cooperative cancellation
+and propagates read errors without claiming verification. The caller must open
+an explicitly selected stable regular file from the start; later use must
+reverify bytes. No file selection, scan, runtime contact or endpoint is exposed.
+
+The single-volume planner counts new final bytes plus mandatory explicit
+temporary, runtime, recovery and reserve costs. Temporary space includes transfer
+staging, so the planner conservatively allows staging and final copies to coexist.
+Exact previously verified blobs reused **in place** avoid new transfer/final
+storage costs. A shared file copied into owned storage must instead be budgeted
+as new storage. Existing files already reduce observed free space; recovery means
+additional future copies, avoiding double counting existing copies. Deduplicated
+pins, exact integer bounds and safe sums prevent ambiguous or overflowing budgets.
+Unknown free space never becomes sufficient. Each overhead must be reviewed;
+passing zero is an explicit caller assertion, not an inferred default.
+
+These are internal primitives, not an externally trusted manifest parser or a
+compatibility result. No production pin or approval list is supplied. Future
+integration must bind verified blobs to reviewed model/recipe/license/NOTICE
+inputs, reject unsupported recipes, inspect a separate fixed-drive destination,
+keep hashing on a worker, handle file mutation and cancellation, and refresh
+space before writes. Multi-volume layouts need per-volume budgets. Sufficient
+space is only a transient calculation, not CPU/RAM/performance or write readiness.
+No existing shared runtime/model is altered. No new retained state, migration,
+deletion behavior, dependency or network permission is introduced.
+
+### Remaining work
 
 1. **24B — acquisition/reuse preflight:** choose the runtime/storage approach;
    pin exact manifests/artifacts/license inputs; review a local fixed-drive model
