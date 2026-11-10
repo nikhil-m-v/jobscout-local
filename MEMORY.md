@@ -1,6 +1,27 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-11-09 (milestone 24B offline preflight foundation). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-11-10 (bounded milestone 24B regression investigation and diagnostics publication). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — bounded storage-test startup investigation
+
+The November 9 stall was reproduced after the 46 preflight cases, at TestClient
+entry in the first setup-storage test. A stack dump shows Windows asyncio's
+internal fallback socket pair blocked in accept before lifespan or storage-route
+execution. A minimal pair, the first acceptance-preview case and pre-24B parent
+2906a07 reproduce the same restricted-environment hang; Selector policy also hangs.
+Outside that environment, the same guarded synthetic profiles pass: 54 combined,
+32 adjacent storage/local-check/database and 4 acceptance-preview tests; counts
+overlap. Parent storage and the minimal pair also pass. No product route change
+is justified. Added a bounded diagnostic runner and evidence/procedure after
+the owner explicitly requested applying, committing and pushing the prepared
+diagnostic/checkpoint slice. Raw reports, snapshots and local data remain
+excluded. Publication does not establish full regression or release acceptance.
+
+Full regression, exact underlying OS/sandbox rule and original-run stack identity
+remain unconfirmed. Hosted/installed/release gates and unfinished 24B acquisition
+inputs remain open. See [investigation](docs/24b-engine-regression.md) and
+[progress](docs/progress/2026-11-10.md). Next: separately supervised full offline
+engine regression, retaining privacy guards and a parent process deadline.
 
 ## Current checkpoint — milestone 24B offline preflight foundation
 
