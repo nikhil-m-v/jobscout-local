@@ -1,2 +1,4 @@
 # Exact upstream notice bytes are checksum-bound across Windows checkouts.
 packaging/licenses/*.txt text eol=lf
+# Public model-review evidence retains exact bytes, including upstream whitespace.
+docs/model-evidence/2026-11-11/* -text -whitespace

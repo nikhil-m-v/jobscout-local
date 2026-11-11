@@ -31,6 +31,16 @@ These links are not download permission. No new retained model state or deletion
 obligation is introduced by this preview. See
 [decision 0045](architecture/0045-optional-embedding-catalog.md).
 
+A separate developer-only [24B preflight](24b-embedding-preflight.md) can inspect
+explicitly selected model files after its read-scope disclosure. It hashes at
+most five regular files with a 512 MiB bound, reads declared path metadata and
+available model-destination space, and never scans folders, contacts a runtime,
+sends network requests or changes shared files. Reports remain transient; local
+paths must stay out of committed diagnostics. No product route, UI selection,
+persisted consent, model acquisition or inference is enabled. Public metadata/
+license evidence retained during development contains no career data; unresolved
+NOTICE/provenance and runtime/recipe checks remain separate from byte identity.
+
 Save candidate explicitly keeps a local snapshot of returned title/snippet, safe URL, provider/source index and retrieval time, with a local identifier/save time. Up to 200 records are retained; same-link saves keep the first copy and never silently refresh or evict it. Query history, reviewed profile and match explanations are not saved with the candidate. Saving/loading/removal access no provider, vault, model or result page. Saved jobs remain after clearing results or deleting the profile; remove each item in Saved jobs to delete its owned record. Existing uninstall retention applies, so remove saved jobs before uninstalling if desired. Local records are not automatically encrypted and deletion does not promise secure disk erasure or removal from backups. Combined career-record deletion and current-session clearing are available in Settings → Your local data. See [the saving contract](architecture/0032-bounded-local-job-snapshots.md).
 
 Saved jobs also keeps user-recorded Saved/Applied/Interview stages and up to 4,000 characters of private notes. Edit stage and notes → Save changes updates only the local record; it never applies, contacts an employer or sends notes online. In-memory drafts survive navigation but disappear on close/reload. Confirmed candidate removal also deletes its stage and notes; clearing results/profile deletion and uninstall retain saved records under the existing policy. Clearing notes replaces the owned text; deletion does not promise secure erasure or backup removal. Revision checks prevent stale writers from silently overwriting newer notes. See [the tracking contract](architecture/0033-private-application-tracking.md).

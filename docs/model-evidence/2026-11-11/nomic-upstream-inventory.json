@@ -1,0 +1,27 @@
+{
+  "repository": "nomic-ai/nomic-embed-text-v1.5",
+  "revision": "e9b6763023c676ca8431644204f50c2b100d9aab",
+  "license": "apache-2.0",
+  "paths": [
+    ".gitattributes",
+    "1_Pooling/config.json",
+    "README.md",
+    "config.json",
+    "config_sentence_transformers.json",
+    "model.safetensors",
+    "modules.json",
+    "onnx/model.onnx",
+    "onnx/model_bnb4.onnx",
+    "onnx/model_fp16.onnx",
+    "onnx/model_int8.onnx",
+    "onnx/model_q4.onnx",
+    "onnx/model_q4f16.onnx",
+    "onnx/model_quantized.onnx",
+    "onnx/model_uint8.onnx",
+    "sentence_bert_config.json",
+    "special_tokens_map.json",
+    "tokenizer.json",
+    "tokenizer_config.json",
+    "vocab.txt"
+  ]
+}

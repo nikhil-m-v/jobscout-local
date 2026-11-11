@@ -4,7 +4,7 @@ Release scope adopted 2026-10-10: **v1.0 is the model-free Windows core through 
 
 Baseline: 2026-09-29. Rows remain small meaningful deliveries; difficult milestones can span several sessions. Reorder when evidence warrants it and preserve a working app. No deadline, automation or reminder is implied.
 
-## Current implementation — milestone 24A model catalog, 2026-11-08
+## Current implementation — milestone 24B bounded preflight, 2026-11-11
 
 The owner explicitly deferred remaining milestone-23 accessibility acceptance and
 requested milestone 24. This changes development order only; milestone 23 remains
@@ -19,8 +19,18 @@ with honest unmeasured CPU/RAM/speed/quality guidance. Reference buttons open on
 four fixed official URLs. No model is selected; no download, reuse check, inference
 or model-state persistence is enabled. Setup later and the model-free core remain
 available. Frontend tests/build and separate native/NSIS packaging pass; synthetic
-browser checks cover compact Light/Dark layout and setup skip. Next: 24B exact
-artifact/license inputs, model storage/space and compatible-reuse preflight.
+browser checks cover compact Light/Dark layout and setup skip.
+
+[24B bounded developer preflight](24b-embedding-preflight.md) now pins exact
+publisher manifest/artifact descriptors and retains small public license/config/
+upstream evidence without acquiring weights. An internal read-only review and
+developer command compose disclosed selected-file verification with separate
+fixed-drive destination/space checks and in-place reuse credits. Exact package
+identity is separate from unresolved NOTICE/conversion provenance, semantic
+recipe and Windows runtime capability. Pass: 94 focused engine, 32 adjacent and
+four catalog contract tests. No product UI/endpoint, acquisition, inference or
+new release acceptance is enabled. Next: resolve attribution/NOTICE evidence and
+define the supported runtime/recipe contract before product setup integration.
 
 ## Earlier implementation — milestone 23 accessibility, 2026-11-08
 
@@ -220,7 +230,7 @@ The revised sequence below preserves increments 1–7 and moves resource measure
 | 21 | Search quality review — in progress | [Four finite parts](architecture/0037-finite-search-quality-delivery.md): 21.1 fidelity (21J correction and 21K maintainer dispositions complete; human semantics/limits pending), 21.2 ordering/signoff (21I rejected), 21.3 bounded coverage assessment complete, 21.4 unscored pack ready; named-human acceptance/handoff open. Strict A support 4/5; defaults/order unchanged. Next: actual human review and per-family scope decisions. No new acquisition authorized; all three approvals consumed. Useful declared scope is a release gate; 10–20 suitable jobs remains aspirational. |
 | 22 | Guided core setup — implemented; bounded installed follow-up verified | 22A optional guide, 22B folder/free-space inspection, 22C explicit device facts plus owned temporary write/read/remove check, and 22D reviewed full-path selection/verified database copying with stable credential identity and retained recovery copies. Transient results do not certify performance or future saves. Restored Windows tools and paired engine/frontend/native/NSIS packaging pass; the local 0.1.0 installer includes 22A–22D. [Finite separate-identity installed checks](22d-installed-acceptance.md) pass for synthetic copy, restart, later UI saves, local probe, normal close and uninstall, preserving production data. Broader installer/accessibility/OS/workload-resource/CI acceptance remains owner 23. No model download required. See [folder-change contract](architecture/0041-personal-data-folder.md), [storage inspection](architecture/0039-local-storage-inspection.md) and [local core checks](architecture/0040-local-core-readiness.md). |
 | 23 | v1.0 hardening and release-candidate demo | Bounded installed import, engine-loss, synthetic active-search, separate-identity wizard/shortcut and [accessibility/themes/display-preference](23-installed-accessibility.md) slices pass within documented scopes. [Nov 6](progress/2026-11-06.md) adds actual Narrator/contrast-theme/200%-text/150%-DPI samples and a rebuilt screen-reader naming fix. Own remaining normal-identity/fresh-user/runtime/upgrade, full accessibility/combined modes/minimum-height scaling/broader OS, current-package and production workload-resource checks; CI/Windows packaging, docs and synthetic search/save/track demo. Review all v1.0 gates before version change/publication. |
-| 24 | Optional embedding catalog and acquisition — in progress | [24A offline catalog preview and partial 24B](architecture/0045-optional-embedding-catalog.md) implemented: optional catalog plus offline exact-byte verification/cancellation and conservative space-budget primitives. Next 24B: reviewed production artifact/license/NOTICE inputs, runtime/storage choice and integrated separate-destination/compatible-reuse preflight. No production pins or acquisition enabled. 24C download/cancel/recovery and 24D verification/installed acceptance remain. Owner explicitly deferred remaining accessibility and authorized development ahead of v1.0 acceptance; release gates remain open. |
+| 24 | Optional embedding catalog and acquisition — in progress | [24A catalog and bounded 24B developer preflight](architecture/0045-optional-embedding-catalog.md): exact publisher descriptor pins and retained small license/upstream evidence, disclosed selected-file verification, separate fixed-drive model storage/space checks and in-place exact-blob reuse. Weights unacquired; NOTICE/conversion provenance, runtime/recipe and product setup integration remain open. No acquisition or inference enabled. 24C download/cancel/recovery and 24D verification/installed acceptance remain. Owner deferred remaining accessibility and authorized development ahead of v1.0 acceptance; release gates remain open. |
 | 25 | Local embeddings and evidence features | Bounded section-level embeddings and role/skill/responsibility/experience/preference feature vectors, source references and versioned storage/cache; include manual job-text input, deletion and deterministic fallback (decision 0017). |
 | 26 | Weighted local suitability ranking and evaluation | Evidence-linked weighted rules plus optional semantic features; separate mandatory constraints from editable soft weights, expose unknowns/coverage and component contributions, and rerank locally. Compare provider order, shared-category counts, weighted rules and semantic ranking across first ten/full shortlist, including retention and contradictions. Enable only if evaluated quality gains justify disk/RAM/latency costs (decision 0017). |
 | 27 | Optional generative runtime and model setup | Detect/reuse a local runtime; license-reviewed model choices, measured hardware guidance, acquisition/recovery and skip. |

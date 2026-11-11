@@ -1,0 +1,88 @@
+[
+  {
+    "file": "minilm-manifest.json",
+    "source": "https://registry.ollama.ai/v2/library/all-minilm/manifests/l6-v2",
+    "sha256": "1b226e2802dbb772b5fc32a58f103ca1804ef7501331012de126ab22f67475ef",
+    "size_bytes": 707,
+    "reviewed_on": "2026-11-11"
+  },
+  {
+    "file": "minilm-v1.txt",
+    "source": "https://registry.ollama.ai/v2/library/all-minilm/blobs/sha256:548455b7265836afeea130cfc8919fa3311af2a55b9fec3cbd04e811bb600ee8",
+    "sha256": "548455b7265836afeea130cfc8919fa3311af2a55b9fec3cbd04e811bb600ee8",
+    "size_bytes": 407,
+    "reviewed_on": "2026-11-11"
+  },
+  {
+    "file": "minilm-license.txt",
+    "source": "https://registry.ollama.ai/v2/library/all-minilm/blobs/sha256:c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "size_bytes": 11357,
+    "reviewed_on": "2026-11-11"
+  },
+  {
+    "file": "minilm-params.txt",
+    "source": "https://registry.ollama.ai/v2/library/all-minilm/blobs/sha256:85011998c600549934d2b696d7f0cb5078192b56f6c954f6987bf9228870017e",
+    "sha256": "85011998c600549934d2b696d7f0cb5078192b56f6c954f6987bf9228870017e",
+    "size_bytes": 16,
+    "reviewed_on": "2026-11-11"
+  },
+  {
+    "file": "nomic-manifest.json",
+    "source": "https://registry.ollama.ai/v2/library/nomic-embed-text/manifests/v1.5",
+    "sha256": "0a109f422b47e3a30ba2b10eca18548e944e8a23073ee3f3e947efcf3c45e59f",
+    "size_bytes": 708,
+    "reviewed_on": "2026-11-11"
+  },
+  {
+    "file": "nomic-v1.txt",
+    "source": "https://registry.ollama.ai/v2/library/nomic-embed-text/blobs/sha256:31df23ea7daa448f9ccdbbcecce6c14689c8552222b80defd3830707c0139d4f",
+    "sha256": "31df23ea7daa448f9ccdbbcecce6c14689c8552222b80defd3830707c0139d4f",
+    "size_bytes": 420,
+    "reviewed_on": "2026-11-11"
+  },
+  {
+    "file": "nomic-license.txt",
+    "source": "https://registry.ollama.ai/v2/library/nomic-embed-text/blobs/sha256:c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "sha256": "c71d239df91726fc519c6eb72d318ec65820627232b2f796219e87dcf35d0ab4",
+    "size_bytes": 11357,
+    "reviewed_on": "2026-11-11"
+  },
+  {
+    "file": "nomic-params.txt",
+    "source": "https://registry.ollama.ai/v2/library/nomic-embed-text/blobs/sha256:ce4a164fc04605703b485251fe9f1a181688ba0eb6badb80cc6335c0de17ca0d",
+    "sha256": "ce4a164fc04605703b485251fe9f1a181688ba0eb6badb80cc6335c0de17ca0d",
+    "size_bytes": 17,
+    "reviewed_on": "2026-11-11"
+  },
+  {
+    "file": "minilm-upstream-README.md",
+    "source": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/raw/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/README.md",
+    "sha256": "dcd602d2fd35c203a247304a06fec6654a12f7941b739f9221a064fe8dc3b7f0",
+    "size_bytes": 10502,
+    "reviewed_on": "2026-11-11"
+  },
+  {
+    "file": "nomic-upstream-README.md",
+    "source": "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5/raw/e9b6763023c676ca8431644204f50c2b100d9aab/README.md",
+    "sha256": "4430178908fbd574fdb6457e302d23e643d733ed036b5777180b0806946767b2",
+    "size_bytes": 71843,
+    "reviewed_on": "2026-11-11"
+  },
+  {
+    "file": "minilm-upstream-inventory.json",
+    "source": "https://huggingface.co/api/models/sentence-transformers/all-MiniLM-L6-v2",
+    "representation": "Reduced metadata: repository, revision, card license and siblings paths; not the raw HTTP response.",
+    "sha256": "b21d7945bc3d4b2e60018e7b62139d085fc47b416e90076f641d74941cd330e7",
+    "size_bytes": 1063,
+    "reviewed_on": "2026-11-11"
+  },
+  {
+    "file": "nomic-upstream-inventory.json",
+    "source": "https://huggingface.co/api/models/nomic-ai/nomic-embed-text-v1.5",
+    "representation": "Reduced metadata: repository, revision, card license and siblings paths; not the raw HTTP response.",
+    "sha256": "361f6a8386ee4e41384d44596b2617693c77ac1f394900359621f802a3866940",
+    "size_bytes": 711,
+    "reviewed_on": "2026-11-11"
+  }
+]

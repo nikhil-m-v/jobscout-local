@@ -15,6 +15,8 @@ import time
 PROFILES = {
     'runtime': [],
     'preflight': ['apps/engine/tests/test_embedding_preflight.py'],
+    'review': ['apps/engine/tests/test_embedding_preflight.py',
+               'apps/engine/tests/test_embedding_review.py'],
     'storage': ['apps/engine/tests/test_setup_storage.py'],
     'combined': ['apps/engine/tests/test_embedding_preflight.py',
                  'apps/engine/tests/test_setup_storage.py'],

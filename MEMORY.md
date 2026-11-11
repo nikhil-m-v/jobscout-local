@@ -1,6 +1,49 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-11-10 (bounded milestone 24B regression investigation and diagnostics publication). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-11-11 (bounded milestone 24B descriptor, storage and explicit reuse preflight). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — bounded milestone 24B package review
+
+Continued from the November 8 catalog through the existing November 9 primitives
+and November 10 diagnostic checkpoint. Added exact descriptor pins for both
+catalog packages: manifest, config, weights, license and params. Retained only
+small public metadata/license/model-card evidence and reduced upstream file
+inventories with sources, hashes and revisions; no weights were acquired. Both
+license blobs match Apache-2.0 text. Missing NOTICE inputs in the bounded evidence
+do not establish inapplicability: NOTICE, conversion/tokenizer/base-model
+attribution and runtime obligations remain unresolved, with no release approval.
+
+An internal engine review and developer command now inspect an explicitly chosen
+separate fixed-drive model destination and disclosed selected files. Declared app,
+active/retained career-data and shared runtime/model roots cannot overlap the
+destination. No directory enumeration, write probe, shared-file modification or
+runtime request occurs. Five-file/512 MiB bounds, chunked hashing, cooperative
+cancellation/deadline and file stability checks protect reuse review. A full
+manifest pin is required before per-blob reuse credits; complete exact-package
+identity still does not verify the semantic recipe or Windows runtime capability.
+Free space is refreshed after hashing. Staging/final/runtime/working/recovery/
+reserve costs remain explicit; unavailable space stays unknown. Reuse stays in
+place and cannot authorize copies, acquisition, inference or a release.
+
+Pass: 94 focused engine cases (46 existing plus 48 new), 32 adjacent storage/
+local-check/database cases and four catalog contract cases. Engine profiles used
+synthetic storage, network/HTTPX/vault/child-launch guards and a thirty-second
+parent deadline in normal Windows execution. Restricted hardlink creation failed;
+the first pass also found a Windows path/handle creation-time mismatch, corrected
+using file ID, exact size and modification time plus full hashing. Full engine
+regression, hosted CI, packaging, installed, resource and model-quality acceptance
+are not newly established. Existing release/accessibility gates remain open.
+
+No product endpoint/UI wiring, persistence/migration, dependency, permission,
+version, acquisition or inference change. The owner subsequently authorized
+committing and pushing this source/test/docs and public-evidence payload to the
+existing remote. Generated workspaces/logs, model weights and local data remain
+excluded; publication does not establish full regression or release acceptance.
+See [procedure/evidence](docs/24b-embedding-preflight.md) and
+[progress](docs/progress/2026-11-11.md). Next: resolve conversion/tokenizer/base-model
+NOTICE evidence and define the versioned Windows runtime/embedding-recipe contract
+before a separately scoped setup/background-review integration. Keep 24C and 24D
+outside this preflight session.
 
 ## Current checkpoint — bounded storage-test startup investigation
 

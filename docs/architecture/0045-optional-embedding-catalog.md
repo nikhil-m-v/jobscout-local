@@ -1,9 +1,10 @@
 # 0045 — Optional embedding catalog and staged acquisition
 
 Date: 2026-11-08. Status: 24A catalog preview implemented; acquisition and reuse
-are not enabled. A 2026-11-09 offline 24B preflight foundation is implemented
-below; exact production manifests and integrated destination/reuse review remain
-pending. The owner explicitly deferred remaining accessibility acceptance
+are not enabled in the product. The 2026-11-09 offline 24B foundation and
+2026-11-11 bounded developer preflight are implemented below; descriptor pins
+and destination/selected-file review exist, while provenance/NOTICE, recipe,
+runtime and product setup integration remain pending. The owner explicitly deferred remaining accessibility acceptance
 and requested milestone 24 development ahead of the unfinished v1.0 release gates.
 This changes development order, not release approval or the version number.
 
@@ -114,11 +115,41 @@ space is only a transient calculation, not CPU/RAM/performance or write readines
 No existing shared runtime/model is altered. No new retained state, migration,
 deletion behavior, dependency or network permission is introduced.
 
+### Implemented 24B descriptor/destination/reuse review (2026-11-11)
+
+`embedding_packages.py` pins both current catalog candidates' exact manifests,
+configs, F16 weight descriptors, license and parameter blobs. Public small
+evidence is retained with hashes and immutable upstream revisions; model weights
+were not acquired. Neither inspected manifest/inventory supplies a NOTICE input;
+that bounded absence leaves NOTICE and conversion/tokenizer/base-model provenance
+unresolved, rather than cleared. See [the evidence and procedure](../24b-embedding-preflight.md).
+
+The candidate format remains Ollama packages. `embedding_review.py` and the
+developer-only `scripts/preflight-embedding.py` compose the existing primitives
+with explicit-file disclosure, regular-file identity/stability checks, bounded
+hashing/cancellation and separately selected fixed-drive destination inspection.
+The caller declares application, active/retained career-data and shared runtime/
+model roots; overlapping destinations are rejected without enumeration or writes.
+Only an exact manifest can unlock selected-blob reuse credits. Partial blobs are
+distinguished from a complete exact package; neither verifies a semantic recipe
+or Windows runtime capability. No shared runtime/model is changed or contacted.
+
+Refresh free space after hashing and count staging, final copies and all explicit
+runtime/working/recovery/reserve costs on the selected destination. Shared bytes
+are reused in place; copying and multivolume writes require separate budgets.
+Reports are transient and never consent. The product catalog, skip path and
+reference permissions stay unchanged. No endpoint, persistent state, dependency,
+model acquisition or inference is enabled; no new deletion/upgrade action exists.
+Future product wiring must use a worker and reverify before use. A cooperative
+deadline cannot interrupt a blocked OS call. See the procedure for test evidence
+and the remaining product/release limits.
+
 ### Remaining work
 
-1. **24B — acquisition/reuse preflight:** choose the runtime/storage approach;
-   pin exact manifests/artifacts/license inputs; review a local fixed-drive model
-   destination separately from application and career-data storage. Inspect only
+1. **24B — finish product preflight:** resolve the retained descriptor evidence's
+   conversion/NOTICE gaps, define a supported versioned runtime/embedding recipe,
+   then integrate explicit destination/selected-file background review into setup.
+   Descriptor identity alone is not independent weight verification. Inspect only
    explicitly selected files or a disclosed bounded loopback inventory. A matching
    tag/name is not verification; require artifact/recipe identity. Never alter
    or delete someone else's shared runtime/model, scan disks automatically or
