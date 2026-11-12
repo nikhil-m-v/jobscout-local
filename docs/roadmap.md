@@ -4,7 +4,7 @@ Release scope adopted 2026-10-10: **v1.0 is the model-free Windows core through 
 
 Baseline: 2026-09-29. Rows remain small meaningful deliveries; difficult milestones can span several sessions. Reorder when evidence warrants it and preserve a working app. No deadline, automation or reminder is implied.
 
-## Current implementation — milestone 24B bounded preflight, 2026-11-11
+## Current implementation — milestone 24B bounded preflight, 2026-11-12
 
 The owner explicitly deferred remaining milestone-23 accessibility acceptance and
 requested milestone 24. This changes development order only; milestone 23 remains
@@ -29,8 +29,16 @@ fixed-drive destination/space checks and in-place reuse credits. Exact package
 identity is separate from unresolved NOTICE/conversion provenance, semantic
 recipe and Windows runtime capability. Pass: 94 focused engine, 32 adjacent and
 four catalog contract tests. No product UI/endpoint, acquisition, inference or
-new release acceptance is enabled. Next: resolve attribution/NOTICE evidence and
-define the supported runtime/recipe contract before product setup integration.
+new release acceptance is enabled. November 12's
+[lineage review](24b-model-provenance.md) retains additional MIT/base/tokenizer
+evidence; the [proposed runtime contract](24b-runtime-contract.md) and offline
+compatibility report expose concrete remaining blockers without approving any
+Windows runtime or recipe. Pass: 107 focused engine cases and 32 adjacent cases.
+Next: bind converted GGUFs to source/tokenizer/converter records, resolve applicable
+notices and review an exact Windows distribution plus owned-storage/shared-reuse
+design before product setup integration. The separate guarded full-engine result
+remains 544 passed/13 guard failures with an unresolved initial native crash;
+this continuation does not establish full regression or release acceptance.
 
 ## Earlier implementation — milestone 23 accessibility, 2026-11-08
 

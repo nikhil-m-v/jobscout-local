@@ -11,6 +11,7 @@ import shutil
 import time
 from typing import Callable
 
+from jobscout_engine.embedding_contract import review_embedding_contract
 from jobscout_engine.embedding_packages import package_evidence
 from jobscout_engine.embedding_preflight import ArtifactPin, MAX_BYTES, plan_space, verify_artifact
 from jobscout_engine.workspace_location import LocationFailure, local_path, plain_path
@@ -207,5 +208,6 @@ def review_embedding_preflight(model_id: str, *, destination: str,
         'license': {'identifier': 'Apache-2.0', 'text': 'retained_exact_bytes',
                     'notice': 'unresolved', 'conversion_provenance': 'unresolved'},
         'semantic_recipe': 'not_verified', 'runtime': 'not_inspected',
+        'compatibility_review': review_embedding_contract(package),
         'acquisition_enabled': False, 'release_approved': False,
     }

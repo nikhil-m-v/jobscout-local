@@ -71,9 +71,11 @@ def test_actual_descriptor_pins_bind_all_manifest_roles_and_small_evidence(packa
     assert not any(Path(name).name.upper().startswith('NOTICE') for name in inventory['paths'])
 
 
-def test_retained_public_metadata_receipts_are_exact_and_exclude_weight_downloads():
-    for receipt in json.loads((EVIDENCE / 'receipts.json').read_bytes()):
-        assert pin((EVIDENCE / receipt['file']).read_bytes()) == ArtifactPin(
+@pytest.mark.parametrize('date', ['2026-11-11', '2026-11-12'])
+def test_retained_public_metadata_receipts_are_exact_and_exclude_weight_downloads(date):
+    evidence = EVIDENCE.parent / date
+    for receipt in json.loads((evidence / 'receipts.json').read_bytes()):
+        assert pin((evidence / receipt['file']).read_bytes()) == ArtifactPin(
             receipt['sha256'], receipt['size_bytes'])
         assert receipt['size_bytes'] < 131072
         assert receipt['sha256'] not in {dict(p.files)['model'].sha256 for p in PACKAGES}
@@ -326,6 +328,10 @@ def test_developer_cli_reports_actual_pins_without_acquisition(fixture, monkeypa
                                     for role, p in package.files]
     assert result['status'] == 'review_only'
     assert not result['acquisition_enabled']
+    assert result['compatibility_review']['status'] == 'blocked'
+    assert result['compatibility_review']['manifest_sha256'] == dict(package.files)['manifest'].sha256
+    assert not any(result['compatibility_review'][key] for key in (
+        'runtime_approved', 'recipe_verified', 'inference_enabled', 'acquisition_enabled'))
 
 
 def test_developer_cli_failure_contains_only_fixed_error_code(fixture, monkeypatch, capsys):

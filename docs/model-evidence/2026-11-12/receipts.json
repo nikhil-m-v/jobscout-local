@@ -1,0 +1,67 @@
+[
+  {
+    "file": "minilm-base-README.md",
+    "source": "https://huggingface.co/nreimers/MiniLM-L6-H384-uncased/raw/3276f0fac9d818781d7a1327b3ff818fc4e643c0/README.md",
+    "sha256": "4c0efe99b6adc8fac8ed3af25f7fcb81ce0e832bd4543158c39bdb6c65d2f63e",
+    "size_bytes": 215,
+    "reviewed_on": "2026-11-12"
+  },
+  {
+    "file": "minilm-microsoft-README.md",
+    "source": "https://huggingface.co/microsoft/MiniLM-L12-H384-uncased/raw/44acabbec0ef496f6dbc93adadea57f376b7c0ec/README.md",
+    "sha256": "57d6772ba7a25afe078fc96042c029779100ba2ab483f95ca6193255ee1d9379",
+    "size_bytes": 2015,
+    "reviewed_on": "2026-11-12"
+  },
+  {
+    "file": "microsoft-unilm-LICENSE.txt",
+    "source": "https://raw.githubusercontent.com/microsoft/unilm/31c5b904ca1bf2afb4c234a6675c683a4e5fc7cd/LICENSE",
+    "sha256": "904dc4d8749877f1dba1cda48200d2462dccbeb7c134d5e4ef6fa75e0198c8fe",
+    "size_bytes": 1104,
+    "reviewed_on": "2026-11-12"
+  },
+  {
+    "file": "minilm-tokenizer-config.json",
+    "source": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/raw/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/tokenizer_config.json",
+    "sha256": "acb92769e8195aabd29b7b2137a9e6d6e25c476a4f15aa4355c233426c61576b",
+    "size_bytes": 350,
+    "reviewed_on": "2026-11-12"
+  },
+  {
+    "file": "nomic-tokenizer-config.json",
+    "source": "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5/raw/e9b6763023c676ca8431644204f50c2b100d9aab/tokenizer_config.json",
+    "sha256": "d7e0000bcc80134debd2222220427e6bf5fa20a669f40a0d0d1409cc18e0a9bc",
+    "size_bytes": 1191,
+    "reviewed_on": "2026-11-12"
+  },
+  {
+    "file": "nomic-config.json",
+    "source": "https://huggingface.co/nomic-ai/nomic-embed-text-v1.5/raw/e9b6763023c676ca8431644204f50c2b100d9aab/config.json",
+    "sha256": "9ab00bd92cee80a569f708140b7b6c1661a65891ff3765b1519e181ba2f2c92b",
+    "size_bytes": 2538,
+    "reviewed_on": "2026-11-12"
+  },
+  {
+    "file": "bert-LICENSE.txt",
+    "source": "https://huggingface.co/google-bert/bert-base-uncased/raw/86b5e0934494bd15c9632b12f734a8a67f723594/LICENSE",
+    "sha256": "43070e2d4e532684de521b885f385d0841030efa2b1a20bafb76133a5e1379c1",
+    "size_bytes": 11356,
+    "reviewed_on": "2026-11-12"
+  },
+  {
+    "file": "lineage-inventories.json",
+    "source": "See source URLs in the reduced records.",
+    "representation": "Reduced metadata: repository, revision, source URL, card license and complete returned sibling paths; not raw HTTP responses.",
+    "sha256": "8bd611c311e358e0ff1f9827abea5cce5da713e63b449383dca78d199d0a5236",
+    "size_bytes": 3241,
+    "reviewed_on": "2026-11-12"
+  },
+  {
+    "file": "vocabulary-comparison.json",
+    "source": "See immutable vocab.txt source URLs in the digest comparison.",
+    "representation": "Reduced digest/size comparison only; not raw vocabulary files.",
+    "sha256": "245f9c0a30a6ad02f9e4983be23c07a0deaaec1407fe2f7c832f6238f610e3db",
+    "size_bytes": 1307,
+    "reviewed_on": "2026-11-12"
+  }
+]

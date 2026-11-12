@@ -40,6 +40,11 @@ paths must stay out of committed diagnostics. No product route, UI selection,
 persisted consent, model acquisition or inference is enabled. Public metadata/
 license evidence retained during development contains no career data; unresolved
 NOTICE/provenance and runtime/recipe checks remain separate from byte identity.
+The additive offline compatibility report exposes unresolved requirements only;
+it cannot approve a runtime or enable inference. The proposed
+[Windows runtime contract](24b-runtime-contract.md) requires verified local
+process ownership and offline controls before any future private-input use.
+An existing loopback service or model tag alone does not establish that boundary.
 
 Save candidate explicitly keeps a local snapshot of returned title/snippet, safe URL, provider/source index and retrieval time, with a local identifier/save time. Up to 200 records are retained; same-link saves keep the first copy and never silently refresh or evict it. Query history, reviewed profile and match explanations are not saved with the candidate. Saving/loading/removal access no provider, vault, model or result page. Saved jobs remain after clearing results or deleting the profile; remove each item in Saved jobs to delete its owned record. Existing uninstall retention applies, so remove saved jobs before uninstalling if desired. Local records are not automatically encrypted and deletion does not promise secure disk erasure or removal from backups. Combined career-record deletion and current-session clearing are available in Settings → Your local data. See [the saving contract](architecture/0032-bounded-local-job-snapshots.md).
 

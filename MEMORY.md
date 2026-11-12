@@ -1,6 +1,53 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-11-12 (full guarded offline engine regression attempt). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-11-12 (24B lineage and runtime-contract review). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — 24B lineage and compatibility requirements
+
+Continued 24B after the full-regression diagnostic slice. Retained nine further
+small public evidence payloads with immutable sources/checksum receipts: MiniLM's
+declared nreimers/Microsoft MIT base chain, exact Microsoft MIT and BERT Apache
+license texts, tokenizer/config metadata and reduced lineage/vocabulary evidence.
+Upstream vocabulary equality is not converted GGUF tokenizer identity. Exact
+GGUF-to-source/tokenizer/converter/modification binding and applicable NOTICE
+disposition remain unresolved; the Apache package license is not relabeled.
+
+Recorded a proposed Windows runtime/recipe contract against Ollama 0.34.0 source
+revision only, with no binary/support approval. Loopback is insufficient because
+the server supports cloud routing. Future inference requires owned verified
+process/environment/transport and offline acceptance. Starting an owned runtime
+against another application's shared model root is unsafe: startup repair can
+precede the optional pruning guard. A safe shared-runtime/model reuse bridge
+remains to be designed; existing read-only byte reuse is not runtime reuse.
+
+The developer preflight now includes a versioned, package-bound compatibility
+review with explicit remaining blockers and candidate dimensions/prefix/context
+constraints. Any changed or unknown descriptor gets no recipe metadata. Runtime
+approval, recipe verification, acquisition and inference flags stay false. No
+executable recipe, text processing, vector identity, route, UI, persisted state,
+dependency, permission or version change. No model/runtime acquisition, inference,
+provider request or release publication. Only public metadata/license/tokenizer
+reads were used for research; no private career data or credentials.
+
+Pass: 107 guarded focused engine cases (including both receipt sets and CLI
+integration), 32 guarded adjacent storage/local-check/database cases and diff
+whitespace validation. Raw diagnostics/synthetic workspaces stay ignored; only
+small public evidence is retained. Publication follow-up on November 13: the
+owner authorized committing and pushing this source/docs/public-evidence slice;
+generated diagnostics and synthetic workspaces remain excluded.
+The earlier 544 passed/13 guard failures and unresolved native interpreter crash
+remain the latest full-regression evidence. Hosted/installed/resource/quality/
+accessibility/license/release gates are not newly established.
+
+Next: obtain a publisher record binding exact GGUF digests to upstream/tokenizer
+revisions and conversion/modification inputs, or separately review a reproducible
+conversion with a new artifact identity. Resolve applicable attribution/NOTICE;
+review exact Windows standalone runtime/dependency/license inputs and safe owned
+storage/shared reuse before product setup/background-review integration. Keep
+24C acquisition and later inference/installed acceptance separate. See
+[provenance](docs/24b-model-provenance.md),
+[runtime requirements](docs/24b-runtime-contract.md) and
+[dated progress](docs/progress/2026-11-12.md#24b-lineage-and-runtime-contract-continuation).
 
 ## Current checkpoint — full guarded engine regression
 

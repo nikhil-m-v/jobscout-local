@@ -4,7 +4,9 @@ Date: 2026-11-08. Status: 24A catalog preview implemented; acquisition and reuse
 are not enabled in the product. The 2026-11-09 offline 24B foundation and
 2026-11-11 bounded developer preflight are implemented below; descriptor pins
 and destination/selected-file review exist, while provenance/NOTICE, recipe,
-runtime and product setup integration remain pending. The owner explicitly deferred remaining accessibility acceptance
+runtime and product setup integration remain pending. The November 12 provenance
+and runtime-contract review narrows these gaps without enabling acquisition or
+approving a Windows runtime, as recorded below. The owner explicitly deferred remaining accessibility acceptance
 and requested milestone 24 development ahead of the unfinished v1.0 release gates.
 This changes development order, not release approval or the version number.
 
@@ -144,10 +146,36 @@ Future product wiring must use a worker and reverify before use. A cooperative
 deadline cannot interrupt a blocked OS call. See the procedure for test evidence
 and the remaining product/release limits.
 
+### Implemented 24B provenance and compatibility requirements (2026-11-12)
+
+The [lineage review](../24b-model-provenance.md) retains further small, immutable
+public evidence, including the MIT input in MiniLM's declared base chain and
+upstream tokenizer vocabulary digest comparisons. This narrows attribution
+questions but does not authenticate a conversion chain or clear NOTICE/license
+obligations for the actual GGUF package. Package Apache license blobs stay intact.
+
+The [proposed Windows runtime contract](../24b-runtime-contract.md) binds its
+source observations to one exact Ollama revision. This is not a supported-runtime
+or Windows binary approval. Future private inference requires a verified owned
+process, effective cloud disablement, restricted transport and proven offline
+behavior; a loopback port, version string or health response is insufficient.
+Do not start a new runtime against someone else's shared model store: startup
+repair can run even when pruning is disabled. Reuse through a shared service or
+a read-only bridge remains a design/acceptance requirement, not implemented reuse.
+
+The developer preflight's additive `24b-compatibility-review-v1` report binds
+candidate dimensions/prefix/context constraints and explicit remaining blockers
+to the complete reviewed package descriptor set. Changed or unknown descriptors
+receive no recipe metadata. All runtime/recipe/inference/acquisition flags stay
+false, even when byte identity and space checks pass. No executable recipe,
+request builder, vector-space key, persisted state, endpoint or UI is introduced.
+Final tokenizer/pooling/normalization, role mapping and chunking decisions must
+precede derived-data identity and inference integration.
+
 ### Remaining work
 
 1. **24B — finish product preflight:** resolve the retained descriptor evidence's
-   conversion/NOTICE gaps, define a supported versioned runtime/embedding recipe,
+   conversion/NOTICE gaps and satisfy the proposed runtime/recipe contract,
    then integrate explicit destination/selected-file background review into setup.
    Descriptor identity alone is not independent weight verification. Inspect only
    explicitly selected files or a disclosed bounded loopback inventory. A matching

@@ -41,6 +41,12 @@ Both package reports therefore retain `notice: unresolved` and
 modification history and runtime obligations still require review. No legal,
 source-delivery or release clearance follows from matching the license blob.
 
+The [November 12 lineage review](24b-model-provenance.md) narrows these gaps and
+retains additional checksum-bound inputs, including Microsoft's MIT license in
+MiniLM's declared base-model chain. It does not replace the Apache package blob
+or authenticate the converted artifacts. Upstream tokenizer vocabulary equality
+is recorded separately from the unverified embedded GGUF tokenizer.
+
 Sources: [MiniLM registry manifest](https://registry.ollama.ai/v2/library/all-minilm/manifests/l6-v2),
 [Nomic registry manifest](https://registry.ollama.ai/v2/library/nomic-embed-text/manifests/v1.5),
 [MiniLM upstream revision](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/tree/1110a243fdf4706b3f48f1d95db1a4f5529b4d41),
@@ -132,6 +138,15 @@ insufficient/unknown space result; exit 2 means invalid review input. The JSON
 always distinguishes space status, artifact status and unresolved license/runtime
 evidence, and never enables acquisition or release.
 
+The additive `compatibility_review` report now binds source-reviewed candidate
+requirements to the full exact package identity. Known candidates remain blocked,
+with explicit conversion/NOTICE, Windows binary, offline-process, shared-model
+reuse and semantic-recipe gaps. Unknown or changed descriptors receive no recipe
+metadata. The [runtime contract](24b-runtime-contract.md) explains why loopback
+alone does not establish local-only inference and why a newly started runtime
+cannot safely use another application's shared model root. No runtime is queried
+by this report; all runtime/recipe/inference/acquisition approval flags stay false.
+
 Validation: 94 focused engine cases (46 prior primitives plus 48 review/evidence/
 CLI cases), 32 adjacent storage/local-check/database cases and four frontend
 catalog contract cases pass. Engine profiles use the diagnostic's environment
@@ -144,7 +159,10 @@ Existing Starlette/HTTPX deprecation warnings remain in the adjacent profile.
 Full engine regression, packaging, installed acceptance, hosted CI, resource/
 model-quality evaluation and prior release gates are not newly established.
 
-Next: resolve conversion/tokenizer/base-model attribution and NOTICE gaps, then
-define the versioned Windows runtime/embedding-recipe contract before wiring
-explicit selection and background review into setup. Keep acquisition/cancel/
-recovery in 24C and inference/resource/installed acceptance in their later scopes.
+Continuation on November 12 adds the provenance inputs and proposed runtime
+contract above; it does not complete their acceptance. Next: bind the exact GGUF
+digests to source/tokenizer revisions and conversion/modification records, resolve
+applicable attribution/NOTICE inputs, and review an exact Windows standalone
+runtime distribution plus owned-storage/shared-reuse design. Final recipe and
+product background-review wiring remain open. Keep acquisition/cancel/recovery
+in 24C and inference/resource/installed acceptance in their later scopes.
