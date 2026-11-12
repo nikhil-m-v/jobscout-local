@@ -1,6 +1,36 @@
 # JobScout — resume here
 
-Last checkpoint: 2026-11-11 (bounded milestone 24B descriptor, storage and explicit reuse preflight). Project memory contains no personal career records or credentials.
+Last checkpoint: 2026-11-12 (full guarded offline engine regression attempt). Project memory contains no personal career records or credentials.
+
+## Current checkpoint — full guarded engine regression
+
+Ran all 557 current engine tests twice to completion using the bounded diagnostic
+supervisor, synthetic temporary storage and the existing network/HTTPX/vault/
+environment guards, with a sixty-second parent deadline. Both completed attempts
+report 544 passed and the same 13 failures; this is **not a green full regression**.
+Eight tests directly hit child-launch guards, three hit credential guards, one
+hits the network-bind guard and one times out waiting for a forbidden parser child.
+No confirmed product regression or product-route change. The full profile now
+also blocks multiprocessing start, and retains flushed per-phase JSONL and JUnit
+evidence. No tests were deselected or assertions weakened.
+
+Restricted runtime smoke again times out in socketpair accept; normal execution
+passes. An initial normal full attempt exits with Windows access violation
+0xC0000005 during the five-second traceback dump; cause remains unresolved, not
+attributed to product code. Two subsequent full attempts complete in under
+24 seconds. Raw logs/synthetic workspaces stay ignored. No provider request,
+real vault operation, launched test child, model acquisition/inference, packaging,
+hosted CI or release publication was performed during validation. The owner
+subsequently authorized committing and pushing the diagnostic/checkpoint slice;
+raw logs and synthetic workspaces remain excluded. Source publication does not
+establish full regression or release acceptance.
+
+See [progress and failure inventory](docs/progress/2026-11-12.md) and
+[procedure](docs/24b-engine-regression.md). Next: isolate the native interpreter
+crash and design a separately reviewed integration supervisor for the tests
+requiring owned children/listeners or vault access; do not remove the existing
+guards to obtain a green count. 24B NOTICE/provenance/runtime/recipe and product
+integration remain open, alongside prior installed/accessibility/release gates.
 
 ## Current checkpoint — bounded milestone 24B package review
 

@@ -1,4 +1,4 @@
-"""Bounded offline diagnostic for JobScout 64afe1b; Python stdlib supervisor.
+"""Bounded offline JobScout engine diagnostic; Python stdlib supervisor.
 
 Use --source for an extracted tracked snapshot and --python for its existing
 test interpreter. Never point --source at a personal-data directory.
@@ -13,6 +13,7 @@ import time
 
 
 PROFILES = {
+    'full': ['apps/engine/tests'],
     'runtime': [],
     'preflight': ['apps/engine/tests/test_embedding_preflight.py'],
     'review': ['apps/engine/tests/test_embedding_preflight.py',
@@ -51,6 +52,12 @@ def child(args):
         if event in ('subprocess.Popen', 'os.system'):
             raise AssertionError('Diagnostic forbids child process launch')
     sys.addaudithook(audit)
+    # Windows multiprocessing may use CreateProcess directly rather than Popen.
+    # Keep the full-suite attempt child-free as well as the focused profiles.
+    import multiprocessing.process
+    def forbidden_child(*values, **kwargs):
+        raise AssertionError('Diagnostic forbids child process launch')
+    multiprocessing.process.BaseProcess.start = forbidden_child
     if args.profile == 'runtime':
         print('STAGE socketpair begin', flush=True)
         try:
@@ -108,10 +115,17 @@ def child(args):
     import pytest
     class Progress:
         def pytest_runtest_logstart(self, nodeid, location):
-            print('TEST ' + nodeid, flush=True)
+            print('TEST ' + nodeid[:240], flush=True)
+        def pytest_runtest_logreport(self, report):
+            # Flush each phase so a crash/deadline retains the completed prefix.
+            with (args.run / 'results.jsonl').open('a', encoding='utf-8') as out:
+                out.write(json.dumps({'nodeid': report.nodeid, 'phase': report.when,
+                                      'outcome': report.outcome,
+                                      'duration': report.duration}) + '\n')
     try:
         return pytest.main([*PROFILES[args.profile], '-vv', '-s',
                             '-p', 'no:cacheprovider', '-o', 'faulthandler_timeout=0',
+                            '--junitxml=' + str(args.run / 'junit.xml'),
                             '--basetemp=' + str(args.run / 'pytest-temp')], plugins=[Progress()])
     finally:
         faulthandler.cancel_dump_traceback_later()

@@ -109,11 +109,15 @@ The socket-pair exception permits its own transient loopback handshake; it grant
 no access to an existing localhost service. Guards are diagnostic controls for
 these reviewed profiles, not a general-purpose security sandbox.
 
-After these focused checks pass, the next separate gate is a supervised full
-offline engine regression run. Review that suite's child-process and simulated
-credential tests before adapting guards; this narrow runner intentionally does
-not offer an unreviewed full-suite mode. Preserve per-test progress, the stack
-dump and a finite parent deadline when adding that gate.
+The November 12 continuation adds a reviewed `full` profile selecting all engine
+tests, without lifting the prohibitions. Use `--profile full --seconds 60` with
+the same command shape. It also blocks multiprocessing start explicitly and
+retains flushed per-phase `results.jsonl` and a final `junit.xml` alongside the
+log/receipt. The suite contains real child-process, listener and vault cases:
+under these guards those cases fail, and a full invocation is not automatically
+full regression acceptance. See the [557-test results, thirteen guard failures
+and native-crash limit](progress/2026-11-12.md). A separate integration supervisor
+is needed before claiming those prohibited operations were exercised safely.
 
 ## Still unconfirmed
 
